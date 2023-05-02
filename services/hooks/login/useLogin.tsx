@@ -6,7 +6,7 @@ import { LoginContext } from './contexts/LoginContext'
 import { Api, ApiResponse } from '../../api';
 import { LoginContextType } from './contexts/LoginContextType';
 
-export default function useUser() {
+export default function useLogin() {
 
     // Creamos el contexto de nuestra aplicación
     const { setLogin, setLoading } = useContext(LoginContext);

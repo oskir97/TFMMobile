@@ -8,14 +8,12 @@ import { AtSymbolIcon, LockClosedIcon } from "react-native-heroicons/solid";
 import CustomButton from "../../components/Buttons/CustomButton";
 
 import { useForm } from 'react-hook-form';
-import loginHook from "../../services/hooks/login/loginHook";
+import loginHook from "../../services/hooks/login/useLogin";
 
-import { useNavigation } from '@react-navigation/native';
 import { NavStackParamList } from "../../tfmmobile";
 
 const Login = (props:LoginProps) => {
   const { logFunction } = loginHook();
-  const navigation = useNavigation();
 
   const { control, handleSubmit, formState: { errors } } = useForm<LoginData>({
     mode: "onChange",
@@ -52,6 +50,7 @@ const Login = (props:LoginProps) => {
             label="Email"
             keyboardType={"email-address"}
             placeholder="Enter your email"
+            editable={true}
             rules={{
               required: { value: true, message: 'Email is requiered' },
               pattern: {
@@ -72,6 +71,7 @@ const Login = (props:LoginProps) => {
             IsSecureText={true}
             keyboardType="default"
             placeholder="* * * * * * * *"
+            editable={true}
             rules={{ required: { value: true, message: 'Password is requried' } }}
             errors={errors.password && (
               <Text className="text-error">{errors.password.message}</Text>

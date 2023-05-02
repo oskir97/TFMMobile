@@ -1,53 +1,36 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Alert } from "react-native";
 import React from "react";
 import MainContainer from "../../components/Container/MainContainer";
 import KeyboardAvoidWrapper from "../../components/Container/KeyboardAvoidWrapper";
 import CustomTextInput from "../../components/InputText/CustomTextInput";
 import { AtSymbolIcon, LockClosedIcon } from "react-native-heroicons/solid";
 import CustomButton from "../../components/Buttons/CustomButton";
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
-import { useForm } from 'react-hook-form';
+import { RegisterData, useRegister } from '../../services/hooks/register/useRegister';
+import CustomDateInput from "../../components/InputDate/CustomDateInput";
+import CustomPickerInput from "../../components/InputPicker/CustomPickerInput";
+import { usePostalCodes } from "../../services/hooks/postalCodes/usePostalCodes";
+import { Picker } from "@react-native-picker/picker";
 
-  const validationSchema = Yup.object().shape({
-    name: Yup.string()
-      .required('Name is required'),
-    surnames: Yup.string()
-      .required('Surnames are required'),
-    email: Yup.string()
-      .required('Email is required')
-      .email('Not a valid email'),
-    password: Yup.string()
-      .required('Password is required')
-      .min(6, 'Password must be at least 6 characters'),
-    password2: Yup.string()
-      .required('Confirm Password is required')
-      .oneOf([Yup.ref('password')], 'Passwords must match')
+const Register = (props: RegisterProps) => {
 
-  });
-
-const Register = (props:RegisterProps) => {
+  const { control, handleSubmit, formState, handleRegistro } = useRegister();
+  const { provincias, localidades, provinciaSeleccionada, localidadSeleccionada, getLocalidades, cambiarProvinciaSeleccionada, cambiarLocalidadSeleccionada, getProvincias } = usePostalCodes();
 
   const login = () => props.navigation.navigate("Login")
 
-  const { control, handleSubmit, formState } = useForm<RegisterData>({
-    mode: "onChange",
-    defaultValues: {
-      name: '',
-      surnames: '',
-      email: '',
-      password: '',
-      password2: ''
-    },
-    resolver: yupResolver(validationSchema)
-  });
-  const { errors } = formState;
+  const onSubmit = async (data: RegisterData) => {
+    console.log(data);
+    try {
+      const result = await handleRegistro(data);
+      if (result) {
+        Alert.alert('Registro exitoso', '¡Bienvenido! Por favor inicia sesión');
+      }
+    } catch (error: any) {
+      Alert.alert('Error', error.message);
+    }
+  };
 
-  const onSubmit = handleSubmit(({ name, surnames, email, password }) => {
-    alert({ name, surnames, email, password });
-  });
-
-  const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  getProvincias();
 
   return (
     <MainContainer>
@@ -58,35 +41,43 @@ const Register = (props:RegisterProps) => {
         </View>
         <View className="flex flex-1 justify-center items-center pt-[7%] px-[25px]">
           <Text className="text-[#EFE3C8] text-md">
-            Enter your account details to register
+            Introduce tus datos para registrarte!
           </Text>
           <View className="h-[30px] w-full"></View>
 
           <CustomTextInput
-            nameController="name"
+            nameController="nombre"
             control={control}
-            label="Name"
-            placeholder="Enter your name"
+            label="Nombre"
+            placeholder="Introduce tu nombre"
+            editable={true}
             rules={{
-              required: { value: true, message: 'Name is requiered' }
+              required: { value: true },
+              pattern: {
+                value: true
+              }
             }}
-            errors={errors.name && (
-              <Text className="text-error">{errors.name.message}</Text>
+            errors={formState.errors.nombre && (
+              <Text className="text-error">{formState.errors.nombre.message}</Text>
             )}
-            onSubmit={onSubmit}
+            onSubmit={handleSubmit(onSubmit)}
           />
           <CustomTextInput
-            nameController="surnames"
+            nameController="apellidos"
             control={control}
-            label="Surnames"
-            placeholder="Enter your surname"
+            label="Apellidos"
+            placeholder="Introduce tus apellidos"
+            editable={true}
             rules={{
-              required: { value: true, message: 'Surname is requiered' }
+              required: { value: true },
+              pattern: {
+                value: true
+              }
             }}
-            errors={errors.surnames && (
-              <Text className="text-error">{errors.surnames.message}</Text>
+            errors={formState.errors.apellidos && (
+              <Text className="text-error">{formState.errors.apellidos.message}</Text>
             )}
-            onSubmit={onSubmit}
+            onSubmit={handleSubmit(onSubmit)}
           />
           <CustomTextInput
             nameController="email"
@@ -94,59 +85,197 @@ const Register = (props:RegisterProps) => {
             icon={<AtSymbolIcon color={"#EFE3C850"} width={35} height={35} />}
             label="Email"
             keyboardType={"email-address"}
-            placeholder="Enter your email"
+            placeholder="Introduce tu email"
+            editable={true}
             rules={{
-              required: { value: true, message: 'Email is requiered' },
+              required: { value: true },
               pattern: {
-                value: EMAIL_REGEX,
-                message: 'Not a valid email',
+                value: true
               },
             }}
-            errors={errors.email && (
-              <Text className="text-error">{errors.email.message}</Text>
+            errors={formState.errors.email && (
+              <Text className="text-error">{formState.errors.email.message}</Text>
             )}
-            onSubmit={onSubmit}
+            onSubmit={handleSubmit(onSubmit)}
           />
           <CustomTextInput
             nameController="password"
             control={control}
             icon={<LockClosedIcon color={"#EFE3C850"} width={35} height={35} />}
-            label="Password"
+            label="Contraseña"
             IsSecureText={true}
             keyboardType="default"
             placeholder="* * * * * * * *"
-            rules={{ required: { value: true, message: 'Password is requried' } }}
-            errors={errors.password && (
-              <Text className="text-error">{errors.password.message}</Text>
+            editable={true}
+            rules={{
+              required: { value: true },
+              pattern: {
+                value: true
+              }
+            }}
+            errors={formState.errors.password && (
+              <Text className="text-error">{formState.errors.password.message}</Text>
             )}
-            onSubmit={onSubmit}
+            onSubmit={handleSubmit(onSubmit)}
           />
 
           <CustomTextInput
             nameController="password2"
             control={control}
             icon={<LockClosedIcon color={"#EFE3C850"} width={35} height={35} />}
-            label="Confirm Password"
+            label="Confirmar contraseña"
             IsSecureText={true}
             keyboardType="default"
             placeholder="* * * * * * * *"
-            rules={{ required: { value: true, message: 'Confirm Password is requried' } }}
-            errors={errors.password2 && (
-              <Text className="text-error">{errors.password2.message}</Text>
+            editable={true}
+            rules={{ required: { value: true } }}
+            errors={formState.errors.confirmPassword && (
+              <Text className="text-error">{formState.errors.confirmPassword.message}</Text>
             )}
-            onSubmit={onSubmit}
+            onSubmit={handleSubmit(onSubmit)}
           />
+          <CustomTextInput
+            nameController="domicilio"
+            control={control}
+            label="Domicilio"
+            editable={true}
+            placeholder="Introduce tu domicilio"
+            rules={{
+              required: { value: true },
+              pattern: {
+                value: true
+              }
+            }}
+            errors={formState.errors.domicilio && (
+              <Text className="text-error">{formState.errors.domicilio.message}</Text>
+            )}
+            onSubmit={handleSubmit(onSubmit)}
+          />
+          <CustomTextInput
+            nameController="telefono"
+            control={control}
+            label="Teléfono"
+            placeholder="Introduce tu teléfono"
+            editable={true}
+            rules={{
+              required: { value: true },
+              pattern: {
+                value: true
+              }
+            }}
+            errors={formState.errors.telefono && (
+              <Text className="text-error">{formState.errors.telefono.message}</Text>
+            )}
+            onSubmit={handleSubmit(onSubmit)}
+          />
+          <CustomTextInput
+            nameController="telefonoAlternartivo"
+            control={control}
+            label="Teléfono alternativo"
+            placeholder="Introduce tu teléfono alternativo"
+            editable={true}
+            rules={{
+              required: { value: true },
+              pattern: {
+                value: true
+              }
+            }}
+            errors={formState.errors.telefonoAlternartivo && (
+              <Text className="text-error">{formState.errors.telefonoAlternartivo.message}</Text>
+            )}
+            onSubmit={handleSubmit(onSubmit)}
+          />
+          <CustomDateInput
+            nameController="fechaNacimiento"
+            control={control}
+            label="Fecha de nacimiento"
+            placeholder="Introduce tu fecha de nacimiento"
+            mode="date"
+            rules={{
+              required: { value: true },
+              pattern: {
+                value: true
+              }
+            }}
+            errors={formState.errors.fechaNacimiento && (
+              <Text className="text-error">{formState.errors.fechaNacimiento.message}</Text>
+            )}
+            onSubmit={handleSubmit(onSubmit)}
+          />
+          <CustomTextInput
+            nameController="codigoPostal"
+            control={control}
+            label="Código postal"
+            placeholder="Introduce tu código postal"
+            editable={true}
+            rules={{
+              required: { value: true },
+              pattern: {
+                value: true
+              }
+            }}
+            errors={formState.errors.codigoPostal && (
+              <Text className="text-error">{formState.errors.codigoPostal.message}</Text>
+            )}
+            onSubmit={handleSubmit(onSubmit)}
+          />
+          <CustomPickerInput
+            nameController="provincia"
+            control={control}
+            label="Provincia"
+            placeholder="Introduce tu provincia"
+            onValueChange={(value: string) => cambiarProvinciaSeleccionada(value)}
+            defaultValue="Seleccione una provincia"
+            itemsMapping={provincias.map((provincia) => (
+              <Picker.Item key={provincia.CPRO} label={provincia.PRO} value={provincia.PRO} />
+            ))}
+            rules={{
+              required: { value: true },
+              pattern: {
+                value: true
+              }
+            }}
+            errors={formState.errors.provincia && (
+              <Text className="text-error">{formState.errors.provincia.message}</Text>
+            )}
+            onSubmit={handleSubmit(onSubmit)}
+          />
+          {provinciaSeleccionada && (
+            <>
+              <CustomPickerInput
+                nameController="localidad"
+                control={control}
+                label="Localidad"
+                placeholder="Introduce tu localidad"
+                onValueChange={(value: string) => cambiarLocalidadSeleccionada(value)}
+                defaultValue="Seleccione una localidad"
+                itemsMapping={localidades.map((localidad) => (
+                  <Picker.Item key={localidad.CMUM} label={localidad.DMUN50} value={localidad.DMUN50} />
+                ))}
+                rules={{
+                  required: { value: true },
+                  pattern: {
+                    value: true
+                  }
+                }}
+                errors={formState.errors.localidad && (
+                  <Text className="text-error">{formState.errors.localidad.message}</Text>
+                )}
+                onSubmit={handleSubmit(onSubmit)}
+              />
+            </>
+          )}
           <CustomButton
             buttonText="Register"
             buttonClassNames="w-full rounded-md p-3 bg-[#EFE3C8] flex justify-center items-center mt-5"
             textClassNames="text-[#4A2B29] text-[18px] font-semibold"
-            onPress={onSubmit}
+            onPress={handleSubmit(onSubmit)}
           />
 
           <View className="flex w-full justify-end items-end pt-4">
             <Pressable onPress={login}>
               <Text className="text-center text-gray-500 text-sm">
-                Already have an account?
+                ¿Ya tienes una cuenta?
               </Text>
             </Pressable>
           </View>

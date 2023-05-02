@@ -14,6 +14,34 @@ export interface IProps {
     rules?: any;
     defaultValue?:string;
     errors?:any;
+    editable:boolean
+  }
+
+  export interface InputDateProps {
+    label: string;
+    icon?: JSX.Element | null;
+    placeholder?: string | undefined;
+    control: any;
+    onSubmit: any;
+    nameController: string;
+    rules?: any;
+    defaultValue?:string;
+    errors?:any;
+    mode:AndroidMode;
+  }
+
+  export interface InputPickerProps {
+    label: string;
+    icon?: JSX.Element | null;
+    placeholder?: string | undefined;
+    control: any;
+    onSubmit: any;
+    nameController: string;
+    rules?: any;
+    defaultValue?:string;
+    errors?:any;
+    onValueChange:any;
+    itemsMapping:any;
   }
   
   export interface CustomButtonProps {

@@ -1,8 +1,9 @@
-import { View, Text, TextInput } from "react-native";
+import { View, Text } from "react-native";
+import { Picker } from '@react-native-picker/picker';
 import React from "react";
-import { InputProps } from "../../tfmmobile";
+import { InputPickerProps } from "../../tfmmobile";
 import { useForm, Controller } from 'react-hook-form';
-const CustomTextInput: React.FC<InputProps> = ({ label, icon, IsSecureText, keyboardType, placeholder, control, onSubmit, nameController, defaultValue, rules, errors, editable
+const CustomPickerInput: React.FC<InputPickerProps> = ({ label, icon, control, onSubmit, nameController, defaultValue, rules, errors, onValueChange, itemsMapping
 }) => {
   return (
     <View className="flex justify-start w-full mb-4">
@@ -23,10 +24,12 @@ const CustomTextInput: React.FC<InputProps> = ({ label, icon, IsSecureText, keyb
           render={({
             field: { onChange, onBlur, value }
           }) => (
-            <TextInput className="flex flex-1 bg-transparent text-lg text-[#EFE3C895] h-[50px] pl-2" editable={editable}
-              onChangeText={onChange} secureTextEntry={IsSecureText} keyboardType={keyboardType} placeholder={placeholder} onBlur={onBlur} value={value} onSubmitEditing={onSubmit}
-              placeholderTextColor={"#EFE3C825"}
-            />
+            <Picker
+              selectedValue={value}
+              onValueChange={onValueChange}>
+              <Picker.Item label={defaultValue} value="" />
+              {itemsMapping}
+            </Picker>
           )}
         />
       </View>
@@ -34,4 +37,4 @@ const CustomTextInput: React.FC<InputProps> = ({ label, icon, IsSecureText, keyb
     </View>
   );
 };
-export default CustomTextInput;
+export default CustomPickerInput;
