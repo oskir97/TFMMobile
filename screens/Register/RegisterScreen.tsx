@@ -7,30 +7,26 @@ import { AtSymbolIcon, LockClosedIcon } from "react-native-heroicons/solid";
 import CustomButton from "../../components/Buttons/CustomButton";
 import { RegisterData, useRegister } from '../../services/hooks/register/useRegister';
 import CustomDateInput from "../../components/InputDate/CustomDateInput";
-import CustomPickerInput from "../../components/InputPicker/CustomPickerInput";
-import { usePostalCodes } from "../../services/hooks/postalCodes/usePostalCodes";
+import PostalCodeInput from "../../components/PostalCode/PostalCodeInput";
 import { Picker } from "@react-native-picker/picker";
 
 const Register = (props: RegisterProps) => {
 
   const { control, handleSubmit, formState, handleRegistro } = useRegister();
-  const { provincias, localidades, provinciaSeleccionada, localidadSeleccionada, getLocalidades, cambiarProvinciaSeleccionada, cambiarLocalidadSeleccionada, getProvincias } = usePostalCodes();
 
   const login = () => props.navigation.navigate("Login")
 
   const onSubmit = async (data: RegisterData) => {
     console.log(data);
-    try {
-      const result = await handleRegistro(data);
-      if (result) {
-        Alert.alert('Registro exitoso', '¡Bienvenido! Por favor inicia sesión');
-      }
-    } catch (error: any) {
-      Alert.alert('Error', error.message);
-    }
+    // try {
+    //   const result = await handleRegistro(data);
+    //   if (result) {
+    //     Alert.alert('Registro exitoso', '¡Bienvenido! Por favor inicia sesión');
+    //   }
+    // } catch (error: any) {
+    //   Alert.alert('Error', error.message);
+    // }
   };
-
-  getProvincias();
 
   return (
     <MainContainer>
@@ -51,6 +47,7 @@ const Register = (props: RegisterProps) => {
             label="Nombre"
             placeholder="Introduce tu nombre"
             editable={true}
+            maxLength={50}
             rules={{
               required: { value: true },
               pattern: {
@@ -68,6 +65,7 @@ const Register = (props: RegisterProps) => {
             label="Apellidos"
             placeholder="Introduce tus apellidos"
             editable={true}
+            maxLength={100}
             rules={{
               required: { value: true },
               pattern: {
@@ -87,6 +85,7 @@ const Register = (props: RegisterProps) => {
             keyboardType={"email-address"}
             placeholder="Introduce tu email"
             editable={true}
+            maxLength={75}
             rules={{
               required: { value: true },
               pattern: {
@@ -107,6 +106,7 @@ const Register = (props: RegisterProps) => {
             keyboardType="default"
             placeholder="* * * * * * * *"
             editable={true}
+            maxLength={255}
             rules={{
               required: { value: true },
               pattern: {
@@ -120,7 +120,7 @@ const Register = (props: RegisterProps) => {
           />
 
           <CustomTextInput
-            nameController="password2"
+            nameController="confirmPassword"
             control={control}
             icon={<LockClosedIcon color={"#EFE3C850"} width={35} height={35} />}
             label="Confirmar contraseña"
@@ -129,6 +129,7 @@ const Register = (props: RegisterProps) => {
             placeholder="* * * * * * * *"
             editable={true}
             rules={{ required: { value: true } }}
+            maxLength={255}
             errors={formState.errors.confirmPassword && (
               <Text className="text-error">{formState.errors.confirmPassword.message}</Text>
             )}
@@ -140,6 +141,7 @@ const Register = (props: RegisterProps) => {
             label="Domicilio"
             editable={true}
             placeholder="Introduce tu domicilio"
+            maxLength={128}
             rules={{
               required: { value: true },
               pattern: {
@@ -157,6 +159,7 @@ const Register = (props: RegisterProps) => {
             label="Teléfono"
             placeholder="Introduce tu teléfono"
             editable={true}
+            maxLength={9}
             rules={{
               required: { value: true },
               pattern: {
@@ -174,6 +177,7 @@ const Register = (props: RegisterProps) => {
             label="Teléfono alternativo"
             placeholder="Introduce tu teléfono alternativo"
             editable={true}
+            maxLength={9}
             rules={{
               required: { value: true },
               pattern: {
@@ -202,69 +206,32 @@ const Register = (props: RegisterProps) => {
             )}
             onSubmit={handleSubmit(onSubmit)}
           />
-          <CustomTextInput
-            nameController="codigoPostal"
+          <PostalCodeInput
+            nameControllerCodigoPostal="codigoPostal"
+            nameControllerProvincia="provincia"
+            nameControllerLocalidad="localidad"
             control={control}
-            label="Código postal"
-            placeholder="Introduce tu código postal"
+            defaultValueProvincia="Seleccione una provincia"
+            defaultValueLocalidad="Seleccione una localidad"
             editable={true}
+            maxLength={5}
             rules={{
               required: { value: true },
               pattern: {
                 value: true
               }
             }}
-            errors={formState.errors.codigoPostal && (
+            errorsProvincia={formState.errors.provincia && (
+              <Text className="text-error">{formState.errors.provincia.message}</Text>
+            )}
+            errorsLocalidad={formState.errors.localidad && (
+              <Text className="text-error">{formState.errors.localidad.message}</Text>
+            )}
+            errorsCodigoPostal={formState.errors.codigoPostal && (
               <Text className="text-error">{formState.errors.codigoPostal.message}</Text>
             )}
             onSubmit={handleSubmit(onSubmit)}
           />
-          <CustomPickerInput
-            nameController="provincia"
-            control={control}
-            label="Provincia"
-            placeholder="Introduce tu provincia"
-            onValueChange={(value: string) => cambiarProvinciaSeleccionada(value)}
-            defaultValue="Seleccione una provincia"
-            itemsMapping={provincias.map((provincia) => (
-              <Picker.Item key={provincia.CPRO} label={provincia.PRO} value={provincia.PRO} />
-            ))}
-            rules={{
-              required: { value: true },
-              pattern: {
-                value: true
-              }
-            }}
-            errors={formState.errors.provincia && (
-              <Text className="text-error">{formState.errors.provincia.message}</Text>
-            )}
-            onSubmit={handleSubmit(onSubmit)}
-          />
-          {provinciaSeleccionada && (
-            <>
-              <CustomPickerInput
-                nameController="localidad"
-                control={control}
-                label="Localidad"
-                placeholder="Introduce tu localidad"
-                onValueChange={(value: string) => cambiarLocalidadSeleccionada(value)}
-                defaultValue="Seleccione una localidad"
-                itemsMapping={localidades.map((localidad) => (
-                  <Picker.Item key={localidad.CMUM} label={localidad.DMUN50} value={localidad.DMUN50} />
-                ))}
-                rules={{
-                  required: { value: true },
-                  pattern: {
-                    value: true
-                  }
-                }}
-                errors={formState.errors.localidad && (
-                  <Text className="text-error">{formState.errors.localidad.message}</Text>
-                )}
-                onSubmit={handleSubmit(onSubmit)}
-              />
-            </>
-          )}
           <CustomButton
             buttonText="Register"
             buttonClassNames="w-full rounded-md p-3 bg-[#EFE3C8] flex justify-center items-center mt-5"

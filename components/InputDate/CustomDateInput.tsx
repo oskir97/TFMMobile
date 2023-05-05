@@ -11,7 +11,6 @@ const CustomDateInput: React.FC<InputDateProps> = ({ label, icon, mode, placehol
 
   const toggleDatepicker = ()=>{
     setShowPicker(!showPicker);
-    console.log(showPicker);
   };
 
   return (

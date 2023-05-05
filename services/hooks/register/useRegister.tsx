@@ -31,14 +31,14 @@ const schema = yup.object().shape({
         .required('La confirmación de contraseña es requerida').max(255, 'La contraseña no puede tener más de 255 carácteres'),
     domicilio: yup.string().required('El domicilio es requerido').max(128, 'El domiclio no puede tener más de 128 carácteres'),
     telefono: yup.string().required('El telefono es requerido').max(9, 'El teléfono no puede tener más de 9 carácteres'),
-    telefonoAlternartivo: yup.string().required('El telefono alternativo es requerido').max(9, 'El teléfono alternativo no puede tener más de 9 carácteres'),
+    telefonoAlternartivo: yup.string().max(9, 'El teléfono alternativo no puede tener más de 9 carácteres'),
     fechaNacimiento: yup.date().required('La fecha es requerida').min(
         new Date(Date.now() - 18 * 365 * 24 * 60 * 60 * 1000),
         'Debes ser mayor de 18 años'
       ).typeError('Formato de fecha inválido'),
     codigoPostal: yup.string().max(5, 'El código postal no puede tener más de 5 caracteres').required('El código postal es requerido'),
-    localidad: yup.string().required('La localidad es requerida'),
-    provincia: yup.string().required('La provincia es requerida'),
+    localidad: yup.string().required('La localidad es requerida').notOneOf(['Seleccione una localidad'], 'Debe seleccionar una localidad'),
+    provincia: yup.string().required('La provincia es requerida').notOneOf(['Seleccione una provincia'], 'Debe seleccionar una provincia'),
 });
 
 export const useRegister = () => {

@@ -2,7 +2,7 @@ import { View, Text, TextInput } from "react-native";
 import React from "react";
 import { InputProps } from "../../tfmmobile";
 import { useForm, Controller } from 'react-hook-form';
-const CustomTextInput: React.FC<InputProps> = ({ label, icon, IsSecureText, keyboardType, placeholder, control, onSubmit, nameController, defaultValue, rules, errors, editable
+const CustomTextInput: React.FC<InputProps> = ({ label, icon, IsSecureText, keyboardType, placeholder, control, onSubmit, nameController, defaultValue, rules, errors, editable, maxLength
 }) => {
   return (
     <View className="flex justify-start w-full mb-4">
@@ -23,7 +23,7 @@ const CustomTextInput: React.FC<InputProps> = ({ label, icon, IsSecureText, keyb
           render={({
             field: { onChange, onBlur, value }
           }) => (
-            <TextInput className="flex flex-1 bg-transparent text-lg text-[#EFE3C895] h-[50px] pl-2" editable={editable}
+            <TextInput autoCapitalize="none" className="flex flex-1 bg-transparent text-lg text-[#EFE3C895] h-[50px] pl-2" editable={editable} maxLength={maxLength}
               onChangeText={onChange} secureTextEntry={IsSecureText} keyboardType={keyboardType} placeholder={placeholder} onBlur={onBlur} value={value} onSubmitEditing={onSubmit}
               placeholderTextColor={"#EFE3C825"}
             />

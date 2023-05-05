@@ -51,6 +51,7 @@ const Login = (props:LoginProps) => {
             keyboardType={"email-address"}
             placeholder="Enter your email"
             editable={true}
+            maxLength={75}
             rules={{
               required: { value: true, message: 'Email is requiered' },
               pattern: {
@@ -72,6 +73,7 @@ const Login = (props:LoginProps) => {
             keyboardType="default"
             placeholder="* * * * * * * *"
             editable={true}
+            maxLength={255}
             rules={{ required: { value: true, message: 'Password is requried' } }}
             errors={errors.password && (
               <Text className="text-error">{errors.password.message}</Text>

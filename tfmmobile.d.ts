@@ -14,7 +14,8 @@ export interface IProps {
     rules?: any;
     defaultValue?:string;
     errors?:any;
-    editable:boolean
+    editable:boolean;
+    maxLength:number
   }
 
   export interface InputDateProps {
@@ -40,8 +41,28 @@ export interface IProps {
     rules?: any;
     defaultValue?:string;
     errors?:any;
-    onValueChange:any;
     itemsMapping:any;
+  }
+
+  export interface InputPostalCodeProps {
+    iconCodigoPostal?: JSX.Element | null;
+    iconProvincia?: JSX.Element | null;
+    iconLocalidad?: JSX.Element | null;
+    control: any;
+    nameControllerCodigoPostal: string;
+    nameControllerProvincia: string;
+    nameControllerLocalidad: string;
+    rules?: any;
+    defaultValueCodigoPostal?:string;
+    defaultValueProvincia?:string;
+    defaultValueLocalidad?:string;
+    errorsCodigoPostal?:any;
+    errorsProvincia?:any;
+    errorsLocalidad:any;
+    editable:boolean;
+    maxLength:number;
+    onSubmit: any;
+    keyboardType?: KeyboardTypeOptions | undefined;
   }
   
   export interface CustomButtonProps {
