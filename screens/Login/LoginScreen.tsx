@@ -8,9 +8,7 @@ import { AtSymbolIcon, LockClosedIcon } from "react-native-heroicons/solid";
 import CustomButton from "../../components/Buttons/CustomButton";
 
 import { useForm } from 'react-hook-form';
-import loginHook from "../../services/hooks/login/useLogin";
-
-import { NavStackParamList } from "../../tfmmobile";
+import loginHook from "../../shared/services/hooks/login/useLogin";
 
 const Login = (props:LoginProps) => {
   const { logFunction } = loginHook();

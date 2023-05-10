@@ -6,12 +6,12 @@ import RegisterPage from '../Register/RegisterScreen';
 import LoadingPage from '../Loading/LoadingScreen';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
-import { LoginContext } from '../../services/hooks/login/contexts/LoginContext';
+import { LoginContext } from '../../shared/services/hooks/login/contexts/LoginContext';
 
 const Stack = createStackNavigator();
 
 const Nav: React.FC = () => {
-    const { login, loading } = useContext(LoginContext);
+    const { login, loading, user, location } = useContext(LoginContext);
 
     const authNavigator = (
         <Stack.Navigator
@@ -67,7 +67,7 @@ const Nav: React.FC = () => {
 
 
         <NavigationContainer>
-            {loading? loadingNavigator : (login ? mainNavigator : authNavigator)}
+            {loading? loadingNavigator : (login ? (mainNavigator) : authNavigator)}
         </NavigationContainer>
     );
 };

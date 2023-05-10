@@ -5,7 +5,7 @@ import KeyboardAvoidWrapper from "../../components/Container/KeyboardAvoidWrappe
 import CustomTextInput from "../../components/InputText/CustomTextInput";
 import { AtSymbolIcon, LockClosedIcon } from "react-native-heroicons/solid";
 import CustomButton from "../../components/Buttons/CustomButton";
-import { RegisterData, useRegister } from '../../services/hooks/register/useRegister';
+import { RegisterData, useRegister } from '../../shared/services/hooks/register/useRegister';
 import CustomDateInput from "../../components/InputDate/CustomDateInput";
 import PostalCodeInput from "../../components/PostalCode/PostalCodeInput";
 import { Picker } from "@react-native-picker/picker";
@@ -17,15 +17,15 @@ const Register = (props: RegisterProps) => {
   const login = () => props.navigation.navigate("Login")
 
   const onSubmit = async (data: RegisterData) => {
-    console.log(data);
-    // try {
-    //   const result = await handleRegistro(data);
-    //   if (result) {
-    //     Alert.alert('Registro exitoso', '¡Bienvenido! Por favor inicia sesión');
-    //   }
-    // } catch (error: any) {
-    //   Alert.alert('Error', error.message);
-    // }
+    try {
+      const result = await handleRegistro(data);
+      if (result) {
+        Alert.alert('Registro exitoso', '¡Bienvenido! Por favor inicia sesión');
+        login();
+      }
+    } catch (error: any) {
+      Alert.alert('Error', error.message);
+    }
   };
 
   return (

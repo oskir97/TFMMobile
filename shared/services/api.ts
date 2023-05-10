@@ -8,10 +8,13 @@ export interface ApiResponse<TResponse> {
 export class Api<TRequest> {
   private axiosInstance: AxiosInstance;
 
-  constructor(private baseURL: string = "https://2cb7-2a0c-5a86-d200-5700-2d1e-55ae-7a17-5aba.ngrok-free.app/api") {
+  constructor(token:string = "", private baseURL: string = "https://2cb7-2a0c-5a86-d200-5700-2d1e-55ae-7a17-5aba.ngrok-free.app/api") {
     this.axiosInstance = axios.create({
       baseURL: this.baseURL,
     });
+    if(token != ""){
+      this.axiosInstance.defaults.headers.common['Authorization'] = token;
+    }
   }
 
   public async get(endpoint: string): Promise<ApiResponse<TRequest>> {

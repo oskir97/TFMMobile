@@ -29,6 +29,8 @@ export const useLocalidades = (CPRO:string) => {
   const [localidades, setLocalidades] = useState<Localidad[]>([]);
   const [localidadSeleccionada, setLocalidadSeleccionada] = useState<string>("");
 
+  console.log(CPRO);
+
   useEffect(() => {
     fetch("https://apiv1.geoapi.es/municipios?CPRO="+CPRO+"&type=JSON&key=28500d51ee87b64d569436cca5c9ddc10023d610932f0bc283f09fa4702cfc86&sandbox=0")
       .then((response) => response.json())

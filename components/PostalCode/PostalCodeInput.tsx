@@ -3,7 +3,7 @@ import { Picker } from '@react-native-picker/picker';
 import React from "react";
 import { InputPostalCodeProps } from "../../tfmmobile";
 import { useForm, Controller } from 'react-hook-form';
-import { useLocalidades, useProvincias } from "../../services/hooks/postalCodes/usePostalCodes";
+import { useLocalidades, useProvincias } from "../../shared/services/hooks/postalCodes/usePostalCodes";
 
 const PostalCodeInput: React.FC<InputPostalCodeProps> = ({ iconCodigoPostal, iconProvincia, iconLocalidad, nameControllerCodigoPostal, nameControllerProvincia, nameControllerLocalidad, control, rules, defaultValueCodigoPostal, defaultValueProvincia, defaultValueLocalidad, errorsCodigoPostal, errorsProvincia, errorsLocalidad, editable, maxLength, onSubmit, keyboardType
 }) => {
@@ -60,13 +60,13 @@ const PostalCodeInput: React.FC<InputPostalCodeProps> = ({ iconCodigoPostal, ico
               <Picker
                 style={{ color: "#EFE3C895" }}
                 selectedValue={value}
-                onValueChange={(itemValue) => {
+                onValueChange={(itemValue, itemIndex) => {
                   onChange(itemValue);
-                  setProvinciaSeleccionada(itemValue);
+                  setProvinciaSeleccionada(provincias[itemIndex-1].CPRO);
                 }}>
                 <Picker.Item label={defaultValueProvincia} value="" />
                 {provincias.sort((a, b) => a.PRO.localeCompare(b.PRO)).map((provincia) => (
-                  <Picker.Item key={provincia.CPRO} label={provincia.PRO} value={provincia.CPRO} />
+                  <Picker.Item key={provincia.CPRO} label={provincia.PRO} value={provincia.PRO} />
                 ))}
               </Picker>
             )}

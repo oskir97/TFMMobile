@@ -3,7 +3,6 @@ import { Picker } from '@react-native-picker/picker';
 import React from "react";
 import { InputPickerProps } from "../../tfmmobile";
 import { useForm, Controller } from 'react-hook-form';
-import { useProvincias } from "../../services/hooks/postalCodes/usePostalCodes";
 
 const CustomPickerInput: React.FC<InputPickerProps> = ({ label, icon, control, onSubmit, nameController, defaultValue, rules, errors, itemsMapping
 }) => {

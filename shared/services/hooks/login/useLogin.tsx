@@ -4,7 +4,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LoginContext } from './contexts/LoginContext'
 
 import { Api, ApiResponse } from '../../api';
-import { LoginContextType } from './contexts/LoginContextType';
 
 export default function useLogin() {
 
@@ -14,12 +13,12 @@ export default function useLogin() {
 
     const api = new Api<any>();
 
-    const logFunction = 
+    const logFunction =
         ({ email, password }: any) => {
             loginFunction(email, password);
         };
 
-    async function loginFunction(email:string, password:string){
+    async function loginFunction(email: string, password: string) {
         setLoading(true);
         const response: ApiResponse<string> = await api.post('/Usuario/Login', { email, password });
         if (!response.error) {
