@@ -15,7 +15,8 @@ export const LoginContext = createContext<LoginContextType>({
   location:undefined,
   setLogin: () => {},
   setLoading: () => {},
-  setUser: () => {}
+  setUser: () => {},
+  logout: () => {},
 });
 
 export const LoginProvider = ({ children }: LoginProviderProps) => {
@@ -25,6 +26,13 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
   const [location, setLocation] = useState<Location.LocationObject>();
   const [localidad, setLocalidad] = useState<string | undefined>();
 
+  const logout = () => {
+    AsyncStorage.removeItem('token');
+    setUser(undefined);
+    setLogin(false);
+    setLocalidad(undefined);
+  };
+
   const loginContextValue: LoginContextType = {
     login,
     loading,
@@ -32,7 +40,8 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
     location,
     setLogin,
     setLoading,
-    setUser
+    setUser,
+    logout
   };
 
   const obtenerLocalidad = async (location:Location.LocationObject) => {

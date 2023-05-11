@@ -1,40 +1,35 @@
-import { View, Text, Dimensions } from "react-native";
-import React from "react";
+import { View, Text, Dimensions, ImageBackground, TextInput } from "react-native";
+import React, { useContext } from "react";
 import MainContainer from "../../components/Container/MainContainer";
 import DashboardCard from "../../components/Cards/DashboardCard";
-import { ArrowLeftIcon,UserIcon,ChartBarIcon,ChartPieIcon,} from "react-native-heroicons/solid";
+import { MagnifyingGlassIcon } from "react-native-heroicons/solid";
+import { LoginContext } from "../../shared/services/hooks/login/contexts/LoginContext";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 
-const Home = () => {
-  const [user, setUser] = React.useState<string | null>("Mark");
+
+interface HomeScreenProps {
+  navigation: any;
+}
+
+const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
+  const { user } = useContext(LoginContext);
   return (
-    <MainContainer>
-      <View className="h-[55px] z-20 mt-8 flex flex-row justify-between items-center px-2">
-        <View className="flex flex-row gap-4 justify-center items-center">
-          <Text className="text-white text-xl">Dashboard</Text>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+      <ScrollView style={{ padding: 20 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
+          <Text className="text-base font-semibold mt-1">Hola, {`${user?.nombre} ${user?.apellidos}`}</Text>
+          <TouchableOpacity onPress={()=>navigation.openDrawer()}>
+          <ImageBackground source={require('../../assets/images/user.png')} style={{ height: 35, width: 35 }} imageStyle={{ borderRadius: 25 }}></ImageBackground>
+          </TouchableOpacity>
         </View>
-        <View className="w-[40px] h-[40px] bg-[#704341] justify-center items-center rounded-full">
-          <UserIcon color="white" />
+        <View style={{flexDirection:'row', borderColor:'#C6C6C6', borderWidth:1, borderRadius:8, paddingHorizontal: 10, paddingVertical: 8}}>
+          <MagnifyingGlassIcon size={22} color={"#C6C6C6"} style={{marginRight:5, marginTop:4}} />
+          <TextInput placeholder="Buscar" />
         </View>
-      </View>
-      <View className="w-full bg-[#0C080C] h-[30%] rounded-[20px] absolute" />
-      <Text className="text-white mt-[20px] mb-[20px] text-2xl text-bold ml-[20px]">
-        Hello, {user}
-      </Text>
-      <DashboardCard
-        cardTitle="Balance"
-        totalAmount={"$57,000.00"}
-        dateText="07-08-2022"
-        icon={<ChartBarIcon color="#008D96" size={60} />}
-      />
-
-      <DashboardCard
-        cardTitle="Total Savings"
-        totalAmount={"$20,050.02"}
-        dateText="07-08-2022"
-        icon={<ChartPieIcon color="#008D96" size={60} />}
-      />
-    </MainContainer>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
-export default Home;
+export default HomeScreen;

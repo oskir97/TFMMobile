@@ -10,7 +10,7 @@ import CustomButton from "../../components/Buttons/CustomButton";
 import { useForm } from 'react-hook-form';
 import loginHook from "../../shared/services/hooks/login/useLogin";
 
-const Login = (props:LoginProps) => {
+const LoginScreen = (props:LoginProps) => {
   const { logFunction } = loginHook();
 
   const { control, handleSubmit, formState: { errors } } = useForm<LoginData>({
@@ -105,4 +105,4 @@ const Login = (props:LoginProps) => {
   );
 };
 
-export default Login;
+export default LoginScreen;

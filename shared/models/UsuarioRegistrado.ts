@@ -1,19 +1,19 @@
 import { Rol } from "./Rol";
 
 export interface UsuarioRegistrado {
-    Nombre: string;
-    Email: string;
-    Apellidos: string;
-    Domicilio: string;
-    Telefono: string;
-    Telefonoalternativo: string;
-    Fechanacimiento: Date | null;
-    Alta: Date | null;
-    Ubicacionactual: string;
-    Codigopostal: string;
-    Localidad: string;
-    Provincia: string;
-    Idusuario: number;
-    Baja: Date | null;
-    ObtenerRol: Rol;
+    nombre: string;
+    email: string;
+    apellidos: string;
+    domicilio: string;
+    telefono: string;
+    telefonoalternativo: string;
+    fechanacimiento: Date | null;
+    alta: Date | null;
+    ubicacionactual: string;
+    codigopostal: string;
+    localidad: string;
+    provincia: string;
+    idusuario: number;
+    baja: Date | null;
+    obtenerRol: Rol;
   }

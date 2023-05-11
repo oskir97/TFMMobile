@@ -9,4 +9,5 @@ export type LoginContextType = {
     setLogin:(login: boolean) => void;
     setLoading:(loading: boolean) => void;
     setUser:(user: UsuarioRegistrado) => void;
+    logout:() => void;
   };

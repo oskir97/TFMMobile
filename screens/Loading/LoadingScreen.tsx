@@ -3,7 +3,7 @@ import React, {useEffect} from "react";
 import MainContainer from "../../components/Container/MainContainer";
 import KeyboardAvoidWrapper from "../../components/Container/KeyboardAvoidWrapper";
 
-const Loading = (props:LoginProps) => {
+const LoadingScreen = (props:LoginProps) => {
 
   return (
     <MainContainer>
@@ -22,4 +22,4 @@ const Loading = (props:LoginProps) => {
   );
 };
 
-export default Loading;
+export default LoadingScreen;

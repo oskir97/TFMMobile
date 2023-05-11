@@ -10,7 +10,7 @@ import CustomDateInput from "../../components/InputDate/CustomDateInput";
 import PostalCodeInput from "../../components/PostalCode/PostalCodeInput";
 import { Picker } from "@react-native-picker/picker";
 
-const Register = (props: RegisterProps) => {
+const RegisterScreen = (props: RegisterProps) => {
 
   const { control, handleSubmit, formState, handleRegistro } = useRegister();
 
@@ -252,4 +252,4 @@ const Register = (props: RegisterProps) => {
   );
 };
 
-export default Register;
+export default RegisterScreen;
