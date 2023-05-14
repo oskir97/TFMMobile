@@ -3,9 +3,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import React, { useEffect, useState } from "react";
 import { InputDateProps } from "../../tfmmobile";
 import { Controller, useController } from 'react-hook-form';
-const CustomDateInput: React.FC<InputDateProps> = ({ label, icon, mode, placeholder, control, onSubmit, nameController, defaultValue, rules, errors
+const CustomDateInput: React.FC<InputDateProps> = ({ label, icon, mode, placeholder, control, onSubmit, nameController, defaultValue, rules, errors, maxDate, minDate
 }) => {
-  const maxDate: Date = new Date(Date.now() - 18 * 365 * 24 * 60 * 60 * 1000);
 
   const [showPicker, setShowPicker] = useState(false);
 
@@ -32,7 +31,7 @@ const CustomDateInput: React.FC<InputDateProps> = ({ label, icon, mode, placehol
           render={({ field}) => (
             <>
               {showPicker && (
-                <DateTimePicker className="flex flex-1 bg-transparent text-lg text-[#EFE3C895] h-[50px] pl-2" mode={mode} display={'spinner'} maximumDate={maxDate}
+                <DateTimePicker className="flex flex-1 bg-transparent text-lg text-[#EFE3C895] h-[50px] pl-2" mode={mode} display={'spinner'} maximumDate={maxDate} minimumDate={minDate}
                 value={field.value} onChange={({type}, selectedDate) => {
                   if(type == "set"){
                     field.onChange(selectedDate || maxDate);

@@ -5,9 +5,13 @@ export type LoginContextType = {
     login:boolean;
     loading:boolean;
     location:Location.LocationObject | undefined;
+    localidad:string | undefined;
     user:UsuarioRegistrado | undefined;
     setLogin:(login: boolean) => void;
+    setLocation:(location: Location.LocationObject | undefined) => void;
+    setLocalidad:(localidad: string) => void;
     setLoading:(loading: boolean) => void;
     setUser:(user: UsuarioRegistrado) => void;
     logout:() => void;
+    loginFunction:(email: string, password: string) => void;
   };

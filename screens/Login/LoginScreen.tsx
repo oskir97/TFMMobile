@@ -60,7 +60,6 @@ const LoginScreen = (props:LoginProps) => {
             errors={errors.email && (
               <Text className="text-error">{errors.email.message}</Text>
             )}
-            onSubmit={onSubmit}
           />
           <CustomTextInput
             nameController="password"
@@ -76,7 +75,6 @@ const LoginScreen = (props:LoginProps) => {
             errors={errors.password && (
               <Text className="text-error">{errors.password.message}</Text>
             )}
-            onSubmit={onSubmit}
           />
           <CustomButton
             onPress={onSubmit}

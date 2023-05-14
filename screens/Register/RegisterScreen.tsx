@@ -195,6 +195,7 @@ const RegisterScreen = (props: RegisterProps) => {
             label="Fecha de nacimiento"
             placeholder="Introduce tu fecha de nacimiento"
             mode="date"
+            maxDate={new Date(Date.now() - 18 * 365 * 24 * 60 * 60 * 1000)}
             rules={{
               required: { value: true },
               pattern: {

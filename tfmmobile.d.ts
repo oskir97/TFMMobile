@@ -1,3 +1,5 @@
+import { Deporte } from "./shared/models/Deporte";
+
 export interface IProps {
     children: React.ReactNode;
   }
@@ -9,7 +11,7 @@ export interface IProps {
     keyboardType?: KeyboardTypeOptions | undefined;
     placeholder?: string | undefined;
     control: any;
-    onSubmit: any;
+    onSubmit?: any;
     nameController: string;
     rules?: any;
     defaultValue?:string;
@@ -23,12 +25,14 @@ export interface IProps {
     icon?: JSX.Element | null;
     placeholder?: string | undefined;
     control: any;
-    onSubmit: any;
+    onSubmit?: any;
     nameController: string;
     rules?: any;
     defaultValue?:string;
     errors?:any;
     mode:AndroidMode;
+    maxDate?:Date|undefined;
+    minDate?:Date|undefined;
   }
 
   export interface InputPickerProps {
@@ -36,7 +40,7 @@ export interface IProps {
     icon?: JSX.Element | null;
     placeholder?: string | undefined;
     control: any;
-    onSubmit: any;
+    onSubmit?: any;
     nameController: string;
     rules?: any;
     defaultValue?:string;
@@ -61,7 +65,7 @@ export interface IProps {
     errorsLocalidad:any;
     editable:boolean;
     maxLength:number;
-    onSubmit: any;
+    onSubmit?: any;
     keyboardType?: KeyboardTypeOptions | undefined;
   }
   
@@ -76,4 +80,15 @@ export interface IProps {
     Login: undefined;
     Register: undefined;
     Home: undefined;
+  }
+
+  export type FilterProps = {
+    visible:boolean,
+    setVisible:any,
+    transparent:boolean,
+    animationType:any,
+    title:string,
+    onConfirm:any,
+    onCancel: any,
+    localidad:string | undefined
   }
