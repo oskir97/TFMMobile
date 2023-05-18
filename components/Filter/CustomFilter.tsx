@@ -11,6 +11,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from "react-hook-form";
 import { Deporte } from "../../shared/models/Deporte";
 import CustomDateInput from "../InputDate/CustomDateInput";
+import CustomInputMaps from "../InputMapsText/CustomInputMaps";
 
 export enum Sort {
     Distancia,
@@ -19,37 +20,35 @@ export enum Sort {
 }
 
 export type FilterData = {
-    localidad: string;
     fecha: Date | undefined;
-    deporte: Deporte | null;
-    sort: Sort | null;
+    deporte: Deporte | undefined;
+    sort: Sort | undefined;
 };
 
-const schema = yup.object().shape({
-    localidad: yup.string().required('La localidad es requerida'),
-    fecha: yup.date().required('La fecha es requerida').min(
-        new Date(Date.now()),
-        'Debes ser mayor o igual a hoy'
-      ).typeError('Formato de fecha inválido'),
-});
+const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, title, transparent, animationType, filter }) => {
 
-const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, title, transparent, animationType, localidad }) => {
+    const [selectedDeporte, setSelectedDeporte] = useState<Deporte | undefined>(filter?.deporte);
+    const [selectedSort, setSort] = useState<Sort | undefined>(filter?.sort);
+    const [fecha, setFecha] = useState<Date |undefined>(filter?.fecha);
 
-    const [selectedDeporte, setSelectedDeporte] = useState<Deporte | null>(null);
-    const [selectedSort, setSort] = useState<Sort | null>(null);
-
-    const { control, setValue, handleSubmit, formState } = useForm<FilterData>({
-        resolver: yupResolver(schema),
+    const { control, handleSubmit, formState } = useForm<FilterData>({
         defaultValues: {
-            localidad: localidad,
-            fecha: new Date(Date.now())
+            fecha: fecha
         }
     });
 
     const onSubmit = async (data: FilterData) => {
+        setFecha(data.fecha);
         data.sort = selectedSort
         data.deporte = selectedDeporte
         onConfirm(data);
+    };
+
+    const reset = () => {
+        setFecha(new Date());
+        setSelectedDeporte(undefined);
+        setSort(undefined);
+        onConfirm({fecha:fecha, deporte:selectedDeporte, sort:selectedSort});
     };
 
     return (
@@ -57,34 +56,16 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
             <Modal transparent={transparent} visible={visible} animationType={animationType}>
                 <View style={styles.container}>
                     <View style={styles.modal}>
-                        <ScrollView style={{ padding: 20 }}>
+                        <View style={{ padding: 20 }}>
                             <Text style={styles.title}>{title}</Text>
-                            <CustomTextInput
-                                nameController="localidad"
-                                control={control}
-                                label="¿Dónde te gustaría jugar?"
-                                placeholder="Introduce la localidad"
-                                editable={true}
-                                maxLength={50}
-                                rules={{
-                                    required: { value: true },
-                                    pattern: {
-                                        value: true
-                                    }
-                                }}
-                                errors={formState.errors.localidad && (
-                                    <Text className="text-error">{formState.errors.localidad.message}</Text>
-                                )}
-                                onSubmit={handleSubmit(onSubmit)}
-                            />
                             <Text className="font-semibold">¿Qué deporte te gustaría jugar?</Text>
-                            <SportTypes onDeporteSelected={setSelectedDeporte} />
+                            <SportTypes setSelectedDeporte={setSelectedDeporte} selectedDeporte={selectedDeporte} />
                             <CustomDateInput
                                 nameController="fecha"
                                 control={control}
                                 label="¿Qué fecha?"
                                 placeholder="Introduce la fecha"
-                                minDate={new Date(Date.now())}
+                                minDate={new Date()}
                                 mode="date"
                                 rules={{
                                     required: { value: true },
@@ -115,7 +96,7 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
                                     onPress={() => setSort(Sort.Distancia)}
                                 >
                                     <Text style={{ marginRight: 6, color: selectedSort == Sort.Distancia ? 'white' : 'black' }}>Distancia</Text>
-                                    <Ionicons name="filter" style={{ marginRight: 6, color: selectedSort == Sort.Distancia ? 'white' : 'black' }} size={20} color="black" />
+                                    <Ionicons name="filter" style={{ marginRight: 6, color: selectedSort == Sort.Distancia ? 'white' : 'black' }} size={20} />
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     style={{
@@ -133,7 +114,7 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
                                     onPress={() => setSort(Sort.Valoracion)}
                                 >
                                     <Text style={{ marginRight: 6, color: selectedSort == Sort.Valoracion ? 'white' : 'black' }}>Valoración</Text>
-                                    <Ionicons name="filter" style={{ marginRight: 6, color: selectedSort == Sort.Valoracion ? 'white' : 'black' }} size={20} color="black" />
+                                    <Ionicons name="filter" style={{ marginRight: 6, color: selectedSort == Sort.Valoracion ? 'white' : 'black' }} size={20} />
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     style={{
@@ -151,13 +132,27 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
                                     onPress={() => setSort(Sort.Precio)}
                                 >
                                     <Text style={{ marginRight: 6, color: selectedSort == Sort.Precio ? 'white' : 'black' }}>Precio</Text>
-                                    <Ionicons name="filter" style={{ marginRight: 6, color: selectedSort == Sort.Precio ? 'white' : 'black' }} size={20} color="black" />
+                                    <Ionicons name="filter" style={{ marginRight: 6, color: selectedSort == Sort.Precio ? 'white' : 'black' }} size={20} />
                                 </TouchableOpacity>
 
                             </ScrollView>
+                            <View>
+                                <Text className="font-semibold mt-2 mb-4">¿Quieres reiniciar la búsqueda?</Text>
+                                <View style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'center'
+                                }}>
+                                    <TouchableOpacity style={styles.buttomReset} onPress={()=>reset()}>
+                                        <Text style={{
+                                            color: 'black',
+                                            fontWeight: 'bold',
+                                        }}>Resetear filtros</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
 
                             <View style={styles.buttoms}>
-                                <TouchableOpacity style={styles.buttomConfirm} onPress={() => onSubmit}>
+                                <TouchableOpacity style={styles.buttomConfirm} onPress={handleSubmit(onSubmit)}>
                                     <Text style={styles.buttomText}>Filtrar</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={styles.buttomCancel} onPress={onCancel}>
@@ -167,7 +162,7 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
                             <TouchableOpacity style={styles.cancel} onPress={onCancel}>
                                 <XCircleIcon size={24} color="#999" />
                             </TouchableOpacity>
-                        </ScrollView>
+                        </View>
 
                     </View>
                 </View>
@@ -192,13 +187,25 @@ const styles = StyleSheet.create({
     title: {
         fontWeight: 'bold',
         fontSize: 20,
-        marginBottom: 4,
+        marginBottom: 20,
         textAlign: 'left'
     },
     buttoms: {
         flexDirection: 'row',
         justifyContent: 'flex-end',
         marginTop: 20
+    },
+    buttomReset: {
+        marginHorizontal: 10,
+        flexDirection: "row",
+        alignItems: "center",
+        borderWidth: 1,
+        borderColor: "black",
+        padding: 10,
+        width: 160,
+        justifyContent: "center",
+        backgroundColor: 'white',
+        borderRadius: 4,
     },
     buttomConfirm: {
         marginLeft: 8,

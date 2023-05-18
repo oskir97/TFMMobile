@@ -86,16 +86,23 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
     try {
       if (location != null && location != undefined) {
         setLocation(location);
+        const apiKey = 'AIzaSyDB2bGI_qo-wtNjBZ690FvrcVeQK4kS7Jg';
         const lat = location.coords.latitude;
         const lon = location.coords.longitude;
-        const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`;
+        const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=${apiKey}`;
 
         const response = await fetch(url);
         const data = await response.json();
 
-        if (data.address != null && data.address.town != null) {
-          const town = data.address.town;
-          return town.split("/")[0];
+        const results = data.results;
+
+        if (results.length > 0) {
+          const addressComponents = results[0].address_components;
+          const ciudadComponent = addressComponents.find((component: any) =>
+            component.types.includes('locality')
+          );
+          const ciudad = ciudadComponent ? ciudadComponent.long_name : null;
+          return ciudad;
         } else {
           return undefined;
         }
@@ -107,6 +114,7 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
       return undefined;
     }
   };
+  
   async function logUser() {
     await AsyncStorage.getItem('token').then((value) => {
       if (value !== null) {

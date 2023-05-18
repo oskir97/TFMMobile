@@ -1,3 +1,4 @@
+import { FilterData } from "./components/Filter/CustomFilter";
 import { Deporte } from "./shared/models/Deporte";
 
 export interface IProps {
@@ -90,5 +91,15 @@ export interface IProps {
     title:string,
     onConfirm:any,
     onCancel: any,
-    localidad:string | undefined
+    filter:FilterData |undefined
+  }
+
+  export type CustomInputMapsProps = {
+    visible:boolean,
+    setVisible:any,
+    animationType:any,
+    title:string,
+    onConfirm:any,
+    onCancel: any,
+    lastlocation:string | undefined
   }

@@ -12,7 +12,6 @@ export const useDeportes = () => {
         const api = new Api<Deporte[]>(value);
         api.get('/Deporte/Listar').then((deportes) => {
           if (!deportes.error) {
-            console.log(deportes.data);
             setDeportes(deportes.data);
         } else {
             alert("Email or Password incorrect");

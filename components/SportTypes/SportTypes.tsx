@@ -6,23 +6,22 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Deporte } from '../../shared/models/Deporte';
 
 export interface SportProps {
-    onDeporteSelected: (deporte: Deporte | null) => void;
+    selectedDeporte:any;
+    setSelectedDeporte:(deporte: Deporte |undefined) => void;
   }
 
-  const SportTypes: React.FC<SportProps> = ({ onDeporteSelected }) => {
+  const SportTypes: React.FC<SportProps> = ({ setSelectedDeporte, selectedDeporte }) => {
     const { deportes } = useDeportes();
-    const [selectedDeporte, setSelectedDeporte] = useState<Deporte | null>(null);
 
-    const handleDeporteSelected = (deporte: Deporte | null) => {
+    const handleDeporteSelected = (deporte: Deporte | undefined) => {
         setSelectedDeporte(deporte);
-        onDeporteSelected(deporte);
     };
 
     return (
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <TouchableOpacity
                     style={{ margin: 10, alignItems: 'center', justifyContent: 'center' }}
-                    onPress={() => handleDeporteSelected(null)}
+                    onPress={() => handleDeporteSelected(undefined)}
                 >
                     <MaterialIcons name="sports" color={selectedDeporte == null  || selectedDeporte == undefined ? '#aa18ea' : "#333"} size={60} />
                     <Text style={{ marginTop: 6, textAlign: 'center' }}>Todos</Text>
@@ -33,7 +32,7 @@ export interface SportProps {
                         style={{ margin: 10, alignItems: 'center', justifyContent: 'center' }}
                         onPress={() => handleDeporteSelected(item)}
                     >
-                        <Ionicons name={item.icono} color={selectedDeporte == item ? '#aa18ea' : "#333"} size={60} />
+                        <Ionicons name={item.icono} color={selectedDeporte != null && selectedDeporte.nombre == item.nombre ? '#aa18ea' : "#333"} size={60} />
                         <Text style={{ marginTop: 6, textAlign: 'center' }}>{item.traduccionesDeporte[0].nombre}</Text>
                     </TouchableOpacity>
                 ))}
