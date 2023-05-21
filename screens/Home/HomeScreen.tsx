@@ -7,7 +7,7 @@ import { LoginContext } from "../../shared/services/hooks/login/contexts/LoginCo
 import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import CustomFilter, { FilterData } from "../../components/Filter/CustomFilter";
-import CustomInputMaps from "../../components/InputMapsText/CustomInputMaps";
+import CustomInputModalMaps from "../../components/Modals/CustomInputModalMaps";
 
 
 interface HomeScreenProps {
@@ -52,7 +52,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             <TextInput placeholder="Buscar" style={{ flex: 1 }} />
           </View>
           <TouchableOpacity style={{ flex: 0.11 }} onPress={() => setFilterOpen(true)}>
-            <Ionicons name="filter" size={30} color={'#aa18ea'} style={{ marginLeft: 6, marginTop: 4 }} />
+            <Ionicons name="filter" size={30} color={'#04D6C8'} style={{ marginLeft: 6, marginTop: 4 }} />
           </TouchableOpacity>
         </View>
         <View style={{flexDirection:'row'}}>
@@ -64,14 +64,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           </View>
           <View style={{ flex: 0.10 }}>
             <TouchableOpacity style={{ marginLeft: 5, marginTop: 10 }} onPress={() => setLocationOpen(true)}>
-              <PencilSquareIcon size={30} color={"#aa18ea"} style={{ marginRight: 5 }} />
+              <PencilSquareIcon size={30} color={"#04D6C8"} style={{ marginRight: 5 }} />
             </TouchableOpacity>
           </View>
         </View>
 
       </ScrollView>
       <CustomFilter visible={filterOpen} setVisible={setFilterOpen} transparent={true} animationType={"fade"} title="Filtro de pistas" filter={filter} onConfirm={handleFilters} onCancel={() => setFilterOpen(false)} />
-      <CustomInputMaps visible={locationOpen} setVisible={setLocationOpen} animationType={"fade"} title="Modificar ubicación de las pistas" lastlocation={localidad} onConfirm={handleLocation} onCancel={() => setLocationOpen(false)} />
+      <CustomInputModalMaps login={false} visible={locationOpen} setVisible={setLocationOpen} animationType={"fade"} title="Modificar ubicación de las pistas" lastlocation={localidad} onConfirm={handleLocation} onCancel={() => setLocationOpen(false)} />
     </SafeAreaView>
   );
 };

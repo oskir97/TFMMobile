@@ -11,7 +11,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from "react-hook-form";
 import { Deporte } from "../../shared/models/Deporte";
 import CustomDateInput from "../InputDate/CustomDateInput";
-import CustomInputMaps from "../InputMapsText/CustomInputMaps";
+import CustomInputMaps from "../Modals/CustomInputModalMaps";
 
 export enum Sort {
     Distancia,
@@ -91,7 +91,7 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
                                         borderRadius: 20,
                                         width: 120,
                                         justifyContent: "center",
-                                        backgroundColor: selectedSort == Sort.Distancia ? '#aa18ea' : 'white',
+                                        backgroundColor: selectedSort == Sort.Distancia ? '#04D6C8' : 'white',
                                     }}
                                     onPress={() => setSort(Sort.Distancia)}
                                 >
@@ -109,7 +109,7 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
                                         borderRadius: 20,
                                         width: 120,
                                         justifyContent: "center",
-                                        backgroundColor: selectedSort == Sort.Valoracion ? '#aa18ea' : 'white',
+                                        backgroundColor: selectedSort == Sort.Valoracion ? '#04D6C8' : 'white',
                                     }}
                                     onPress={() => setSort(Sort.Valoracion)}
                                 >
@@ -127,7 +127,7 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
                                         borderRadius: 20,
                                         width: 120,
                                         justifyContent: "center",
-                                        backgroundColor: selectedSort == Sort.Precio ? '#aa18ea' : 'white',
+                                        backgroundColor: selectedSort == Sort.Precio ? '#04D6C8' : 'white',
                                     }}
                                     onPress={() => setSort(Sort.Precio)}
                                 >
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
         marginLeft: 8,
         paddingHorizontal: 16,
         paddingVertical: 8,
-        backgroundColor: '#aa18ea',
+        backgroundColor: '#04D6C8',
         borderRadius: 4,
     },
     buttomCancel: {

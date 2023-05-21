@@ -8,9 +8,14 @@ import LoadingPage from '../Loading/LoadingScreen';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { LoginContext } from '../../shared/services/hooks/login/contexts/LoginContext';
-import { HomeIcon, CalendarDaysIcon, AdjustmentsHorizontalIcon, ChatBubbleLeftEllipsisIcon, UserGroupIcon, ClockIcon} from "react-native-heroicons/solid";
+import { HomeIcon, CalendarDaysIcon, AdjustmentsHorizontalIcon, ChatBubbleLeftEllipsisIcon, UserGroupIcon, ClockIcon } from "react-native-heroicons/solid";
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import CustomDrawer from '../../components/Drawer/CustomDrawer';
+import { ProgressBar, MD3Colors, Provider as PaperProvider } from 'react-native-paper';
+
+import Ubicacion from "../FilterWizard/steps/UbicacionScreen";
+import Deporte from "../FilterWizard/steps/DeporteScreen";
+import Fecha from "../FilterWizard/steps/FechaScreen";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -42,41 +47,41 @@ const Nav: React.FC = () => {
         <Drawer.Navigator drawerContent={props => <CustomDrawer {...props} />}
             screenOptions={{
                 headerShown: false,
-                drawerActiveBackgroundColor: '#aa18ea',
+                drawerActiveBackgroundColor: '#04D6C8',
                 drawerActiveTintColor: '#fff',
                 drawerInactiveTintColor: '#333',
-                drawerLabelStyle: {marginLeft: -25, fontSize: 15}
+                drawerLabelStyle: { marginLeft: -25, fontSize: 15 }
             }}>
             <Drawer.Screen name="Inicio" component={HomePage} options={{
-                drawerIcon:({color})=>(
+                drawerIcon: ({ color }) => (
                     <HomeIcon size={22} color={color} />
                 )
-            }}/>
-            <Drawer.Screen name="Reservas" component={HomePage}options={{
-                drawerIcon:({color})=>(
+            }} />
+            <Drawer.Screen name="Reservas" component={HomePage} options={{
+                drawerIcon: ({ color }) => (
                     <CalendarDaysIcon size={22} color={color} />
                 )
-            }}/>
-            <Drawer.Screen name="Partidos" component={HomePage}options={{
-                drawerIcon:({color})=>(
+            }} />
+            <Drawer.Screen name="Partidos" component={HomePage} options={{
+                drawerIcon: ({ color }) => (
                     <UserGroupIcon size={22} color={color} />
                 )
-            }}/>
-            <Drawer.Screen name="Eventos" component={HomePage}options={{
-                drawerIcon:({color})=>(
+            }} />
+            <Drawer.Screen name="Eventos" component={HomePage} options={{
+                drawerIcon: ({ color }) => (
                     <ClockIcon size={22} color={color} />
                 )
-            }}/>
-            <Drawer.Screen name="Notificaciones" component={HomePage}options={{
-                drawerIcon:({color})=>(
+            }} />
+            <Drawer.Screen name="Notificaciones" component={HomePage} options={{
+                drawerIcon: ({ color }) => (
                     <ChatBubbleLeftEllipsisIcon size={22} color={color} />
                 )
-            }}/>
-            <Drawer.Screen name="Ajustes" component={HomePage}options={{
-                drawerIcon:({color})=>(
+            }} />
+            <Drawer.Screen name="Ajustes" component={HomePage} options={{
+                drawerIcon: ({ color }) => (
                     <AdjustmentsHorizontalIcon size={22} color={color} />
                 )
-            }}/>
+            }} />
         </Drawer.Navigator>
     );
 
@@ -95,12 +100,22 @@ const Nav: React.FC = () => {
         </Stack.Navigator>
     );
 
+    const filterStepsNavigator = (
+
+        <Stack.Navigator initialRouteName="Ubicacion">
+            <Stack.Screen name="Ubicación" component={Ubicacion} />
+            <Stack.Screen name="Deporte" component={Deporte} />
+            <Stack.Screen name="Fecha" component={Fecha} />
+        </Stack.Navigator>
+    );
+
     return (
 
-
-        <NavigationContainer>
-            {loading ? loadingNavigator : (login ? (mainNavigator) : authNavigator)}
-        </NavigationContainer>
+        <PaperProvider>
+            <NavigationContainer>
+                {loading ? loadingNavigator : (login ? (filterStepsNavigator) : authNavigator)}
+            </NavigationContainer>
+        </PaperProvider>
     );
 };
 

@@ -12,10 +12,11 @@ import { useForm } from "react-hook-form";
 import { Deporte } from "../../shared/models/Deporte";
 import CustomDateInput from "../InputDate/CustomDateInput";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import { Ubication } from "../../shared/models/Ubication";
 
-const CustomInputMaps: React.FC<CustomInputMapsProps> = ({ visible, onConfirm, onCancel, title, animationType, lastlocation }) => {
+const CustomInputModalMaps: React.FC<CustomInputMapsProps> = ({ visible, onConfirm, onCancel, title, animationType, lastlocation, login }) => {
 
-  const [localidad, setLocalidad] = useState<string | undefined>(lastlocation);
+  const [location, setLocation] = useState<Ubication | null>(lastlocation);
 
   const [modalHeight, setModalHeight] = useState(0);
 
@@ -26,7 +27,11 @@ const CustomInputMaps: React.FC<CustomInputMapsProps> = ({ visible, onConfirm, o
   }, []);
 
   const onSubmit = () => {
-    onConfirm(localidad);
+    console.log("loc");
+    const loc = location;
+    console.log(loc);
+    setLocation(null);
+    onConfirm(loc);
   };
 
   return (
@@ -34,11 +39,19 @@ const CustomInputMaps: React.FC<CustomInputMapsProps> = ({ visible, onConfirm, o
       <Modal transparent={false} visible={visible} animationType={animationType}>
         <View style={styles.container}>
           <View style={styles.modal}>
-            <View style={{ padding: 20, height:modalHeight }}>
+            <View style={{ padding: 20, height: modalHeight }}>
               <GooglePlacesAutocomplete keyboardShouldPersistTaps="always"
+                fetchDetails
                 placeholder="Buscar dirección"
+                textInputProps={{
+                  autoFocus: true,
+                }}
                 onPress={(data, details = null) => {
-                  setLocalidad(data.description);
+                  const provincia = details?.address_components.find(component => component.types.includes('administrative_area_level_2'));
+                  const localidad = details?.address_components.find(component => component.types.includes('locality'));
+                  const domicilio = details?.address_components.find(component => component.types.includes('route'));
+                  const codigoPostal = details?.address_components.find(component => component.types.includes('postal_code'));
+                  setLocation({ provincia: provincia?.long_name, localidad: localidad?.long_name, domicilio: domicilio?.long_name, codigoPostal: codigoPostal?.long_name });
                 }}
                 query={{
                   key: 'AIzaSyDB2bGI_qo-wtNjBZ690FvrcVeQK4kS7Jg',
@@ -51,22 +64,22 @@ const CustomInputMaps: React.FC<CustomInputMapsProps> = ({ visible, onConfirm, o
                   marginLeft: 8,
                   paddingHorizontal: 16,
                   paddingVertical: 8,
-                  backgroundColor: localidad?'#aa18ea':'#CCCCCC',
+                  backgroundColor: location != undefined && location.localidad != undefined && location.localidad != "" ? '#04D6C8' : '#CCCCCC',
                   borderRadius: 4,
-                }} disabled={!localidad} onPress={()=> onSubmit()}>
+                }} disabled={!(location != undefined && location.localidad != undefined && location.localidad != "")} onPress={() => onSubmit()}>
                   <Text style={styles.buttomText}>Actualizar</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={{
                   marginLeft: 8,
                   paddingHorizontal: 16,
                   paddingVertical: 8,
-                  backgroundColor: lastlocation?'#999':'#CCCCCC',
+                  backgroundColor: lastlocation != undefined && lastlocation.localidad != undefined && lastlocation.localidad != "" ? '#999' : '#CCCCCC',
                   borderRadius: 4,
-                }} disabled={!lastlocation} onPress={onCancel}>
+                }} disabled={lastlocation != undefined && lastlocation.localidad != undefined && lastlocation.localidad != "" && !login} onPress={() => { setLocation(null); onCancel(); }}>
                   <Text style={styles.buttomText}>Cancelar</Text>
                 </TouchableOpacity>
               </View>
-              <TouchableOpacity style={styles.cancel} onPress={onCancel}>
+              <TouchableOpacity style={styles.cancel} onPress={() => { setLocation(null); onCancel(); }}>
                 <XCircleIcon size={24} color="#999" />
               </TouchableOpacity>
             </View>
@@ -125,4 +138,4 @@ const styles = StyleSheet.create({
     right: 8,
   },
 });
-export default CustomInputMaps;
+export default CustomInputModalMaps;

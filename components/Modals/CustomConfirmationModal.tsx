@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     paddingHorizontal: 16,
     paddingVertical: 8,
-    backgroundColor: '#aa18ea',
+    backgroundColor: '#04D6C8',
     borderRadius: 4,
   },
   buttomCancel: {

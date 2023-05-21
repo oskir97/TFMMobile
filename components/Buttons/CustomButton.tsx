@@ -1,19 +1,54 @@
-import { View, Text, Pressable } from "react-native";
-import React from "react";
+import { Text,TouchableOpacity, StyleSheet, View  } from "react-native";
+import React, { useState } from "react";
 import { CustomButtonProps } from "../../tfmmobile";
 
 const CustomButton: React.FC<CustomButtonProps> = ({
   onPress,
-  buttonClassNames,
-  textClassNames,
   buttonText,
+  colorButtom,
+  colorText,
+  colorButtomHover,
+  colorTextHover
 }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handlePressIn = () => {
+    setIsHovered(true);
+  };
+
+  const handlePressOut = () => {
+    setIsHovered(false);
+  };
+  
+  const styles = StyleSheet.create({
+    button: {backgroundColor:colorButtom},
+    buttonHovered: {
+      backgroundColor:colorButtomHover
+    },
+    buttonText: {color:colorText},
+    buttonTextHovered: {color:colorTextHover},
+  });
+
+  const buttonStyle = isHovered ? styles.buttonHovered : styles.button;
+  const textStyle = isHovered ? styles.buttonTextHovered : styles.buttonText;
+  
+
   return (
-    <Pressable className={`${buttonClassNames}`} onPress={onPress}>
-      <Text className={`${textClassNames}`}>
+    <View style={{marginLeft:8,marginRight:8}}>
+      <TouchableOpacity
+      activeOpacity={.6}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      style={buttonStyle}
+      className='w-full rounded-md p-3 bg-transparent flex justify-center items-center mt-3 border-[2px] border-[#106F69] border-solid'
+      onPress={onPress}
+    >
+      <Text style={textStyle} className='text-[18px] font-semibold'>
         {buttonText}
       </Text>
-    </Pressable>
+    </TouchableOpacity>
+    </View>
   );
 };
+
 export default CustomButton;

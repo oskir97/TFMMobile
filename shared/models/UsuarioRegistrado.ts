@@ -5,6 +5,7 @@ export interface UsuarioRegistrado {
     email: string;
     apellidos: string;
     domicilio: string;
+    numero:string;
     telefono: string;
     telefonoalternativo: string;
     fechanacimiento: Date | null;

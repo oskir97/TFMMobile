@@ -1,5 +1,6 @@
-import { View, Text, TextInput, Pressable, Platform } from "react-native";
+import { View, Text, Pressable, Platform, StyleSheet } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { TextInput } from "react-native-paper";
 import React, { useEffect, useState } from "react";
 import { InputDateProps } from "../../tfmmobile";
 import { Controller, useController } from 'react-hook-form';
@@ -13,16 +14,7 @@ const CustomDateInput: React.FC<InputDateProps> = ({ label, icon, mode, placehol
   };
 
   return (
-    <View className="flex justify-start w-full mb-4">
-      {label && (
-        <Text className="text-[#EFE3C8] mb-2 text-[13px]">{label}</Text>
-      )}
-      <View className="w-full bg-[#171017] border-[#EFE3C850] border-[1px] rounded-md h-[57px] p-1 flex justify-center items-center flex-row ">
-        {icon && (
-          <View className="flex items-center justify-center h-[38px] w-[38px]">
-            {icon}
-          </View>
-        )}
+    <View style={styles.formEntry}>
         <Controller
           control={control}
           name={nameController}
@@ -46,7 +38,7 @@ const CustomDateInput: React.FC<InputDateProps> = ({ label, icon, mode, placehol
               )}
               {!showPicker && (
                 <Pressable onPress={toggleDatepicker}>
-                <TextInput className="flex flex-1 bg-transparent text-lg text-[#EFE3C895] h-[50px] pl-2"
+                <TextInput mode="outlined" label={label}
                   placeholder={placeholder} value={field.value.toLocaleDateString()} onSubmitEditing={onSubmit} editable={false} onPressIn={toggleDatepicker}
                   placeholderTextColor={"#EFE3C825"} />
                 </Pressable>
@@ -54,9 +46,23 @@ const CustomDateInput: React.FC<InputDateProps> = ({ label, icon, mode, placehol
             </>
           )}
         />
-      </View>
       {errors}
     </View>
   );
 };
+const styles = StyleSheet.create({
+  button: {
+    margin: 8,
+  },
+  formEntry: {
+    margin: 8,
+  },
+  container: {
+    flex: 1,
+  },
+  progressBar: {
+    marginBottom: 16,
+    paddingHorizontal: 0,
+  },
+});
 export default CustomDateInput;

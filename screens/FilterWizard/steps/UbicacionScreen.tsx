@@ -1,0 +1,140 @@
+import React, { useEffect } from "react";
+import { Text, View, StyleSheet, Alert } from "react-native";
+import Constants from "expo-constants";
+
+import { SubmitHandler, useForm, Controller, Control } from "react-hook-form";
+import { WizardStore } from "../../../shared/store/WizardStore";
+import { Button, MD3Colors, ProgressBar, TextInput } from "react-native-paper";
+import { useIsFocused } from "@react-navigation/native";
+
+interface FormData {
+  fullName: string;
+  age: string;
+}
+
+export default function UbicacionScreen({ navigation }: { navigation: any }) {
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => null,
+    });
+  }, [navigation]);
+
+  // const {
+  //   handleSubmit,
+  //   control,
+  //   formState: { errors },
+  // } = useForm<FormData>({ defaultValues: WizardStore.useState((s) => s) });
+
+  const { control, handleSubmit, formState: { errors } } = useForm<FormData>({
+    mode: "onChange",
+    defaultValues: {
+      fullName: '',
+      age: '',
+    },
+  });
+  const isFocused = useIsFocused();
+
+  // useEffect(() => {
+  //   if (isFocused) {
+  //     WizardStore.update((s) => {
+  //       s.progress = 0;
+  //     });
+  //   }
+  // }, [isFocused]);
+
+  const onSubmit: SubmitHandler<FormData> = (data) => {
+    // WizardStore.update((s) => {
+    //   s.progress = 33;
+    //   s.fullName = data.fullName;
+    //   s.age = data.age;
+    // });
+    navigation.navigate("Deporte");
+  };
+
+  return (
+    <View style={styles.container}>
+      <ProgressBar
+        style={styles.progressBar}
+        progress={0}
+        color={MD3Colors.primary60}
+      />
+      <View style={{ paddingHorizontal: 16 }}>
+        <View style={styles.formEntry}>
+          <Controller
+            control={control}
+            rules={{
+              required: true,
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                mode="outlined"
+                label="Full Name"
+                placeholder="Enter Full Name"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+              />
+            )}
+            name="fullName"
+          />
+          {errors.fullName && (
+            <Text style={{ margin: 8, marginLeft: 16, color: "red" }}>
+              This is a required field.
+            </Text>
+          )}
+        </View>
+
+        <View style={[styles.formEntry]}>
+          <Controller
+            control={control}
+            rules={{
+              required: true,
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                mode="outlined"
+                label="Age"
+                placeholder="Enter Age"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                keyboardType="numeric"
+              />
+            )}
+            name="age"
+          />
+          {errors.age && (
+            <Text style={{ margin: 8, marginLeft: 16, color: "red" }}>
+              This is a required field.
+            </Text>
+          )}
+        </View>
+
+        <Button
+          onPress={handleSubmit(onSubmit)}
+          mode="outlined"
+          style={styles.button}
+        >
+          Asignar deporte
+        </Button>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  button: {
+    margin: 8
+  },
+  formEntry: {
+    margin: 8,
+  },
+  container: {
+    flex: 1,
+  },
+  progressBar: {
+    marginBottom: 16,
+    paddingHorizontal: 0,
+    
+  },
+});

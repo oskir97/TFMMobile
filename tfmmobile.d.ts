@@ -1,5 +1,6 @@
 import { FilterData } from "./components/Filter/CustomFilter";
 import { Deporte } from "./shared/models/Deporte";
+import { Ubication } from "../../shared/models/Ubication";
 
 export interface IProps {
     children: React.ReactNode;
@@ -7,7 +8,7 @@ export interface IProps {
   
   export interface InputProps {
     label: string;
-    icon?: JSX.Element | null;
+    icon?: string;
     IsSecureText?: boolean | undefined;
     keyboardType?: KeyboardTypeOptions | undefined;
     placeholder?: string | undefined;
@@ -19,6 +20,12 @@ export interface IProps {
     errors?:any;
     editable:boolean;
     maxLength:number
+    valueAssign?:any;
+    onFocus?:any;
+    onPressIn?:any;
+    onSelectIcon?:any;
+    ref?:any;
+    autoCapitalize?:any;
   }
 
   export interface InputDateProps {
@@ -71,10 +78,12 @@ export interface IProps {
   }
   
   export interface CustomButtonProps {
-    onPress?: null | ((event: GestureResponderEvent) => void) | undefined;
-    buttonClassNames?: string;
-    textClassNames?: string;
+    onPress: ((event: GestureResponderEvent) => void);
     buttonText: string;
+    colorButtom:string;
+    colorText:string;
+    colorButtomHover:string;
+    colorTextHover:string;
   }
 
   export type NavStackParamList = {
@@ -101,5 +110,10 @@ export interface IProps {
     title:string,
     onConfirm:any,
     onCancel: any,
-    lastlocation:string | undefined
+    lastlocation:Ubication | undefined,
+    login:boolean
+  }
+
+  export type CustomInputTextMapsProps = {
+    setLocation?:any;
   }

@@ -1,23 +1,34 @@
-import { View, Text, Pressable, Alert } from "react-native";
-import React from "react";
-import MainContainer from "../../components/Container/MainContainer";
+import { View, Text, Alert, ImageBackground, Keyboard } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
 import KeyboardAvoidWrapper from "../../components/Container/KeyboardAvoidWrapper";
 import CustomTextInput from "../../components/InputText/CustomTextInput";
-import { AtSymbolIcon, LockClosedIcon } from "react-native-heroicons/solid";
 import CustomButton from "../../components/Buttons/CustomButton";
 import { RegisterData, useRegister } from '../../shared/services/hooks/register/useRegister';
 import CustomDateInput from "../../components/InputDate/CustomDateInput";
-import PostalCodeInput from "../../components/PostalCode/PostalCodeInput";
-import { Picker } from "@react-native-picker/picker";
+import CustomPasswordTextInput from "../../components/InputPasswordText/CustomPasswordTextInput";
+import { Ubication } from "../../shared/models/Ubication";
+import CustomInputModalMaps from "../../components/Modals/CustomInputModalMaps";
 
 const RegisterScreen = (props: RegisterProps) => {
 
-  const { control, handleSubmit, formState, handleRegistro } = useRegister();
+  const {control, handleSubmit, formState, handleRegistro, setValue } = useRegister();
+  const [locationOpen, setLocationOpen] = useState(false);
+  const [location, setLocation] = useState<Ubication>({ codigoPostal: "", localidad: "", provincia: "", domicilio: "" });
 
-  const login = () => props.navigation.navigate("Login")
+  const handleLocation = (location: Ubication) => {
+    Keyboard.dismiss();
+    setLocation(location);
+    setValue('domicilio', `${location.domicilio}`);
+    setLocationOpen(false);
+  }
+
+  const login = () => props.navigation.navigate("Login");
 
   const onSubmit = async (data: RegisterData) => {
     try {
+      data.codigoPostal = location.codigoPostal;
+      data.provincia = location.provincia;
+      data.localidad = location.localidad;
       const result = await handleRegistro(data);
       if (result) {
         Alert.alert('Registro exitoso', '¡Bienvenido! Por favor inicia sesión');
@@ -28,25 +39,35 @@ const RegisterScreen = (props: RegisterProps) => {
     }
   };
 
+  // const nombreInputRef = useRef<TextInput>();
+
+  // useEffect(() => {
+  //   const unsubscribe = props.navigation.addListener('focus', () => {
+  //     nombreInputRef.current?.focus();
+  //   });
+  // }, []);
+
   return (
-    <MainContainer>
+    <View style={{ flex: 1, backgroundColor: '#fff' }}>
       <KeyboardAvoidWrapper>
-        <View className="flex flex-row items-center justify-center gap-0 pt-[25%]">
-          <Text className="text-3xl text-[#EFE3C8] font-semibold">Secure</Text>
-          <Text className="text-3xl text-[#EFE3C850] font-semibold">App</Text>
-        </View>
-        <View className="flex flex-1 justify-center items-center pt-[7%] px-[25px]">
-          <Text className="text-[#EFE3C8] text-md">
-            Introduce tus datos para registrarte!
-          </Text>
-          <View className="h-[30px] w-full"></View>
+        <View style={{ paddingHorizontal: 16, marginBottom: 30 }}>
+          <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: 'center', paddingTop: 70 }}>
+            <ImageBackground source={require('../../assets/images/logo.png')} style={{ height: 150, width: 150 }} imageStyle={{ borderRadius: 10 }}></ImageBackground>
+          </View>
+          <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: 'center', paddingTop: 10 }}>
+            <Text className="text-md">
+              Introduce tus datos para crear un usuario
+            </Text>
+          </View>
 
           <CustomTextInput
             nameController="nombre"
+            // ref={nombreInputRef}
             control={control}
             label="Nombre"
             placeholder="Introduce tu nombre"
             editable={true}
+            autoCapitalize={'words'}
             maxLength={50}
             rules={{
               required: { value: true },
@@ -65,6 +86,7 @@ const RegisterScreen = (props: RegisterProps) => {
             label="Apellidos"
             placeholder="Introduce tus apellidos"
             editable={true}
+            autoCapitalize={'words'}
             maxLength={100}
             rules={{
               required: { value: true },
@@ -80,7 +102,6 @@ const RegisterScreen = (props: RegisterProps) => {
           <CustomTextInput
             nameController="email"
             control={control}
-            icon={<AtSymbolIcon color={"#EFE3C850"} width={35} height={35} />}
             label="Email"
             keyboardType={"email-address"}
             placeholder="Introduce tu email"
@@ -97,10 +118,9 @@ const RegisterScreen = (props: RegisterProps) => {
             )}
             onSubmit={handleSubmit(onSubmit)}
           />
-          <CustomTextInput
+          <CustomPasswordTextInput
             nameController="password"
             control={control}
-            icon={<LockClosedIcon color={"#EFE3C850"} width={35} height={35} />}
             label="Contraseña"
             IsSecureText={true}
             keyboardType="default"
@@ -119,10 +139,9 @@ const RegisterScreen = (props: RegisterProps) => {
             onSubmit={handleSubmit(onSubmit)}
           />
 
-          <CustomTextInput
+          <CustomPasswordTextInput
             nameController="confirmPassword"
             control={control}
-            icon={<LockClosedIcon color={"#EFE3C850"} width={35} height={35} />}
             label="Confirmar contraseña"
             IsSecureText={true}
             keyboardType="default"
@@ -135,21 +154,21 @@ const RegisterScreen = (props: RegisterProps) => {
             )}
             onSubmit={handleSubmit(onSubmit)}
           />
-          <CustomTextInput
-            nameController="domicilio"
+          <CustomDateInput
+            nameController="fechaNacimiento"
             control={control}
-            label="Domicilio"
-            editable={true}
-            placeholder="Introduce tu domicilio"
-            maxLength={128}
+            label="Fecha de nacimiento"
+            placeholder="Introduce tu fecha de nacimiento"
+            mode="date"
+            maxDate={new Date(Date.now() - 18 * 365 * 24 * 60 * 60 * 1000)}
             rules={{
               required: { value: true },
               pattern: {
                 value: true
               }
             }}
-            errors={formState.errors.domicilio && (
-              <Text className="text-error">{formState.errors.domicilio.message}</Text>
+            errors={formState.errors.fechaNacimiento && (
+              <Text className="text-error">{formState.errors.fechaNacimiento.message}</Text>
             )}
             onSubmit={handleSubmit(onSubmit)}
           />
@@ -189,67 +208,70 @@ const RegisterScreen = (props: RegisterProps) => {
             )}
             onSubmit={handleSubmit(onSubmit)}
           />
-          <CustomDateInput
-            nameController="fechaNacimiento"
+          <CustomTextInput
+            nameController="domicilio"
+            // icon="map-marker-plus"
             control={control}
-            label="Fecha de nacimiento"
-            placeholder="Introduce tu fecha de nacimiento"
-            mode="date"
-            maxDate={new Date(Date.now() - 18 * 365 * 24 * 60 * 60 * 1000)}
-            rules={{
-              required: { value: true },
-              pattern: {
-                value: true
-              }
-            }}
-            errors={formState.errors.fechaNacimiento && (
-              <Text className="text-error">{formState.errors.fechaNacimiento.message}</Text>
-            )}
-            onSubmit={handleSubmit(onSubmit)}
-          />
-          <PostalCodeInput
-            nameControllerCodigoPostal="codigoPostal"
-            nameControllerProvincia="provincia"
-            nameControllerLocalidad="localidad"
-            control={control}
-            defaultValueProvincia="Seleccione una provincia"
-            defaultValueLocalidad="Seleccione una localidad"
+            label="Domicilio"
             editable={true}
-            maxLength={5}
+            valueAssign={location.domicilio}
+            onPressIn={() => { setLocationOpen(true); }}
+            placeholder="Introduce tu domicilio"
+            // onSelectIcon={() => setLocationOpen(true)}
+            maxLength={128}
             rules={{
               required: { value: true },
               pattern: {
                 value: true
               }
             }}
-            errorsProvincia={formState.errors.provincia && (
-              <Text className="text-error">{formState.errors.provincia.message}</Text>
-            )}
-            errorsLocalidad={formState.errors.localidad && (
-              <Text className="text-error">{formState.errors.localidad.message}</Text>
-            )}
-            errorsCodigoPostal={formState.errors.codigoPostal && (
-              <Text className="text-error">{formState.errors.codigoPostal.message}</Text>
+            errors={formState.errors.domicilio && (
+              <Text className="text-error">{formState.errors.domicilio.message}</Text>
             )}
             onSubmit={handleSubmit(onSubmit)}
           />
-          <CustomButton
-            buttonText="Register"
-            buttonClassNames="w-full rounded-md p-3 bg-[#EFE3C8] flex justify-center items-center mt-5"
-            textClassNames="text-[#4A2B29] text-[18px] font-semibold"
-            onPress={handleSubmit(onSubmit)}
+          <CustomTextInput
+            nameController="numero"
+            control={control}
+            label="Número del domicilio"
+            placeholder="Introduce tu número"
+            editable={true}
+            maxLength={50}
+            rules={{
+              required: { value: true },
+              pattern: {
+                value: true
+              }
+            }}
+            errors={formState.errors.numero && (
+              <Text className="text-error">{formState.errors.numero.message}</Text>
+            )}
+            onSubmit={handleSubmit(onSubmit)}
           />
 
-          <View className="flex w-full justify-end items-end pt-4">
-            <Pressable onPress={login}>
-              <Text className="text-center text-gray-500 text-sm">
-                ¿Ya tienes una cuenta?
-              </Text>
-            </Pressable>
-          </View>
+          <CustomButton
+            onPress={handleSubmit(onSubmit)}
+            buttonText="Registrarse"
+            colorButtom='#04D6C8'
+          colorText='white'
+          colorButtomHover="#04D6C8"
+          colorTextHover="white"
+
+          // onPress={() => console.log(password)}
+          />
+          <CustomButton
+            onPress={login}
+            buttonText="Ya tengo usuario/a"
+            colorButtom='transparent'
+          colorText='#04D6C8'
+          colorButtomHover="#04D6C850"
+          colorTextHover="white"
+          // onPress={() => console.log(password)}
+          />
         </View>
       </KeyboardAvoidWrapper>
-    </MainContainer>
+      <CustomInputModalMaps login={true} visible={locationOpen} setVisible={setLocationOpen} animationType={"none"} title="Modificar ubicación de las pistas" lastlocation={location.domicilio} onConfirm={handleLocation} onCancel={() => setLocationOpen(false)} />
+    </View>
   );
 };
 

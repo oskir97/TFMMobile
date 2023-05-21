@@ -9,13 +9,14 @@ export type RegisterData = {
     email: string;
     password: string;
     confirmPassword: string;
-    domicilio: string;
+    domicilio?: string;
+    numero?:string;
     telefono: string;
-    telefonoAlternartivo: string;
+    telefonoAlternartivo?: string | null;
     fechaNacimiento: Date | undefined;
-    codigoPostal: string;
-    localidad: string;
-    provincia: string;
+    codigoPostal?: string | null;
+    localidad?: string | null;
+    provincia?: string | null;
 };
 
 const schema = yup.object().shape({
@@ -28,15 +29,10 @@ const schema = yup.object().shape({
         .oneOf([yup.ref('password')], 'Las contraseñas deben coincidir')
         .required('La confirmación de contraseña es requerida').max(255, 'La contraseña no puede tener más de 255 carácteres'),
     domicilio: yup.string().required('El domicilio es requerido').max(128, 'El domiclio no puede tener más de 128 carácteres'),
+    numero: yup.string().max(50, 'El número no puede superar más de 50 carácteres'),
     telefono: yup.string().required('El telefono es requerido').matches(/^\d{9}$/, "El número de teléfono debe tener 9 dígitos").max(9, 'El teléfono no puede tener más de 9 carácteres'),
     telefonoAlternartivo: yup.string().matches(/^\d{9}$/, "El número de teléfono debe tener 9 dígitos").max(9, 'El teléfono alternativo no puede tener más de 9 carácteres'),
-    fechaNacimiento: yup.date().required('La fecha es requerida').min(
-        new Date(Date.now() - 18 * 365 * 24 * 60 * 60 * 1000),
-        'Debes ser mayor de 18 años'
-      ).typeError('Formato de fecha inválido'),
-    codigoPostal: yup.string().max(5, 'El código postal no puede tener más de 5 caracteres').matches(/^\d{5}$/, "El código postal debe tener 5 dígitos").required('El código postal es requerido'),
-    localidad: yup.string().required('La localidad es requerida').notOneOf(['Seleccione una localidad'], 'Debe seleccionar una localidad'),
-    provincia: yup.string().required('La provincia es requerida').notOneOf(['Seleccione una provincia'], 'Debe seleccionar una provincia'),
+    fechaNacimiento: yup.date().required('La fecha es requerida').typeError('Formato de fecha inválido'),
 });
 
 export const useRegister = () => {
@@ -66,6 +62,7 @@ export const useRegister = () => {
         control,
         handleSubmit,
         formState,
-        handleRegistro
+        handleRegistro,
+        setValue
     };
 }

@@ -3,7 +3,7 @@ import { TextInput } from "react-native-paper";
 import React, { useState } from "react";
 import { InputProps } from "../../tfmmobile";
 import { useForm, Controller } from 'react-hook-form';
-const CustomTextInput: React.FC<InputProps> = ({ label, icon, IsSecureText, keyboardType, placeholder, control, onSubmit, nameController, defaultValue, rules, errors, editable, maxLength, valueAssign, onFocus,onPressIn, onSelectIcon, ref,autoCapitalize
+const CustomPasswordTextInput: React.FC<InputProps> = ({ label, icon, IsSecureText, keyboardType, placeholder, control, onSubmit, nameController, defaultValue, rules, errors, editable, maxLength
 }) => {
   const [secureTextEntry, setSecureTextEntry] = useState(IsSecureText);
   return (
@@ -15,7 +15,6 @@ const CustomTextInput: React.FC<InputProps> = ({ label, icon, IsSecureText, keyb
         rules={rules}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
-            ref={ref}
             mode="outlined"
             theme={{
               colors: {
@@ -25,13 +24,16 @@ const CustomTextInput: React.FC<InputProps> = ({ label, icon, IsSecureText, keyb
             }}
             label={label}
             editable={editable} maxLength={maxLength}
-            autoCapitalize={autoCapitalize != null && autoCapitalize != undefined ? autoCapitalize : 'none'}
-            onChangeText={onChange} onPressIn={onPressIn} secureTextEntry={secureTextEntry} keyboardType={keyboardType} placeholder={placeholder} onBlur={onBlur} value={valueAssign != null? valueAssign: value} onSubmitEditing={onSubmit}
+            autoCapitalize="none"
+            onChangeText={onChange} secureTextEntry={secureTextEntry} keyboardType={keyboardType} placeholder={placeholder} onBlur={onBlur} value={value} onSubmitEditing={onSubmit}
             right={
-              icon &&
               <TextInput.Icon
-                icon={icon}
-                onPress={()=> {onSelectIcon && onSelectIcon()}}
+                icon={secureTextEntry?"eye":"eye-off"}
+                color='#106F69'
+                onPress={() => {
+                  setSecureTextEntry(!secureTextEntry);
+                  return false;
+                }}
               />
             }
           />
@@ -42,8 +44,18 @@ const CustomTextInput: React.FC<InputProps> = ({ label, icon, IsSecureText, keyb
   );
 };
 const styles = StyleSheet.create({
+  button: {
+    margin: 8,
+  },
   formEntry: {
     margin: 8,
-  }
+  },
+  container: {
+    flex: 1,
+  },
+  progressBar: {
+    marginBottom: 16,
+    paddingHorizontal: 0,
+  },
 });
-export default CustomTextInput;
+export default CustomPasswordTextInput;

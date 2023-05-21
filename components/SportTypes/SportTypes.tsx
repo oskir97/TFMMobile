@@ -23,7 +23,7 @@ export interface SportProps {
                     style={{ margin: 10, alignItems: 'center', justifyContent: 'center' }}
                     onPress={() => handleDeporteSelected(undefined)}
                 >
-                    <MaterialIcons name="sports" color={selectedDeporte == null  || selectedDeporte == undefined ? '#aa18ea' : "#333"} size={60} />
+                    <MaterialIcons name="sports" color={selectedDeporte == null  || selectedDeporte == undefined ? '#04D6C8' : "#333"} size={60} />
                     <Text style={{ marginTop: 6, textAlign: 'center' }}>Todos</Text>
                 </TouchableOpacity>
                 {deportes?.map((item, index) => (
@@ -32,7 +32,7 @@ export interface SportProps {
                         style={{ margin: 10, alignItems: 'center', justifyContent: 'center' }}
                         onPress={() => handleDeporteSelected(item)}
                     >
-                        <Ionicons name={item.icono} color={selectedDeporte != null && selectedDeporte.nombre == item.nombre ? '#aa18ea' : "#333"} size={60} />
+                        <Ionicons name={item.icono} color={selectedDeporte != null && selectedDeporte.nombre == item.nombre ? '#04D6C8' : "#333"} size={60} />
                         <Text style={{ marginTop: 6, textAlign: 'center' }}>{item.traduccionesDeporte[0].nombre}</Text>
                     </TouchableOpacity>
                 ))}
