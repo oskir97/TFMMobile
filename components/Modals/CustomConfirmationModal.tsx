@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { XCircleIcon } from 'react-native-heroicons/solid';
 
@@ -11,6 +12,8 @@ interface CustomConfirmationModalProps {
 
 const CustomConfirmationModal: React.FC<CustomConfirmationModalProps> = ({ visible, onConfirm, onCancel, message }) => {
 
+  const { t } = useTranslation();
+
   return (
     <Modal transparent visible={visible} animationType="fade">
       <View style={styles.container}>
@@ -18,10 +21,10 @@ const CustomConfirmationModal: React.FC<CustomConfirmationModalProps> = ({ visib
           <Text style={styles.message}>{message}</Text>
           <View style={styles.buttoms}>
             <TouchableOpacity style={styles.buttomConfirm} onPress={onConfirm}>
-              <Text style={styles.buttomText}>Aceptar</Text>
+              <Text style={styles.buttomText}>{t("ACEPTAR")}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.buttomCancel} onPress={onCancel}>
-              <Text style={styles.buttomText}>Cancelar</Text>
+              <Text style={styles.buttomText}>{t("CANCELAR")}</Text>
             </TouchableOpacity>
           </View>
           <TouchableOpacity style={styles.cancel} onPress={onCancel}>

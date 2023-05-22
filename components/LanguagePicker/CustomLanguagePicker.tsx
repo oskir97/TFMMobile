@@ -4,9 +4,8 @@ import { Modal, View, Text, Pressable, StyleSheet, Image } from "react-native";
 import { Appbar, Avatar, Divider, Menu } from "react-native-paper";
 
 const CustomLanguagePicker = () => {
-  const { i18n, t } = useTranslation(); //i18n instance
+  const { i18n, t } = useTranslation();
 
-  //array with all supported languages
   const languages = [
     { name: 'es', label: 'Español', flag: require('../../assets/images/es_flag.png') },
     { name: 'en', label: 'English', flag: require('../../assets/images/en_flag.png') },
@@ -19,10 +18,8 @@ const CustomLanguagePicker = () => {
   const closeMenu = () => setMenuVisible(false);
 
   const handleLanguageSelect = (selectedLanguage: string) => {
-    console.log(i18n.language);
     i18n.changeLanguage(selectedLanguage);
     closeMenu();
-    // Aquí puedes agregar la lógica para cambiar el idioma en tu aplicación
   };
 
   const isLanguageDisabled = (lang: string) => i18n.language === lang;
@@ -55,7 +52,6 @@ const CustomLanguagePicker = () => {
           ))}
         </Menu>
       </Appbar.Header>
-      {/* Resto del contenido de tu aplicación */}
     </View>
   );
 };

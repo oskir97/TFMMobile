@@ -11,7 +11,7 @@ export interface IProps {
     icon?: string;
     IsSecureText?: boolean | undefined;
     keyboardType?: KeyboardTypeOptions | undefined;
-    placeholder?: string | undefined;
+    placeholder?: any;
     control: any;
     onSubmit?: any;
     nameController: string;
@@ -31,7 +31,7 @@ export interface IProps {
   export interface InputDateProps {
     label: string;
     icon?: JSX.Element | null;
-    placeholder?: string | undefined;
+    placeholder?: any;
     control: any;
     onSubmit?: any;
     nameController: string;

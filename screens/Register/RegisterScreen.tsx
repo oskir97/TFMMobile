@@ -1,5 +1,5 @@
 import { View, Text, Alert, ImageBackground, Keyboard } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import KeyboardAvoidWrapper from "../../components/Container/KeyboardAvoidWrapper";
 import CustomTextInput from "../../components/InputText/CustomTextInput";
 import CustomButton from "../../components/Buttons/CustomButton";
@@ -8,12 +8,20 @@ import CustomDateInput from "../../components/InputDate/CustomDateInput";
 import CustomPasswordTextInput from "../../components/InputPasswordText/CustomPasswordTextInput";
 import { Ubication } from "../../shared/models/Ubication";
 import CustomInputModalMaps from "../../components/Modals/CustomInputModalMaps";
+import { I18nContext, useTranslation } from "react-i18next";
 
 const RegisterScreen = (props: RegisterProps) => {
 
-  const {control, handleSubmit, formState, handleRegistro, setValue } = useRegister();
+  const { control, handleSubmit, formState, handleRegistro, setValue, errors, register, reset } = useRegister();
   const [locationOpen, setLocationOpen] = useState(false);
   const [location, setLocation] = useState<Ubication>({ codigoPostal: "", localidad: "", provincia: "", domicilio: "" });
+
+  const { t } = useTranslation();
+  const { i18n } = useContext(I18nContext);
+
+  useEffect(() => {
+    register('fieldName', { required: true });
+  }, [register]);
 
   const handleLocation = (location: Ubication) => {
     Keyboard.dismiss();
@@ -29,15 +37,48 @@ const RegisterScreen = (props: RegisterProps) => {
       data.codigoPostal = location.codigoPostal;
       data.provincia = location.provincia;
       data.localidad = location.localidad;
+
       const result = await handleRegistro(data);
+      
+      console.log(result);
+      
+      const registroExitoso = t("REGISTRO_EXITOSO");
+      const bienvenidoIniciaSesion = t("BIENVENIDO_INICIA_SESION");
+
       if (result) {
-        Alert.alert('Registro exitoso', '¡Bienvenido! Por favor inicia sesión');
+        if (registroExitoso && bienvenidoIniciaSesion) {
+          Alert.alert(registroExitoso, bienvenidoIniciaSesion);
+        }
+
         login();
+      } else {
+        const ERROR_REGISTRO = t("ERROR_REGISTRO");
+        const SE_PRODUCIDO_ERROR = t("SE_PRODUCIDO_ERROR");
+        if (ERROR_REGISTRO && SE_PRODUCIDO_ERROR) {
+          Alert.alert(ERROR_REGISTRO, SE_PRODUCIDO_ERROR);
+        }
       }
     } catch (error: any) {
-      Alert.alert('Error', error.message);
+      console.log(error.message);
+      const errormessage = t("ERROR");
+      const erroraplicacion = t("ERROR_APLICACION");
+      Alert.alert(errormessage, erroraplicacion);
     }
   };
+
+  useEffect(() => {
+    const handleLanguageChange = () => {
+      Object.keys(errors).forEach((fieldName) => {
+        reset({ [fieldName]: '' });
+      });
+    };
+
+    i18n.on('languageChanged', handleLanguageChange);
+
+    return () => {
+      i18n.off('languageChanged', handleLanguageChange);
+    };
+  }, [i18n]);
 
   // const nombreInputRef = useRef<TextInput>();
 
@@ -56,7 +97,7 @@ const RegisterScreen = (props: RegisterProps) => {
           </View>
           <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: 'center', paddingTop: 10 }}>
             <Text className="text-md">
-              Introduce tus datos para crear un usuario
+              {t("INTRODUCE_DATOS_CREAR_USUARIO")}
             </Text>
           </View>
 
@@ -64,8 +105,8 @@ const RegisterScreen = (props: RegisterProps) => {
             nameController="nombre"
             // ref={nombreInputRef}
             control={control}
-            label="Nombre"
-            placeholder="Introduce tu nombre"
+            label={t("NOMBRE")}
+            placeholder={t("INTRODUCE_NOMBRE")}
             editable={true}
             autoCapitalize={'words'}
             maxLength={50}
@@ -83,8 +124,8 @@ const RegisterScreen = (props: RegisterProps) => {
           <CustomTextInput
             nameController="apellidos"
             control={control}
-            label="Apellidos"
-            placeholder="Introduce tus apellidos"
+            label={t("APELLIDOS")}
+            placeholder={t("INTRODUCE_APELLIDOS")}
             editable={true}
             autoCapitalize={'words'}
             maxLength={100}
@@ -102,9 +143,9 @@ const RegisterScreen = (props: RegisterProps) => {
           <CustomTextInput
             nameController="email"
             control={control}
-            label="Email"
+            label={t("EMAIL")}
             keyboardType={"email-address"}
-            placeholder="Introduce tu email"
+            placeholder={t("INTRODUCE_EMAIL")}
             editable={true}
             maxLength={75}
             rules={{
@@ -121,7 +162,7 @@ const RegisterScreen = (props: RegisterProps) => {
           <CustomPasswordTextInput
             nameController="password"
             control={control}
-            label="Contraseña"
+            label={t("PASSWORD")}
             IsSecureText={true}
             keyboardType="default"
             placeholder="* * * * * * * *"
@@ -142,7 +183,7 @@ const RegisterScreen = (props: RegisterProps) => {
           <CustomPasswordTextInput
             nameController="confirmPassword"
             control={control}
-            label="Confirmar contraseña"
+            label={t("CONFIRMAR_PASSWORD")}
             IsSecureText={true}
             keyboardType="default"
             placeholder="* * * * * * * *"
@@ -157,8 +198,8 @@ const RegisterScreen = (props: RegisterProps) => {
           <CustomDateInput
             nameController="fechaNacimiento"
             control={control}
-            label="Fecha de nacimiento"
-            placeholder="Introduce tu fecha de nacimiento"
+            label={t("FECHA_NACIMIENTO")}
+            placeholder={t("FECHA_NACIMIENTO")}
             mode="date"
             maxDate={new Date(Date.now() - 18 * 365 * 24 * 60 * 60 * 1000)}
             rules={{
@@ -175,8 +216,8 @@ const RegisterScreen = (props: RegisterProps) => {
           <CustomTextInput
             nameController="telefono"
             control={control}
-            label="Teléfono"
-            placeholder="Introduce tu teléfono"
+            label={t("TELEFONO")}
+            placeholder={t("INTRODUCE_TELEFONO")}
             editable={true}
             maxLength={9}
             rules={{
@@ -193,8 +234,8 @@ const RegisterScreen = (props: RegisterProps) => {
           <CustomTextInput
             nameController="telefonoAlternartivo"
             control={control}
-            label="Teléfono alternativo"
-            placeholder="Introduce tu teléfono alternativo"
+            label={t("TELEFONO_ALTERNATIVO")}
+            placeholder={t("INTRODUCE_TELEFONO_ALTERNATIVO")}
             editable={true}
             maxLength={9}
             rules={{
@@ -212,11 +253,11 @@ const RegisterScreen = (props: RegisterProps) => {
             nameController="domicilio"
             // icon="map-marker-plus"
             control={control}
-            label="Domicilio"
+            label={t("DOMICILIO")}
             editable={true}
             valueAssign={location.domicilio}
             onPressIn={() => { setLocationOpen(true); }}
-            placeholder="Introduce tu domicilio"
+            placeholder={t("INTRODUCE_DOMICILIO")}
             // onSelectIcon={() => setLocationOpen(true)}
             maxLength={128}
             rules={{
@@ -233,8 +274,8 @@ const RegisterScreen = (props: RegisterProps) => {
           <CustomTextInput
             nameController="numero"
             control={control}
-            label="Número del domicilio"
-            placeholder="Introduce tu número"
+            label={t("NUMERO_DOMICILIO")}
+            placeholder={t("INTRODUCE_NUMERO")}
             editable={true}
             maxLength={50}
             rules={{
@@ -251,26 +292,26 @@ const RegisterScreen = (props: RegisterProps) => {
 
           <CustomButton
             onPress={handleSubmit(onSubmit)}
-            buttonText="Registrarse"
+            buttonText={t("REGISTRARSE")}
             colorButtom='#04D6C8'
-          colorText='white'
-          colorButtomHover="#04D6C8"
-          colorTextHover="white"
+            colorText='white'
+            colorButtomHover="#04D6C8"
+            colorTextHover="white"
 
           // onPress={() => console.log(password)}
           />
           <CustomButton
             onPress={login}
-            buttonText="Ya tengo usuario/a"
+            buttonText={t("YA_TENGO_USUARIO")}
             colorButtom='transparent'
-          colorText='#04D6C8'
-          colorButtomHover="#04D6C850"
-          colorTextHover="white"
+            colorText='#04D6C8'
+            colorButtomHover="#04D6C850"
+            colorTextHover="white"
           // onPress={() => console.log(password)}
           />
         </View>
       </KeyboardAvoidWrapper>
-      <CustomInputModalMaps login={true} visible={locationOpen} setVisible={setLocationOpen} animationType={"none"} title="Modificar ubicación de las pistas" lastlocation={location.domicilio} onConfirm={handleLocation} onCancel={() => setLocationOpen(false)} />
+      <CustomInputModalMaps login={true} visible={locationOpen} setVisible={setLocationOpen} animationType={"none"} title={t("MODIFICAR_UBICACION")} lastlocation={location.domicilio} onConfirm={handleLocation} onCancel={() => setLocationOpen(false)} />
     </View>
   );
 };

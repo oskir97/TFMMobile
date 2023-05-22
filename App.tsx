@@ -6,6 +6,8 @@ import "./i18n.config";
 import { useTranslation } from "react-i18next";
 import LanguagePicker from "./components/LanguagePicker/CustomLanguagePicker";
 import { PaperProvider } from "react-native-paper";
+import { I18nextProvider } from 'react-i18next';
+import i18n from './i18n.config';
 
 
 const App: React.FC = () => {
@@ -17,7 +19,9 @@ const App: React.FC = () => {
           <StatusBar style="light" />
           <LanguagePicker />
           <LoginProvider>
+          <I18nextProvider i18n={i18n}>
             <Nav />
+            </I18nextProvider>
           </LoginProvider>
         </TailwindProvider>
       </PaperProvider>

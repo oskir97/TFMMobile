@@ -13,6 +13,7 @@ import { Deporte } from "../../shared/models/Deporte";
 import CustomDateInput from "../InputDate/CustomDateInput";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { Ubication } from "../../shared/models/Ubication";
+import { useTranslation } from "react-i18next";
 
 const CustomInputModalMaps: React.FC<CustomInputMapsProps> = ({ visible, onConfirm, onCancel, title, animationType, lastlocation, login }) => {
 
@@ -22,7 +23,7 @@ const CustomInputModalMaps: React.FC<CustomInputMapsProps> = ({ visible, onConfi
 
   useEffect(() => {
     const windowHeight = Dimensions.get('window').height;
-    const modalHeightPercentage = windowHeight * 0.9;
+    const modalHeightPercentage = windowHeight * 0.6;
     setModalHeight(modalHeightPercentage);
   }, []);
 
@@ -34,6 +35,57 @@ const CustomInputModalMaps: React.FC<CustomInputMapsProps> = ({ visible, onConfi
     onConfirm(loc);
   };
 
+  const { t } = useTranslation();
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    modal: {
+      height:modalHeight,
+      backgroundColor: '#fff',
+      borderRadius: 8,
+      padding: 5,
+      width: '95%',
+      maxWidth: 400,
+    },
+    title: {
+      fontWeight: 'bold',
+      fontSize: 20,
+      marginBottom: 20,
+      textAlign: 'left'
+    },
+    buttoms: {
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      marginTop: 20
+    },
+    buttomReset: {
+      marginHorizontal: 10,
+      flexDirection: "row",
+      alignItems: "center",
+      borderWidth: 1,
+      borderColor: "black",
+      padding: 10,
+      width: 160,
+      justifyContent: "center",
+      backgroundColor: 'white',
+      borderRadius: 4,
+    },
+    buttomText: {
+      color: '#fff',
+      fontWeight: 'bold',
+    },
+    cancel: {
+      position: 'absolute',
+      top: 4,
+      right: 8,
+    },
+  });
+
   return (
     <>
       <Modal transparent={false} visible={visible} animationType={animationType}>
@@ -42,7 +94,7 @@ const CustomInputModalMaps: React.FC<CustomInputMapsProps> = ({ visible, onConfi
             <View style={{ padding: 20, height: modalHeight }}>
               <GooglePlacesAutocomplete keyboardShouldPersistTaps="always"
                 fetchDetails
-                placeholder="Buscar dirección"
+                placeholder={t("BUSCAR_DIRECCION")}
                 textInputProps={{
                   autoFocus: true,
                 }}
@@ -67,7 +119,7 @@ const CustomInputModalMaps: React.FC<CustomInputMapsProps> = ({ visible, onConfi
                   backgroundColor: location != undefined && location.localidad != undefined && location.localidad != "" ? '#04D6C8' : '#CCCCCC',
                   borderRadius: 4,
                 }} disabled={!(location != undefined && location.localidad != undefined && location.localidad != "")} onPress={() => onSubmit()}>
-                  <Text style={styles.buttomText}>Actualizar</Text>
+                  <Text style={styles.buttomText}>{t("ACTUALIZAR")}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={{
                   marginLeft: 8,
@@ -76,7 +128,7 @@ const CustomInputModalMaps: React.FC<CustomInputMapsProps> = ({ visible, onConfi
                   backgroundColor: lastlocation != undefined && lastlocation.localidad != undefined && lastlocation.localidad != "" ? '#999' : '#CCCCCC',
                   borderRadius: 4,
                 }} disabled={lastlocation != undefined && lastlocation.localidad != undefined && lastlocation.localidad != "" && !login} onPress={() => { setLocation(null); onCancel(); }}>
-                  <Text style={styles.buttomText}>Cancelar</Text>
+                  <Text style={styles.buttomText}>{t("CANCELAR")}</Text>
                 </TouchableOpacity>
               </View>
               <TouchableOpacity style={styles.cancel} onPress={() => { setLocation(null); onCancel(); }}>
@@ -90,52 +142,4 @@ const CustomInputModalMaps: React.FC<CustomInputMapsProps> = ({ visible, onConfi
     </>
   );
 };
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  modal: {
-    flex: 0.95,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 5,
-    width: '95%',
-    maxWidth: 400,
-  },
-  title: {
-    fontWeight: 'bold',
-    fontSize: 20,
-    marginBottom: 20,
-    textAlign: 'left'
-  },
-  buttoms: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginTop: 20
-  },
-  buttomReset: {
-    marginHorizontal: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "black",
-    padding: 10,
-    width: 160,
-    justifyContent: "center",
-    backgroundColor: 'white',
-    borderRadius: 4,
-  },
-  buttomText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  cancel: {
-    position: 'absolute',
-    top: 4,
-    right: 8,
-  },
-});
 export default CustomInputModalMaps;
