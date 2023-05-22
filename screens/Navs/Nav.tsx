@@ -11,7 +11,6 @@ import { LoginContext } from '../../shared/services/hooks/login/contexts/LoginCo
 import { HomeIcon, CalendarDaysIcon, AdjustmentsHorizontalIcon, ChatBubbleLeftEllipsisIcon, UserGroupIcon, ClockIcon } from "react-native-heroicons/solid";
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import CustomDrawer from '../../components/Drawer/CustomDrawer';
-import { ProgressBar, MD3Colors, Provider as PaperProvider } from 'react-native-paper';
 
 import Ubicacion from "../FilterWizard/steps/UbicacionScreen";
 import Deporte from "../FilterWizard/steps/DeporteScreen";
@@ -111,11 +110,9 @@ const Nav: React.FC = () => {
 
     return (
 
-        <PaperProvider>
             <NavigationContainer>
                 {loading ? loadingNavigator : (login ? (filterStepsNavigator) : authNavigator)}
             </NavigationContainer>
-        </PaperProvider>
     );
 };
 

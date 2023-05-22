@@ -33,7 +33,7 @@ const LoginScreen = (props: LoginProps) => {
   return (
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={{ paddingHorizontal: 16 }}>
-        <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: 'center', paddingTop: 100 }}>
+        <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: 'center', paddingTop: 30 }}>
           <ImageBackground source={require('../../assets/images/logo.png')} style={{ height: 150, width: 150 }} imageStyle={{ borderRadius: 10 }}></ImageBackground>
         </View>
         <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: 'center', paddingTop: 25}}>
