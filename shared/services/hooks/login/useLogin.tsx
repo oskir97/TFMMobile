@@ -14,7 +14,7 @@ export default function useLogin() {
     const api = new Api<any>();
 
     const logFunction =
-        ({ email, password }: any) => {
+        ({ email, password }: LoginData) => {
             loginFunction(email, password);
         };
 

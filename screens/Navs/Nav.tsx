@@ -20,7 +20,7 @@ const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 const Nav: React.FC = () => {
-    const { login, loading, user, location } = useContext(LoginContext);
+    const { login, loading} = useContext(LoginContext);
 
     const authNavigator = (
         <Stack.Navigator
@@ -101,7 +101,9 @@ const Nav: React.FC = () => {
 
     const filterStepsNavigator = (
 
-        <Stack.Navigator initialRouteName="Ubicacion">
+        <Stack.Navigator initialRouteName="Ubicacion" screenOptions={{
+            headerShown: false
+        }}>
             <Stack.Screen name="Ubicación" component={Ubicacion} />
             <Stack.Screen name="Deporte" component={Deporte} />
             <Stack.Screen name="Fecha" component={Fecha} />

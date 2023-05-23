@@ -20,7 +20,7 @@ const RegisterScreen = (props: RegisterProps) => {
   const { i18n } = useContext(I18nContext);
 
   useEffect(() => {
-    register('fieldName', { required: true });
+    register('fieldName', { required: false });
   }, [register]);
 
   const handleLocation = (location: Ubication) => {

@@ -19,8 +19,8 @@ const App: React.FC = () => {
           <StatusBar style="light" />
           <LanguagePicker />
           <LoginProvider>
-          <I18nextProvider i18n={i18n}>
-            <Nav />
+            <I18nextProvider i18n={i18n}>
+              <Nav />
             </I18nextProvider>
           </LoginProvider>
         </TailwindProvider>

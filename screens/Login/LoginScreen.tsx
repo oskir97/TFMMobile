@@ -10,12 +10,12 @@ import CustomButton from "../../components/Buttons/CustomButton";
 import { useForm } from 'react-hook-form';
 import loginHook from "../../shared/services/hooks/login/useLogin";
 import CustomPasswordTextInput from "../../components/InputPasswordText/CustomPasswordTextInput";
-import { useTranslation, I18nContext  } from "react-i18next";
+import { useTranslation, I18nContext } from "react-i18next";
 
 const LoginScreen = (props: LoginProps) => {
   const { logFunction } = loginHook();
 
-  const { control,register, reset, handleSubmit, formState: { errors } } = useForm<LoginData>({
+  const { control, register, reset, handleSubmit, formState: { errors } } = useForm<LoginData>({
     mode: "onChange",
     defaultValues: {
       email: '',
@@ -24,12 +24,20 @@ const LoginScreen = (props: LoginProps) => {
   });
 
   useEffect(() => {
-    register('fieldName', { required: true });
+    register('fieldName', { required: false });
   }, [register]);
 
-  const onSubmit = handleSubmit(({ email, password }) => {
-    logFunction({ email, password });
-  });
+  const onSubmit = async (data: LoginData) => {
+    try {
+      console.log(data.email + " " + data.password);
+      logFunction(data);
+    } catch (error: any) {
+      console.log(error.message);
+      const errormessage = t("ERROR");
+      const erroraplicacion = t("ERROR_APLICACION");
+      Alert.alert(errormessage, erroraplicacion);
+    }
+  };
 
   const toregister = () => props.navigation.navigate("Register");
 
@@ -101,7 +109,7 @@ const LoginScreen = (props: LoginProps) => {
           )}
         />
         <CustomButton
-          onPress={onSubmit}
+          onPress={handleSubmit(onSubmit)}
           buttonText={t("INICIAR_SESION")}
           colorButtom='#04D6C8'
           colorText='white'
@@ -121,7 +129,7 @@ const LoginScreen = (props: LoginProps) => {
         />
         <View style={{ marginRight: 8 }}>
           <View className="flex w-full justify-end items-end pt-4">
-            <Pressable onPress={onSubmit}>
+            <Pressable onPress={handleSubmit(onSubmit)}>
               <Text style={{ color: '#106F69' }} className="text-center text-gray-500 text-sm">
                 {t("HAS_OLVIDADO_PASSWORD")}
               </Text>

@@ -51,9 +51,16 @@
   "MODIFICAR_UBICACION": "Modify location",
   "REGISTRO_EXITOSO": "Registration successful",
   "BIENVENIDO_INICIA_SESION": "Welcome! Please log in",
-  "ERROR_APLICACION": "Error in the application, we are fixing it",
+  "ERROR_APLICACION": "Error in the application, we are fixing it!",
   "ACEPTAR": "Ok",
   "INTRODUCE_DOMICILIO": "Enter your adress",
   "ERROR_REGISTRO": "Failed to register",
-  "SE_PRODUCIDO_ERROR": "An error occurred while trying to register"
+  "SE_PRODUCIDO_ERROR": "An error occurred while trying to register",
+  "CARGANDO": "Loading",
+  "EMAIL_PASSWORD_INCORRECTOS": "Email or Password incorrect",
+  "ASIGNAR_DEPORTE": "Select sport",
+  "DONDE_RESERVAR": "Where do you want to book?",
+  "SELECCIONAR_OTRA_LOCALIDAD": "Select another location",
+  "SELECCIONAR_UNA_LOCALIDAD": "Select a location",
+  "EN": "In"
 }

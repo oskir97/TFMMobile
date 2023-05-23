@@ -52,9 +52,16 @@
   "REGISTRO_EXITOSO": "Registro exitoso",
   "BIENVENIDO_INICIA_SESION": "¡Bienvenido! Por favor inicia sesión",
   "ERROR": "Error",
-  "ERROR_APLICACION": "Error en la aplicación, lo estamos solucionando",
+  "ERROR_APLICACION": "Error en la aplicación, lo estamos solucionando!",
   "ACEPTAR": "Aceptar",
   "INTRODUCE_DOMICILIO": "Introduce tu domicilio",
   "ERROR_REGISTRO": "Error al registrarse",
-  "SE_PRODUCIDO_ERROR": "Se ha producido un error al intentar registrarse"
+  "SE_PRODUCIDO_ERROR": "Se ha producido un error al intentar registrarse",
+  "CARGANDO": "Cargando",
+  "EMAIL_PASSWORD_INCORRECTOS": "El correo o la contraseña son incorrectos",
+  "ASIGNAR_DEPORTE": "Seleccionar deporte",
+  "DONDE_RESERVAR": "¿Dónde quieres reservar?",
+  "SELECCIONAR_OTRA_LOCALIDAD": "Seleccione otra localidad",
+  "SELECCIONAR_UNA_LOCALIDAD": "Selecciona una localidad",
+  "EN": "En "
 }

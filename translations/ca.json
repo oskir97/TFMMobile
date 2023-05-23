@@ -51,9 +51,16 @@
   "MODIFICAR_UBICACION": "Modificar ubicació",
   "REGISTRO_EXITOSO": "Registre exitós",
   "BIENVENIDO_INICIA_SESION": "Benvingut/da! Si us plau, inicia sessió",
-  "ERROR_APLICACION": "Error en l'aplicació, ho estem solucionant",
+  "ERROR_APLICACION": "Error en l'aplicació, ho estem solucionant!",
   "ACEPTAR": "D'acord",
   "INTRODUCE_DOMICILIO": "Introdueix el teu domicili",
   "ERROR_REGISTRO": "Error al registrar-se",
-  "SE_PRODUCIDO_ERROR": "S'ha produït un error en intentar registrar-se"
+  "SE_PRODUCIDO_ERROR": "S'ha produït un error en intentar registrar-se",
+  "CARGANDO": "Carregant",
+  "EMAIL_PASSWORD_INCORRECTOS": "El correu o la contrasenya són incorrectes",
+  "ASIGNAR_DEPORTE": "Seleccionar esport",
+  "DONDE_RESERVAR": "On vols fer la reserva?",
+  "SELECCIONAR_OTRA_LOCALIDAD": "Selecciona una altra localitat",
+  "SELECCIONAR_UNA_LOCALIDAD": "Selecciona una localitat",
+  "EN": "A"
 }

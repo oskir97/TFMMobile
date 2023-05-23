@@ -1,3 +1,4 @@
+import { Filter } from "../../../../models/Filter";
 import { UsuarioRegistrado } from "../../../../models/UsuarioRegistrado";
 import * as Location from 'expo-location';
 
@@ -7,6 +8,7 @@ export type LoginContextType = {
     location:Location.LocationObject | undefined;
     localidad:string | undefined;
     user:UsuarioRegistrado | undefined;
+    filter:Filter |undefined;
     setLogin:(login: boolean) => void;
     setLocation:(location: Location.LocationObject | undefined) => void;
     setLocalidad:(localidad: string) => void;
@@ -14,4 +16,5 @@ export type LoginContextType = {
     setUser:(user: UsuarioRegistrado) => void;
     logout:() => void;
     loginFunction:(email: string, password: string) => void;
+    setFilter:(filter:Filter) => void;
   };

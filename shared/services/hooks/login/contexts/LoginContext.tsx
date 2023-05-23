@@ -4,7 +4,9 @@ import { LoginContextType } from "./LoginContextType";
 import { Api, ApiResponse } from "../../../api";
 import { UsuarioRegistrado } from "../../../../models/UsuarioRegistrado";
 import * as Location from 'expo-location';
-import { PermissionsAndroid } from "react-native";
+import { Alert, PermissionsAndroid } from "react-native";
+import { Filter } from "../../../../models/Filter";
+import { useTranslation } from "react-i18next";
 interface LoginProviderProps {
   children: React.ReactNode
 }
@@ -14,13 +16,15 @@ export const LoginContext = createContext<LoginContextType>({
   user: undefined,
   location: undefined,
   localidad: undefined,
+  filter: undefined,
   setLogin: () => { },
   setLoading: () => { },
   setUser: () => { },
   logout: () => { },
   setLocalidad: () => { },
   setLocation: () => { },
-  loginFunction: (email: string, password: string) => { }
+  loginFunction: (email: string, password: string) => { },
+  setFilter: () => { }
 });
 
 export const LoginProvider = ({ children }: LoginProviderProps) => {
@@ -29,6 +33,9 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
   const [user, setUser] = useState<UsuarioRegistrado | undefined>(undefined);
   const [location, setLocation] = useState<Location.LocationObject>();
   const [localidad, setLocalidad] = useState<string | undefined>();
+  const [filter, setFilter] = useState<Filter | undefined>();
+
+  const { t } = useTranslation();
 
   const logout = () => {
     AsyncStorage.removeItem('token');
@@ -44,20 +51,22 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
     user,
     location,
     localidad,
+    filter,
     setLogin,
     setLoading,
     setUser,
     logout,
     setLocalidad,
     setLocation,
-    loginFunction
+    loginFunction,
+    setFilter
   };
 
   const getLocation = async () => {
     try {
       if (location == undefined || location == null) {
         let { status } = await Location.requestForegroundPermissionsAsync();
-        console.log(status);
+        // console.log(status);
         if (status === 'granted') {
           await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest }).then((location) => obtenerLocalidad(location)).then((localidad) => {
             console.log(localidad);
@@ -114,7 +123,7 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
       return undefined;
     }
   };
-  
+
   async function logUser() {
     await AsyncStorage.getItem('token').then((value) => {
       if (value !== null) {
@@ -128,12 +137,15 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
               setLoading(false);
             })
           } else {
-            alert("Email or Password incorrect");
+            const ERROR = t("ERROR");
+            const EMAIL_PASSWORD_INCORRECTOS = t("EMAIL_PASSWORD_INCORRECTOS");
+            Alert.alert(ERROR, EMAIL_PASSWORD_INCORRECTOS);
+
             setLogin(false);
             setUser(undefined);
-            setLoading(false);
             setLocation(undefined);
             setLocalidad(undefined);
+            setLoading(false);
           }
         });
       } else {
@@ -143,6 +155,7 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
     });
   }
   useEffect(() => {
+    //logout();
     logUser();
   }, []);
 
@@ -156,7 +169,10 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
       setLogin(response.data != null);
       logUser();
     } else {
-      alert("Email or Password incorrect");
+      const ERROR = t("ERROR");
+      const EMAIL_PASSWORD_INCORRECTOS = t("EMAIL_PASSWORD_INCORRECTOS");
+      Alert.alert(ERROR, EMAIL_PASSWORD_INCORRECTOS);
+      
       setLogin(false);
     }
   }
