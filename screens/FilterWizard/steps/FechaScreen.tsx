@@ -1,96 +1,219 @@
-import React, { useEffect } from "react";
-import { Text, View, StyleSheet } from "react-native";
-import Constants from "expo-constants";
+import React, { useContext, useEffect, useState } from "react";
+import { Text, View, StyleSheet, Dimensions } from "react-native";
+import { MD3Colors, ProgressBar } from "react-native-paper";
+import { LoginContext } from "../../../shared/services/hooks/login/contexts/LoginContext";
+import { I18nContext, useTranslation } from "react-i18next";
+import CustomButton from "../../../components/Buttons/CustomButton";
+import { Calendar, LocaleConfig } from "react-native-calendars";
 
-import { useForm, Controller } from "react-hook-form";
-import { WizardStore } from "../../../shared/store/WizardStore";
-import { Button, Checkbox, MD3Colors, ProgressBar, Divider } from "react-native-paper";
-import { useIsFocused } from "@react-navigation/native";
-
-interface FormData {
-  termsAccepted: string;
-  privacyAccepted: string;
+interface UbicationScreenProps {
+  navigation: any;
 }
 
-export default function FechaScreen({ navigation }: { navigation: any }) {
+const FechaScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => null,
     });
   }, [navigation]);
 
-  const isFocused = useIsFocused();
+  const { filter, setFilter } = useContext(LoginContext);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [error, setError] = useState(false);
+  const today = new Date();
+
+  const handleDateSelect = (date: string) => {
+    const selected = new Date(date);
+    setSelectedDate(selected);
+    setError(false);
+  };
+
+  const { t } = useTranslation();
+  const { i18n } = useContext(I18nContext);
+  const [calendarKey, setCalendarKey] = useState(Date.now());
 
   useEffect(() => {
-    if (isFocused) {
-      WizardStore.update((s) => {
-        s.progress = 66;
-      });
+    const updateLanguage = () => {
+      LocaleConfig.defaultLocale = i18n.language;
+    };
 
-      console.log("updated state...", WizardStore.getRawState().progress);
+    i18n.on('languageChanged', updateLanguage);
+
+    return () => {
+      i18n.off('languageChanged', updateLanguage);
+    };
+  }, [i18n]);
+
+  const onSubmit = () => {
+    if (selectedDate != null) {
+      var filterFecha = filter;
+      if (filterFecha == null)
+        filterFecha = { localidad: undefined, fecha: selectedDate, deporte: undefined };
+      else
+        filterFecha.fecha = selectedDate;
+
+      setFilter(filterFecha);
+
+      navigation.navigate("Deporte");
+    } else {
+      setError(true);
     }
-  }, [isFocused]);
-
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm<FormData>({mode: "onBlur", defaultValues: WizardStore.useState((s) => s) });
-
-  const onSubmit = (data: FormData) => {
-    WizardStore.update((s) => {
-      s.progress = 100;
-    });
-    navigation.navigate("Confirmation");
   };
+
+  const toDeporte = () => {
+    navigation.navigate("Deporte");
+  };
+
+  LocaleConfig.locales['es'] = {
+    monthNames: [
+      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio',
+      'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ],
+    monthNamesShort: [
+      'Ene.', 'Feb.', 'Mar.', 'Abr.', 'May.', 'Jun.',
+      'Jul.', 'Ago.', 'Sept.', 'Oct.', 'Nov.', 'Dic.'
+    ],
+    dayNames: [
+      'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'
+    ],
+    dayNamesShort: ['Do', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+    today: 'Hoy'
+  };
+
+  LocaleConfig.locales['en'] = {
+    monthNames: [
+      'January', 'February', 'March', 'April', 'May', 'June', 'July',
+      'August', 'September', 'October', 'November', 'December'
+    ],
+    monthNamesShort: [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ],
+    dayNames: [
+      'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
+    ],
+    dayNamesShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    today: 'Today'
+  };
+
+  LocaleConfig.locales['ca'] = {
+    monthNames: [
+      'Gener', 'Febrer', 'Març', 'Abril', 'Maig', 'Juny', 'Juliol',
+      'Agost', 'Setembre', 'Octubre', 'Novembre', 'Desembre'
+    ],
+    monthNamesShort: [
+      'Gen', 'Feb', 'Mar', 'Abr', 'Mai', 'Jun',
+      'Jul', 'Ago', 'Set', 'Oct', 'Nov', 'Des'
+    ],
+    dayNames: [
+      'Diumenge', 'Dilluns', 'Dimarts', 'Dimecres', 'Dijous', 'Divendres', 'Dissabte'
+    ],
+    dayNamesShort: ['Dg', 'Dl', 'Dt', 'Dc', 'Dj', 'Dv', 'Ds'],
+    today: 'Avui'
+  };
+
+  useEffect(() => {
+    const updateDeportesWithTranslation = () => {
+      LocaleConfig.defaultLocale = i18n.language;
+      setCalendarKey(Date.now());
+    };
+
+    i18n.on('languageChanged', updateDeportesWithTranslation);
+
+    return () => {
+      i18n.off('languageChanged', updateDeportesWithTranslation);
+    };
+  }, [i18n]);
 
   return (
     <View style={styles.container}>
       <ProgressBar
         style={styles.progressBar}
-        progress={WizardStore.useState((s) => s.progress) / 100}
+        progress={0.65}
         color={MD3Colors.primary60}
       />
-      <View style={{ paddingHorizontal: 16 }}>
-        <View style={styles.formEntry}>
-          
-        </View>
-        <Divider />
-        <View style={styles.formEntry}>
-          
-        </View>
-        <Divider />
-        <Button
-          mode="outlined"
-          style={[styles.button, { marginTop: 40 }]}
-          onPress={() => navigation.goBack()}
-        >
-          GO BACK
-        </Button>
-        <Button
-          onPress={handleSubmit(onSubmit)}
-          mode="outlined"
-          style={styles.button}
-        >
-          NEXT
-        </Button>
+      <View style={{ flex: 1, justifyContent: 'space-between', margin: 20 }}>
+        <View>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+            <Text style={{ fontSize: 24 }} className="font-semibold mt-1">{t("SELECCIONAR_FECHA_JUGAR")}</Text>
+          </View>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
+            <Calendar
+              key={calendarKey}
+              firstDay={1}
+              onDayPress={(day) => handleDateSelect(day.dateString)}
+              markedDates={{
+                [today.toISOString().slice(0, 10)]: { selected: false, marked: true, selectedColor: '#04D6C8' },
+                [selectedDate !== null ? selectedDate.toISOString().slice(0, 10) : '']: { selected: true, marked: true, selectedColor: '#04D6C8' },
+              }}
+              style={{ width: Dimensions.get('window').width - 40 }}
+              theme={{
+                todayTextColor: "#04D6C8",
+                arrowColor: "#04D6C8",
+                dotColor: "#04D6C8",
+                textDayFontSize: 20,
+                textMonthFontSize: 24,
+                textDayHeaderFontSize: 16,
+              }}
 
+              minDate={today.toISOString().slice(0, 10)}
+            />
+          </View>
+          {error && (
+            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+              <Text className="text-error">{t("SELECCIONAR_UNA_FECHA")}</Text>
+            </View>
+          )}
+          {selectedDate && (
+            <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop:10, alignItems: 'center' }}>
+              <Text style={{ fontSize: 18, textAlign: 'center' }}>
+                <Text style={{ fontWeight: 'bold', color: '#04D6C8' }}>{selectedDate.toLocaleDateString(i18n.language == "en" ? 'en-US' : 'es')}</Text>
+              </Text>
+            </View>
+          )}
+        </View>
+
+        <View style={{ justifyContent: 'flex-end' }}>
+          <CustomButton
+            onPress={() => onSubmit()}
+            buttonText={t("MOSTRAR_RESULTADOS")}
+            colorButtom='#04D6C8'
+            colorText='white'
+            colorButtomHover="#04D6C8"
+            colorTextHover="white"
+            iconRight="search"
+          />
+          <CustomButton
+            onPress={toDeporte}
+            buttonText={t("VOLVER_DEPORTE")}
+            colorButtom='transparent'
+            colorText='#04D6C8'
+            colorButtomHover="#04D6C850"
+            colorTextHover="white"
+            iconLeft="chevron-left"
+          />
+        </View>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  button: {
-    margin: 8,
-  },
-  formEntry: {
-    // margin: 8,
-  },
   container: {
     flex: 1,
+    backgroundColor: 'white'
   },
   progressBar: {
     marginBottom: 16,
+    height: 6,
+    paddingHorizontal: 0,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
 });
+
+export default FechaScreen;

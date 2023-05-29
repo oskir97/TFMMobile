@@ -137,9 +137,15 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
               setLoading(false);
             })
           } else {
-            const ERROR = t("ERROR");
-            const EMAIL_PASSWORD_INCORRECTOS = t("EMAIL_PASSWORD_INCORRECTOS");
-            Alert.alert(ERROR, EMAIL_PASSWORD_INCORRECTOS);
+            if(value.error == "Request failed with status code 403"){
+              const ERROR = t("ERROR");
+              const EMAIL_PASSWORD_INCORRECTOS = t("EMAIL_PASSWORD_INCORRECTOS");
+              Alert.alert(ERROR, EMAIL_PASSWORD_INCORRECTOS);
+            }else{
+              const ERROR = t("ERROR");
+              const ERROR_APLICACION = t("ERROR_APLICACION");
+              Alert.alert(ERROR, ERROR_APLICACION);
+            }
 
             setLogin(false);
             setUser(undefined);
@@ -162,16 +168,22 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
   const api = new Api<any>();
 
   async function loginFunction(email: string, password: string) {
-    setLoading(true);
     const response: ApiResponse<string> = await api.post('/Usuario/Login', { email, password });
     if (!response.error) {
       await AsyncStorage.setItem('token', response.data!);
       setLogin(response.data != null);
+      setLoading(true);
       logUser();
     } else {
-      const ERROR = t("ERROR");
-      const EMAIL_PASSWORD_INCORRECTOS = t("EMAIL_PASSWORD_INCORRECTOS");
-      Alert.alert(ERROR, EMAIL_PASSWORD_INCORRECTOS);
+      if(response.error == "Request failed with status code 403"){
+        const ERROR = t("ERROR");
+        const EMAIL_PASSWORD_INCORRECTOS = t("EMAIL_PASSWORD_INCORRECTOS");
+        Alert.alert(ERROR, EMAIL_PASSWORD_INCORRECTOS);
+      }else{
+        const ERROR = t("ERROR");
+        const ERROR_APLICACION = t("ERROR_APLICACION");
+        Alert.alert(ERROR, ERROR_APLICACION);
+      }
       
       setLogin(false);
     }

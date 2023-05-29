@@ -28,9 +28,7 @@ const LoadingScreen = (props: LoginProps) => {
           <Text className="text-3xl text-[#04D6C8] font-semibold">{` ${t("ENTRETENTE")}`}</Text>
         </View>
         <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: 'center', paddingTop: 70 }}>
-          <Text style={{ fontSize: 30, fontWeight: 'bold' }}>
-            {`${t("CARGANDO")}${points}`}
-          </Text>
+        <ImageBackground source={require('../../assets/images/loading.gif')} style={{ height: 230, width: 230 }} imageStyle={{ borderRadius: 10 }}></ImageBackground>
         </View>
       </View>
     </View>

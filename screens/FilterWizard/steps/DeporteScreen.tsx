@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import Constants from "expo-constants";
 
@@ -6,13 +6,17 @@ import { useForm, Controller } from "react-hook-form";
 import { WizardStore } from "../../../shared/store/WizardStore";
 import { Button, MD3Colors, ProgressBar, TextInput } from "react-native-paper";
 import { useIsFocused } from "@react-navigation/native";
+import CustomButton from "../../../components/Buttons/CustomButton";
+import { useTranslation } from "react-i18next";
+import { Deporte } from "../../../shared/models/Deporte";
+import { LoginContext } from "../../../shared/services/hooks/login/contexts/LoginContext";
+import SportTypes from "../../../components/SportTypes/SportTypes";
 
-interface FormData {
-  birthPlace: string;
-  maidenName: string;
+interface DeporteScreenProps {
+  navigation: any;
 }
 
-export default function DeporteScreen({ navigation }: { navigation: any }) {
+const DeporteScreen: React.FC<DeporteScreenProps> = ({ navigation }) => {
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => null,
@@ -20,55 +24,78 @@ export default function DeporteScreen({ navigation }: { navigation: any }) {
   }, [navigation]);
 
   const isFocused = useIsFocused();
+  const { filter, setFilter, localidad } = useContext(LoginContext);
+  const [deporteAsignado, setDeporteAsignado] = useState<Deporte | undefined>();
+  const [error, setError] = useState(false);
 
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm<FormData>({ defaultValues: WizardStore.useState((s) => s) });
+  const { t } = useTranslation();
 
-  useEffect(() => {
-    if (isFocused) {
-      WizardStore.update((s) => {
-        s.progress = 33;
-      });
+  const onSubmit = () => {
+    if (deporteAsignado != undefined) {
+      var filterUbicacion = filter;
+      if (filterUbicacion == undefined)
+        filterUbicacion = { localidad: localidad, fecha: undefined, deporte: deporteAsignado };
+      else
+        filterUbicacion.deporte = deporteAsignado
 
-      console.log("updated state...", WizardStore.getRawState().progress);
+      setFilter(filterUbicacion);
+
+      navigation.navigate("Fecha");
+    } else {
+      setError(true);
     }
-  }, [isFocused]);
+  };
 
-  const onSubmit = (data: FormData) => {
-    WizardStore.update((s) => {
-      s.progress = 66;
-      s.birthPlace = data.birthPlace;
-      s.maidenName = data.maidenName;
-    });
-    navigation.navigate("Fecha");
+  const toUbicacion = () => {
+    navigation.navigate("Ubicación");
   };
 
   return (
     <View style={styles.container}>
       <ProgressBar
         style={styles.progressBar}
-        progress={WizardStore.useState((s) => s.progress) / 100}
+        progress={0.35}
         color={MD3Colors.primary60}
       />
-      <View style={{ paddingHorizontal: 16 }}>
+      <View style={{ flex: 1, justifyContent: 'space-between', margin: 20 }}>
+        <View>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+            <Text style={{ fontSize: 24 }} className="font-semibold mt-1">{t("SELECCIONAR_UN_DEPORTE")}</Text>
+          </View>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
+            <SportTypes setSelectedDeporte={setDeporteAsignado} selectedDeporte={deporteAsignado} />
+          </View>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 
-        <Button
-          mode="outlined"
-          style={[styles.button, { marginTop: 40 }]}
-          onPress={() => navigation.goBack()}
-        >
-          GO BACK
-        </Button>
-        <Button
-          onPress={handleSubmit(onSubmit)}
-          mode="outlined"
-          style={styles.button}
-        >
-          NEXT
-        </Button>
+          </View>
+          {error && (
+            <View style={{alignItems: 'center', justifyContent: 'center'}}>
+              <Text className="text-error">{t("SELECCIONAR_UN_DEPORTE")}</Text>
+            </View>
+          )}
+        </View>
+
+        <View style={{ justifyContent: 'flex-end' }}>
+          <CustomButton
+            onPress={() => onSubmit()}
+            buttonText={t("SELECCIONAR_FECHA")}
+            colorButtom='#04D6C8'
+            colorText='white'
+            colorButtomHover="#04D6C8"
+            colorTextHover="white"
+            iconRight="chevron-right"
+          />
+          <CustomButton
+            onPress={toUbicacion}
+            buttonText={t("VOLVER_UBICACION")}
+            colorButtom='transparent'
+            colorText='#04D6C8'
+            colorButtomHover="#04D6C850"
+            colorTextHover="white"
+            iconLeft="chevron-left"
+          // onPress={() => console.log(password)}
+          />
+        </View>
       </View>
     </View>
   );
@@ -88,3 +115,5 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
 });
+
+export default DeporteScreen;

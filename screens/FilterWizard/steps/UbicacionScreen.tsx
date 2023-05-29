@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { Text, View, StyleSheet } from "react-native";
 
 import { SubmitHandler, useForm, Controller, Control } from "react-hook-form";
-import { MD3Colors, ProgressBar, TextInput } from "react-native-paper";
+import { IconButton, MD3Colors, ProgressBar, TextInput } from "react-native-paper";
 import { LoginContext } from "../../../shared/services/hooks/login/contexts/LoginContext";
 import { useTranslation } from "react-i18next";
 import CustomButton from "../../../components/Buttons/CustomButton";
@@ -56,7 +56,7 @@ const UbicacionScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
           {localidadAsignada != undefined &&
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20, marginLeft: 15 }}>
               <Text style={{ fontSize: 18 }}>
-              {t("EN")}<Text style={{ fontWeight: 'bold', color:'#04D6C8' }}>{localidadAsignada}</Text>
+                {t("EN")} <Text style={{ fontWeight: 'bold', color: '#04D6C8' }}>{localidadAsignada}</Text>
               </Text>
             </View>}
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -74,13 +74,13 @@ const UbicacionScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
                 const localidadMaps = details?.address_components.find(component => component.types.includes('locality'));
                 // const domicilio = details?.address_components.find(component => component.types.includes('route'));
                 // const codigoPostal = details?.address_components.find(component => component.types.includes('postal_code'));
-                if(localidadMaps){
+                if (localidadMaps) {
                   setLocalidadAsignada(localidadMaps?.long_name);
                   setError(false);
-                }else if(localidad != undefined){
+                } else if (localidad != undefined) {
                   setLocalidadAsignada(localidad);
                   setError(false);
-                }else{
+                } else {
                   setError(true);
                 }
               }}
@@ -92,8 +92,8 @@ const UbicacionScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
             />
           </View>
           {error && (
-              <Text className="text-error">{t("SELECCIONAR_UNA_LOCALIDAD")}</Text>
-            )}
+            <Text className="text-error">{t("SELECCIONAR_UNA_LOCALIDAD")}</Text>
+          )}
         </View>
 
         <CustomButton
@@ -103,6 +103,7 @@ const UbicacionScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
           colorText='white'
           colorButtomHover="#04D6C8"
           colorTextHover="white"
+          iconRight="chevron-right"
         />
       </View>
     </View>
