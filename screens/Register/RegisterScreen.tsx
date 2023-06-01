@@ -9,6 +9,7 @@ import CustomPasswordTextInput from "../../components/InputPasswordText/CustomPa
 import { Ubication } from "../../shared/models/Ubication";
 import CustomInputModalMaps from "../../components/Modals/CustomInputModalMaps";
 import { I18nContext, useTranslation } from "react-i18next";
+import Menu from "../../components/Menu/Menu";
 
 const RegisterScreen = (props: RegisterProps) => {
 
@@ -39,8 +40,6 @@ const RegisterScreen = (props: RegisterProps) => {
       data.localidad = location.localidad;
 
       const result = await handleRegistro(data);
-      
-      console.log(result);
       
       const registroExitoso = t("REGISTRO_EXITOSO");
       const bienvenidoIniciaSesion = t("BIENVENIDO_INICIA_SESION");
@@ -89,6 +88,8 @@ const RegisterScreen = (props: RegisterProps) => {
   // }, []);
 
   return (
+    <>
+    <Menu showReturnWizard={false} showLang={true}/>
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
       <KeyboardAvoidWrapper>
         <View style={{ paddingHorizontal: 16, marginBottom: 30 }}>
@@ -313,6 +314,7 @@ const RegisterScreen = (props: RegisterProps) => {
       </KeyboardAvoidWrapper>
       <CustomInputModalMaps login={true} visible={locationOpen} setVisible={setLocationOpen} animationType={"none"} title={t("MODIFICAR_UBICACION")} lastlocation={location.domicilio} onConfirm={handleLocation} onCancel={() => setLocationOpen(false)} />
     </View>
+    </>
   );
 };
 

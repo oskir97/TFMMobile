@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import { useLinkTo, useNavigation, useNavigationState } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Modal, View, Text, Pressable, StyleSheet, Image } from "react-native";
-import { Appbar, Avatar, Divider, Menu } from "react-native-paper";
+import { Modal, View, Text, Pressable, StyleSheet, Image, useWindowDimensions, TouchableOpacity, ImageBackground } from "react-native";
+import { Appbar, Avatar, Divider, IconButton, Menu } from "react-native-paper";
+import { MenuProps } from "../../tfmmobile";
 
-const CustomLanguagePicker = () => {
+const CustomLanguagePicker: React.FC<MenuProps> = ({ showReturnWizard, text, showusuario, userMenu }) => {
   const { i18n, t } = useTranslation();
+  const linkTo = useLinkTo();
 
   const languages = [
     { name: 'es', label: 'Español', flag: require('../../assets/images/es_flag.png') },
@@ -24,9 +27,35 @@ const CustomLanguagePicker = () => {
 
   const isLanguageDisabled = (lang: string) => i18n.language === lang;
 
+  const handleGoBack = () => {
+    linkTo('/Ubicación')
+  };
+
+  const truncateText = (text: string, maxLength: number): string => {
+    if (text.length <= maxLength) {
+      return text;
+    }
+    return text.slice(0, maxLength - 3) + '...';
+  };
+
+  const windowWidth = useWindowDimensions().width;
+  const maxWidth = windowWidth * 0.62;
+
   return (
     <View>
       <Appbar.Header style={{ backgroundColor: '#04D6C8', borderBottomColor: '#106F69', borderBottomWidth: 2 }}>
+        {showReturnWizard && (
+          <IconButton
+            icon="arrow-left"
+            iconColor="white"
+            onPress={handleGoBack}
+          />
+        )}
+        {
+          text && (
+            <Text className="font-semibold mt-1" style={{color:'white', fontSize: 20}}>{truncateText(text, maxWidth / 10)}</Text>
+          )
+        }
         <Appbar.Content title="" />
         <Menu
           visible={menuVisible}
@@ -38,7 +67,7 @@ const CustomLanguagePicker = () => {
           {languages.map((lang) => (
             <React.Fragment key={lang.name}>
               <Menu.Item
-                style={{ width: 150}}
+                style={{ width: 150 }}
                 onPress={() => handleLanguageSelect(lang.name)}
                 title={
                   <View style={styles.menuItemContent}>
@@ -51,6 +80,11 @@ const CustomLanguagePicker = () => {
             </React.Fragment>
           ))}
         </Menu>
+        {showusuario && (
+          <TouchableOpacity onPress={userMenu}>
+          <ImageBackground source={require('../../assets/images/user.png')} style={{ height: 35, width: 35, marginRight:10 }} imageStyle={{ borderRadius: 25 }}></ImageBackground>
+        </TouchableOpacity>
+        )}
       </Appbar.Header>
     </View>
   );

@@ -5,10 +5,13 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { ArrowRightOnRectangleIcon } from "react-native-heroicons/solid";
 import { LoginContext } from "../../shared/services/hooks/login/contexts/LoginContext";
 import CustomConfirmationModal from "../Modals/CustomConfirmationModal";
+import { useTranslation } from "react-i18next";
 
 const CustomDrawer = (props: any) => {
-  const { logout } = useContext(LoginContext);
+  const { logout, user } = useContext(LoginContext);
   const [showModal, setShowModal] = useState(false);
+
+  const { t } = useTranslation();
 
   const handleConfirm = () => {
     setShowModal(false);
@@ -17,10 +20,10 @@ const CustomDrawer = (props: any) => {
   
   return (
     <View style={{ flex: 1 }}>
-      <DrawerContentScrollView {...props} contentContainerStyle={{ backgroundColor: '#8200d6' }}>
-        <ImageBackground source={require('../../assets/images/menu-bg.jpeg')} style={{ padding: 20 }}>
+      <DrawerContentScrollView {...props} contentContainerStyle={{ backgroundColor: '#026B64' }}>
+        <ImageBackground source={require('../../assets/images/menu-bg2.jpeg')} style={{ padding: 20 }}>
           <Image source={require('../../assets/images/user.png')} style={{ height: 80, width: 80, borderRadius: 40, marginBottom: 10 }} />
-          <Text className="font-semibold" style={{ color: '#fff', fontSize: 18 }}>Oscar Martínez Martínez</Text>
+          <Text className="font-semibold" style={{ color: '#fff', fontSize: 18 }}>{`${user?.nombre} ${user?.apellidos}`}</Text>
         </ImageBackground>
         <View style={{ flex: 1, backgroundColor: '#fff', paddingTop: 10 }}>
           <DrawerItemList {...props} />
@@ -30,7 +33,7 @@ const CustomDrawer = (props: any) => {
         <TouchableOpacity onPress={() => setShowModal(true)} style={{ paddingVertical: 10 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <ArrowRightOnRectangleIcon color={'black'} size={22} />
-            <Text style={{fontSize:15, marginLeft:5}}>Cerrar sesión</Text>
+            <Text style={{fontSize:15, marginLeft:5}}>{t('CERRAR_SESION')}</Text>
           </View>
         </TouchableOpacity>
       </View>

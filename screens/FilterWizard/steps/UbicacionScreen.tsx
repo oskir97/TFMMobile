@@ -7,6 +7,7 @@ import { LoginContext } from "../../../shared/services/hooks/login/contexts/Logi
 import { useTranslation } from "react-i18next";
 import CustomButton from "../../../components/Buttons/CustomButton";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import Menu from "../../../components/Menu/Menu";
 
 interface UbicationScreenProps {
   navigation: any;
@@ -20,7 +21,7 @@ const UbicacionScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
   }, [navigation]);
 
   const { filter, setFilter, localidad } = useContext(LoginContext);
-  const [localidadAsignada, setLocalidadAsignada] = useState<string | undefined>(localidad);
+  const [localidadAsignada, setLocalidadAsignada] = useState<string | undefined>(filter && filter.localidad? filter.localidad : localidad);
   const [error, setError] = useState(false);
 
   const { t } = useTranslation();
@@ -42,6 +43,8 @@ const UbicacionScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
   };
 
   return (
+    <>
+    <Menu showReturnWizard={false} showLang={true} showusuario={true} userMenu={() => navigation.openDrawer()}/>
     <View style={styles.container}>
       <ProgressBar
         style={styles.progressBar}
@@ -107,6 +110,7 @@ const UbicacionScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
         />
       </View>
     </View>
+    </>
   );
 }
 

@@ -12,10 +12,11 @@ export interface DeporteTraducido {
 
 export interface SportProps {
     selectedDeporte:any;
+    iddeporte?:number |undefined;
     setSelectedDeporte:(deporte: Deporte |undefined) => void;
   }
 
-  const SportTypes: React.FC<SportProps> = ({ setSelectedDeporte, selectedDeporte }) => {
+  const SportTypes: React.FC<SportProps> = ({ setSelectedDeporte, selectedDeporte, iddeporte }) => {
     const { deportes, setDeportes } = useDeportes();
     const { height } = useWindowDimensions();
   
@@ -38,6 +39,10 @@ export interface SportProps {
       };
   
       i18n.on('languageChanged', updateDeportesWithTranslation);
+
+      if(iddeporte){
+        setSelectedDeporte(deportes?.find(d=>d.iddeporte = iddeporte));
+      }
   
       return () => {
         i18n.off('languageChanged', updateDeportesWithTranslation);

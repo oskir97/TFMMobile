@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import { Deporte } from "../../shared/models/Deporte";
 import CustomDateInput from "../InputDate/CustomDateInput";
 import CustomInputMaps from "../Modals/CustomInputModalMaps";
+import { useTranslation } from "react-i18next";
 
 export enum Sort {
     Distancia,
@@ -30,6 +31,7 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
     const [selectedDeporte, setSelectedDeporte] = useState<Deporte | undefined>(filter?.deporte);
     const [selectedSort, setSort] = useState<Sort | undefined>(filter?.sort);
     const [fecha, setFecha] = useState<Date |undefined>(filter?.fecha);
+    const { t } = useTranslation();
 
     const { control, handleSubmit, formState } = useForm<FilterData>({
         defaultValues: {
@@ -58,7 +60,7 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
                     <View style={styles.modal}>
                         <View style={{ padding: 20 }}>
                             <Text style={styles.title}>{title}</Text>
-                            <Text className="font-semibold">¿Qué deporte te gustaría jugar?</Text>
+                            <Text className="font-semibold">{t('QUE_DEPORTE_JUGAR')}</Text>
                             <SportTypes setSelectedDeporte={setSelectedDeporte} selectedDeporte={selectedDeporte} />
                             <CustomDateInput
                                 nameController="fecha"
@@ -78,7 +80,7 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
                                 )}
                                 onSubmit={handleSubmit(onSubmit)}
                             />
-                            <Text className="font-semibold mt-2 mb-4">¿Por qué quieres ordenar?</Text>
+                            <Text className="font-semibold mt-2 mb-4">{t('POR_QUE_ORDENAR')}</Text>
                             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                                 <TouchableOpacity
                                     style={{
@@ -95,7 +97,7 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
                                     }}
                                     onPress={() => setSort(Sort.Distancia)}
                                 >
-                                    <Text style={{ marginRight: 6, color: selectedSort == Sort.Distancia ? 'white' : 'black' }}>Distancia</Text>
+                                    <Text style={{ marginRight: 6, color: selectedSort == Sort.Distancia ? 'white' : 'black' }}>{t('DISTANCIA')}</Text>
                                     <Ionicons name="filter" style={{ marginRight: 6, color: selectedSort == Sort.Distancia ? 'white' : 'black' }} size={20} />
                                 </TouchableOpacity>
                                 <TouchableOpacity
@@ -113,7 +115,7 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
                                     }}
                                     onPress={() => setSort(Sort.Valoracion)}
                                 >
-                                    <Text style={{ marginRight: 6, color: selectedSort == Sort.Valoracion ? 'white' : 'black' }}>Valoración</Text>
+                                    <Text style={{ marginRight: 6, color: selectedSort == Sort.Valoracion ? 'white' : 'black' }}>{t('VALORACION')}</Text>
                                     <Ionicons name="filter" style={{ marginRight: 6, color: selectedSort == Sort.Valoracion ? 'white' : 'black' }} size={20} />
                                 </TouchableOpacity>
                                 <TouchableOpacity
@@ -131,13 +133,13 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
                                     }}
                                     onPress={() => setSort(Sort.Precio)}
                                 >
-                                    <Text style={{ marginRight: 6, color: selectedSort == Sort.Precio ? 'white' : 'black' }}>Precio</Text>
+                                    <Text style={{ marginRight: 6, color: selectedSort == Sort.Precio ? 'white' : 'black' }}>{t('PRECIO')}</Text>
                                     <Ionicons name="filter" style={{ marginRight: 6, color: selectedSort == Sort.Precio ? 'white' : 'black' }} size={20} />
                                 </TouchableOpacity>
 
                             </ScrollView>
                             <View>
-                                <Text className="font-semibold mt-2 mb-4">¿Quieres reiniciar la búsqueda?</Text>
+                                <Text className="font-semibold mt-2 mb-4">{t('REINICIAR_BUSQUEDA')}</Text>
                                 <View style={{
                                     flexDirection: 'row',
                                     justifyContent: 'center'
@@ -146,17 +148,17 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
                                         <Text style={{
                                             color: 'black',
                                             fontWeight: 'bold',
-                                        }}>Resetear filtros</Text>
+                                        }}>{t('RESETEAR_FILTROS')}</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>
 
                             <View style={styles.buttoms}>
                                 <TouchableOpacity style={styles.buttomConfirm} onPress={handleSubmit(onSubmit)}>
-                                    <Text style={styles.buttomText}>Filtrar</Text>
+                                    <Text style={styles.buttomText}>{t('FILTRAR')}</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={styles.buttomCancel} onPress={onCancel}>
-                                    <Text style={styles.buttomText}>Cancelar</Text>
+                                    <Text style={styles.buttomText}>{t('CANCELAR')}</Text>
                                 </TouchableOpacity>
                             </View>
                             <TouchableOpacity style={styles.cancel} onPress={onCancel}>

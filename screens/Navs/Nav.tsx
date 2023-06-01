@@ -7,20 +7,28 @@ import RegisterPage from '../Register/RegisterScreen';
 import LoadingPage from '../Loading/LoadingScreen';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
-import { LoginContext } from '../../shared/services/hooks/login/contexts/LoginContext';
+import { LoginContext, LoginProvider } from '../../shared/services/hooks/login/contexts/LoginContext';
 import { HomeIcon, CalendarDaysIcon, AdjustmentsHorizontalIcon, ChatBubbleLeftEllipsisIcon, UserGroupIcon, ClockIcon } from "react-native-heroicons/solid";
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import CustomDrawer from '../../components/Drawer/CustomDrawer';
-
 import Ubicacion from "../FilterWizard/steps/UbicacionScreen";
 import Deporte from "../FilterWizard/steps/DeporteScreen";
 import Fecha from "../FilterWizard/steps/FechaScreen";
+import { useTranslation } from 'react-i18next';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 const Nav: React.FC = () => {
-    const { login, loading} = useContext(LoginContext);
+    const { login, loading } = useContext(LoginContext);
+    const { t } = useTranslation();
+
+    const inicioLabel = t('INICIO');
+    const reservasLabel = t('RESERVAS');
+    const partidosLabel = t('PARTIDOS');
+    const eventosLabel = t('EVENTOS');
+    const notificacionesLabel = t('NOTIFICACIONES');
+    const ajustesLabel = t('AJUSTES');
 
     const authNavigator = (
         <Stack.Navigator
@@ -42,48 +50,6 @@ const Nav: React.FC = () => {
         </Stack.Navigator>
     );
 
-    const mainNavigator = (
-        <Drawer.Navigator drawerContent={props => <CustomDrawer {...props} />}
-            screenOptions={{
-                headerShown: false,
-                drawerActiveBackgroundColor: '#04D6C8',
-                drawerActiveTintColor: '#fff',
-                drawerInactiveTintColor: '#333',
-                drawerLabelStyle: { marginLeft: -25, fontSize: 15 }
-            }}>
-            <Drawer.Screen name="Inicio" component={HomePage} options={{
-                drawerIcon: ({ color }) => (
-                    <HomeIcon size={22} color={color} />
-                )
-            }} />
-            <Drawer.Screen name="Reservas" component={HomePage} options={{
-                drawerIcon: ({ color }) => (
-                    <CalendarDaysIcon size={22} color={color} />
-                )
-            }} />
-            <Drawer.Screen name="Partidos" component={HomePage} options={{
-                drawerIcon: ({ color }) => (
-                    <UserGroupIcon size={22} color={color} />
-                )
-            }} />
-            <Drawer.Screen name="Eventos" component={HomePage} options={{
-                drawerIcon: ({ color }) => (
-                    <ClockIcon size={22} color={color} />
-                )
-            }} />
-            <Drawer.Screen name="Notificaciones" component={HomePage} options={{
-                drawerIcon: ({ color }) => (
-                    <ChatBubbleLeftEllipsisIcon size={22} color={color} />
-                )
-            }} />
-            <Drawer.Screen name="Ajustes" component={HomePage} options={{
-                drawerIcon: ({ color }) => (
-                    <AdjustmentsHorizontalIcon size={22} color={color} />
-                )
-            }} />
-        </Drawer.Navigator>
-    );
-
     const loadingNavigator = (
         <Stack.Navigator
             initialRouteName="Loading"
@@ -101,20 +67,74 @@ const Nav: React.FC = () => {
 
     const filterStepsNavigator = (
 
-        <Stack.Navigator initialRouteName="Ubicacion" screenOptions={{
-            headerShown: false
-        }}>
-            <Stack.Screen name="Ubicación" component={Ubicacion} />
-            <Stack.Screen name="Deporte" component={Deporte} />
-            <Stack.Screen name="Fecha" component={Fecha} />
-        </Stack.Navigator>
+        <Drawer.Navigator drawerContent={props => <CustomDrawer {...props} />}
+            initialRouteName="Inicio"
+            screenOptions={{
+                headerShown: false,
+                drawerActiveBackgroundColor: '#04D6C8',
+                drawerActiveTintColor: '#fff',
+                drawerInactiveTintColor: '#333',
+                drawerLabelStyle: { marginLeft: -25, fontSize: 15 }
+            }}>
+            <Drawer.Screen name="Ubicación" component={Ubicacion} options={{
+                drawerLabel: () => null, drawerItemStyle: {
+                    display: 'none',
+                },
+            }} />
+            <Drawer.Screen name="Deporte" component={Deporte} options={{
+                drawerLabel: () => null, drawerItemStyle: {
+                    display: 'none',
+                },
+            }} />
+            <Drawer.Screen name="Fecha" component={Fecha} options={{
+                drawerLabel: () => null, drawerItemStyle: {
+                    display: 'none',
+                },
+            }} />
+            <Drawer.Screen name="Inicio" component={HomePage} options={{
+                drawerIcon: ({ color }) => (
+                    <HomeIcon size={22} color={color} />
+                ),
+                drawerLabel: inicioLabel
+            }} />
+            <Drawer.Screen name="Reservas" component={HomePage} options={{
+                drawerIcon: ({ color }) => (
+                    <CalendarDaysIcon size={22} color={color} />
+                ),
+                drawerLabel: reservasLabel
+            }} />
+            <Drawer.Screen name="Partidos" component={HomePage} options={{
+                drawerIcon: ({ color }) => (
+                    <UserGroupIcon size={22} color={color} />
+                ),
+                drawerLabel: partidosLabel
+            }} />
+            <Drawer.Screen name="Eventos" component={HomePage} options={{
+                drawerIcon: ({ color }) => (
+                    <ClockIcon size={22} color={color} />
+                ),
+                drawerLabel: eventosLabel
+            }} />
+            <Drawer.Screen name="Notificaciones" component={HomePage} options={{
+                drawerIcon: ({ color }) => (
+                    <ChatBubbleLeftEllipsisIcon size={22} color={color} />
+                ),
+                drawerLabel: notificacionesLabel
+            }} />
+            <Drawer.Screen name="Ajustes" component={HomePage} options={{
+                drawerIcon: ({ color }) => (
+                    <AdjustmentsHorizontalIcon size={22} color={color} />
+                ),
+                drawerLabel: ajustesLabel
+            }} />
+        </Drawer.Navigator>
     );
 
     return (
 
-            <NavigationContainer>
-                {loading ? loadingNavigator : (login ? (filterStepsNavigator) : authNavigator)}
-            </NavigationContainer>
+        <NavigationContainer>
+            {loading ? loadingNavigator : (login ? filterStepsNavigator : authNavigator)}
+        </NavigationContainer>
     );
 };
 

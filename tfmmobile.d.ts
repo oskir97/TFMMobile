@@ -119,3 +119,11 @@ export interface IProps {
   export type CustomInputTextMapsProps = {
     setLocation?:any;
   }
+
+  export type MenuProps = {
+    showReturnWizard:boolean;
+    showLang:boolean;
+    text?:string;
+    showusuario?:any;
+    userMenu?:any;
+  }

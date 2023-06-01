@@ -4,7 +4,6 @@ import Nav from "./screens/Navs/Nav";
 import { LoginProvider } from './shared/services/hooks/login/contexts/LoginContext'
 import "./i18n.config";
 import { useTranslation } from "react-i18next";
-import LanguagePicker from "./components/LanguagePicker/CustomLanguagePicker";
 import { PaperProvider } from "react-native-paper";
 import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n.config';
@@ -17,12 +16,11 @@ const App: React.FC = () => {
         <TailwindProvider>
           {/* TailwindProvider */}
           <StatusBar style="light" />
-          <LanguagePicker />
-          <LoginProvider>
-            <I18nextProvider i18n={i18n}>
+          <I18nextProvider i18n={i18n}>
+            <LoginProvider>
               <Nav />
-            </I18nextProvider>
-          </LoginProvider>
+            </LoginProvider>
+          </I18nextProvider>
         </TailwindProvider>
       </PaperProvider>
     </>

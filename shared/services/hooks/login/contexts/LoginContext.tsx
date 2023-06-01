@@ -7,6 +7,7 @@ import * as Location from 'expo-location';
 import { Alert, PermissionsAndroid } from "react-native";
 import { Filter } from "../../../../models/Filter";
 import { useTranslation } from "react-i18next";
+import { useDeportes } from "../../deportes/useDeportes";
 interface LoginProviderProps {
   children: React.ReactNode
 }
@@ -39,6 +40,9 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
 
   const logout = () => {
     AsyncStorage.removeItem('token');
+    AsyncStorage.removeItem('localidad');
+    AsyncStorage.removeItem('iddeporte');
+    AsyncStorage.removeItem('fecha');
     setUser(undefined);
     setLogin(false);
     setLocalidad(undefined);
@@ -69,7 +73,6 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
         // console.log(status);
         if (status === 'granted') {
           await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest }).then((location) => obtenerLocalidad(location)).then((localidad) => {
-            console.log(localidad);
             setLocalidad(localidad);
             return localidad;
           });
@@ -124,6 +127,19 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
     }
   };
 
+  async function getStorageFilter() {
+    var filter: Filter | undefined = undefined;
+    const localidad = await AsyncStorage.getItem('localidad');
+    const iddeporte = await AsyncStorage.getItem('iddeporte');
+    const fecha = await AsyncStorage.getItem('fecha');
+
+    if(localidad && iddeporte && fecha){
+      filter = {localidad:localidad, deporte:Number(iddeporte), fecha:new Date(fecha)}
+    }
+
+    return filter;
+  }
+
   async function logUser() {
     await AsyncStorage.getItem('token').then((value) => {
       if (value !== null) {
@@ -132,16 +148,20 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
         api.get('/UsuarioRegistrado').then((value) => {
           if (!value.error) {
             getLocation().then(() => {
-              setUser(value.data);
-              setLogin(token != null);
-              setLoading(false);
+              console.log("Ubicación obtenida");
+              getStorageFilter().then((result:Filter |undefined) => {
+                setFilter(result);
+                setUser(value.data);
+                setLogin(token != null);
+                setLoading(false);
+              });
             })
           } else {
-            if(value.error == "Request failed with status code 403"){
+            if (value.error == "Request failed with status code 403") {
               const ERROR = t("ERROR");
               const EMAIL_PASSWORD_INCORRECTOS = t("EMAIL_PASSWORD_INCORRECTOS");
               Alert.alert(ERROR, EMAIL_PASSWORD_INCORRECTOS);
-            }else{
+            } else {
               const ERROR = t("ERROR");
               const ERROR_APLICACION = t("ERROR_APLICACION");
               Alert.alert(ERROR, ERROR_APLICACION);
@@ -175,16 +195,16 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
       setLoading(true);
       logUser();
     } else {
-      if(response.error == "Request failed with status code 403"){
+      if (response.error == "Request failed with status code 403") {
         const ERROR = t("ERROR");
         const EMAIL_PASSWORD_INCORRECTOS = t("EMAIL_PASSWORD_INCORRECTOS");
         Alert.alert(ERROR, EMAIL_PASSWORD_INCORRECTOS);
-      }else{
+      } else {
         const ERROR = t("ERROR");
         const ERROR_APLICACION = t("ERROR_APLICACION");
         Alert.alert(ERROR, ERROR_APLICACION);
       }
-      
+
       setLogin(false);
     }
   }

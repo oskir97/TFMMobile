@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import MainContainer from "../../components/Container/MainContainer";
 import KeyboardAvoidWrapper from "../../components/Container/KeyboardAvoidWrapper";
 import { useTranslation } from "react-i18next";
+import Menu from "../../components/Menu/Menu";
 
 const LoadingScreen = (props: LoginProps) => {
 
@@ -18,6 +19,8 @@ const LoadingScreen = (props: LoginProps) => {
   }, [points]);
 
   return (
+    <>
+    <Menu showReturnWizard={false} showLang={false}/>
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={{ paddingHorizontal: 16 }}>
         <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: 'center', paddingTop: 30 }}>
@@ -32,6 +35,7 @@ const LoadingScreen = (props: LoginProps) => {
         </View>
       </View>
     </View>
+    </>
   );
 };
 

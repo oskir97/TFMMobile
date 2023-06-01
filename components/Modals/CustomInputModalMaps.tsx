@@ -28,9 +28,7 @@ const CustomInputModalMaps: React.FC<CustomInputMapsProps> = ({ visible, onConfi
   }, []);
 
   const onSubmit = () => {
-    console.log("loc");
     const loc = location;
-    console.log(loc);
     setLocation(null);
     onConfirm(loc);
   };

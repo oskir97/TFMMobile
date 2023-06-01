@@ -11,6 +11,7 @@ import { useForm } from 'react-hook-form';
 import loginHook from "../../shared/services/hooks/login/useLogin";
 import CustomPasswordTextInput from "../../components/InputPasswordText/CustomPasswordTextInput";
 import { useTranslation, I18nContext } from "react-i18next";
+import Menu from "../../components/Menu/Menu";
 
 const LoginScreen = (props: LoginProps) => {
   const { logFunction } = loginHook();
@@ -29,10 +30,8 @@ const LoginScreen = (props: LoginProps) => {
 
   const onSubmit = async (data: LoginData) => {
     try {
-      console.log(data.email + " " + data.password);
       logFunction(data);
     } catch (error: any) {
-      console.log(error.message);
       const errormessage = t("ERROR");
       const erroraplicacion = t("ERROR_APLICACION");
       Alert.alert(errormessage, erroraplicacion);
@@ -61,6 +60,8 @@ const LoginScreen = (props: LoginProps) => {
   }, [i18n]);
 
   return (
+    <>
+    <Menu showReturnWizard={false} showLang={true}/>
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={{ paddingHorizontal: 16 }}>
         <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: 'center', paddingTop: 30 }}>
@@ -138,6 +139,7 @@ const LoginScreen = (props: LoginProps) => {
         </View>
       </View>
     </View>
+    </>
   );
 };
 

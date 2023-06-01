@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import { Deporte } from "../../../shared/models/Deporte";
 import { LoginContext } from "../../../shared/services/hooks/login/contexts/LoginContext";
 import SportTypes from "../../../components/SportTypes/SportTypes";
+import Menu from "../../../components/Menu/Menu";
 
 interface DeporteScreenProps {
   navigation: any;
@@ -34,9 +35,9 @@ const DeporteScreen: React.FC<DeporteScreenProps> = ({ navigation }) => {
     if (deporteAsignado != undefined) {
       var filterUbicacion = filter;
       if (filterUbicacion == undefined)
-        filterUbicacion = { localidad: localidad, fecha: undefined, deporte: deporteAsignado };
+        filterUbicacion = { localidad: localidad, fecha: undefined, deporte: deporteAsignado.iddeporte };
       else
-        filterUbicacion.deporte = deporteAsignado
+        filterUbicacion.deporte = deporteAsignado.iddeporte
 
       setFilter(filterUbicacion);
 
@@ -51,6 +52,8 @@ const DeporteScreen: React.FC<DeporteScreenProps> = ({ navigation }) => {
   };
 
   return (
+    <>
+    <Menu showReturnWizard={false} showLang={true} showusuario={true} userMenu={() => navigation.openDrawer()}/>
     <View style={styles.container}>
       <ProgressBar
         style={styles.progressBar}
@@ -63,7 +66,7 @@ const DeporteScreen: React.FC<DeporteScreenProps> = ({ navigation }) => {
             <Text style={{ fontSize: 24 }} className="font-semibold mt-1">{t("SELECCIONAR_UN_DEPORTE")}</Text>
           </View>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
-            <SportTypes setSelectedDeporte={setDeporteAsignado} selectedDeporte={deporteAsignado} />
+            <SportTypes setSelectedDeporte={setDeporteAsignado} selectedDeporte={deporteAsignado} iddeporte={filter && filter.deporte?filter.deporte : undefined} />
           </View>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 
@@ -98,6 +101,7 @@ const DeporteScreen: React.FC<DeporteScreenProps> = ({ navigation }) => {
         </View>
       </View>
     </View>
+    </>
   );
 }
 
@@ -110,9 +114,12 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    backgroundColor: 'white'
   },
   progressBar: {
     marginBottom: 16,
+    height: 6,
+    paddingHorizontal: 0,
   },
 });
 
