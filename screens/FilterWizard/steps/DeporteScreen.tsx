@@ -40,6 +40,8 @@ const DeporteScreen: React.FC<DeporteScreenProps> = ({ navigation }) => {
 
       setFilter(filterUbicacion);
 
+      setError(false);
+
       navigation.navigate("Fecha");
     } else {
       setError(true);
