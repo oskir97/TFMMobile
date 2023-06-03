@@ -13,163 +13,132 @@ import { Deporte } from "../../shared/models/Deporte";
 import CustomDateInput from "../InputDate/CustomDateInput";
 import CustomInputMaps from "../Modals/CustomInputModalMaps";
 import { useTranslation } from "react-i18next";
-
-export enum Sort {
-    Distancia,
-    Valoracion,
-    Precio
-}
-
-export type FilterData = {
-    fecha: Date | undefined;
-    deporte: Deporte | undefined;
-    sort: Sort | undefined;
-};
+import { Filter, Sort, TypeReservation } from "../../shared/models/Filter";
 
 const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, title, transparent, animationType, filter }) => {
 
-    const [selectedDeporte, setSelectedDeporte] = useState<Deporte | undefined>(filter?.deporte);
-    const [selectedSort, setSort] = useState<Sort | undefined>(filter?.sort);
-    const [fecha, setFecha] = useState<Date |undefined>(filter?.fecha);
+    const [selectedType, setSelectedType] = useState<TypeReservation | undefined>(filter?.type ? filter?.type : "Pista");
+    const [selectedSort, setSort] = useState<Sort | undefined>(filter?.sort ? filter?.sort : "Distancia");
     const { t } = useTranslation();
 
-    const { control, handleSubmit, formState } = useForm<FilterData>({
-        defaultValues: {
-            fecha: fecha
-        }
+    const { handleSubmit } = useForm<Filter>({
     });
 
-    const onSubmit = async (data: FilterData) => {
-        setFecha(data.fecha);
-        data.sort = selectedSort
-        data.deporte = selectedDeporte
-        onConfirm(data);
+    const onSubmit = () => {
+        filter.sort = selectedSort
+        filter.type = selectedType
+        onConfirm(filter);
     };
 
-    const reset = () => {
-        setFecha(new Date());
-        setSelectedDeporte(undefined);
-        setSort(undefined);
-        onConfirm({fecha:fecha, deporte:selectedDeporte, sort:selectedSort});
-    };
+    console.log(selectedSort);
 
     return (
-        <>
-            <Modal transparent={transparent} visible={visible} animationType={animationType}>
-                <View style={styles.container}>
-                    <View style={styles.modal}>
-                        <View style={{ padding: 20 }}>
-                            <Text style={styles.title}>{title}</Text>
-                            <Text className="font-semibold">{t('QUE_DEPORTE_JUGAR')}</Text>
-                            <SportTypes setSelectedDeporte={setSelectedDeporte} selectedDeporte={selectedDeporte} />
-                            <CustomDateInput
-                                nameController="fecha"
-                                control={control}
-                                label="¿Qué fecha?"
-                                placeholder="Introduce la fecha"
-                                minDate={new Date()}
-                                mode="date"
-                                rules={{
-                                    required: { value: true },
-                                    pattern: {
-                                        value: true
-                                    }
-                                }}
-                                errors={formState.errors.fecha && (
-                                    <Text className="text-error">{formState.errors.fecha.message}</Text>
-                                )}
-                                onSubmit={handleSubmit(onSubmit)}
-                            />
-                            <Text className="font-semibold mt-2 mb-4">{t('POR_QUE_ORDENAR')}</Text>
-                            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <Modal transparent={transparent} visible={visible} animationType={animationType}>
+            <View style={styles.container}>
+                <View style={styles.modal}>
+                    <View style={{ padding: 20 }}>
+                        <Text style={styles.title}>{title}</Text>
+                        <Text className="font-semibold" style={{ fontSize: 18 }}>{t('QUE_RESERVAR')}</Text>
+                        <View style={{ flexDirection: 'row' }}>
+                            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
                                 <TouchableOpacity
-                                    style={{
-                                        marginHorizontal: 10,
-                                        flexDirection: "row",
-                                        alignItems: "center",
-                                        borderWidth: 1,
-                                        borderColor: "#D0D0D0",
-                                        padding: 10,
-                                        borderRadius: 20,
-                                        width: 120,
-                                        justifyContent: "center",
-                                        backgroundColor: selectedSort == Sort.Distancia ? '#04D6C8' : 'white',
-                                    }}
-                                    onPress={() => setSort(Sort.Distancia)}
+                                    style={{ margin: 10, alignItems: 'center', justifyContent: 'center' }}
+                                    onPress={() => setSelectedType("Pista")}
                                 >
-                                    <Text style={{ marginRight: 6, color: selectedSort == Sort.Distancia ? 'white' : 'black' }}>{t('DISTANCIA')}</Text>
-                                    <Ionicons name="filter" style={{ marginRight: 6, color: selectedSort == Sort.Distancia ? 'white' : 'black' }} size={20} />
+                                    <MaterialIcons name="sports" color={selectedType && selectedType == 'Pista' ? '#04D6C8' : "#333"} size={60} />
+                                    <Text style={{ marginTop: 6, textAlign: 'center' }}>{t('PISTA')}</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
-                                    style={{
-                                        marginHorizontal: 10,
-                                        flexDirection: "row",
-                                        alignItems: "center",
-                                        borderWidth: 1,
-                                        borderColor: "#D0D0D0",
-                                        padding: 10,
-                                        borderRadius: 20,
-                                        width: 120,
-                                        justifyContent: "center",
-                                        backgroundColor: selectedSort == Sort.Valoracion ? '#04D6C8' : 'white',
-                                    }}
-                                    onPress={() => setSort(Sort.Valoracion)}
+                                    style={{ margin: 10, alignItems: 'center', justifyContent: 'center' }}
+                                    onPress={() => setSelectedType("Partido")}
                                 >
-                                    <Text style={{ marginRight: 6, color: selectedSort == Sort.Valoracion ? 'white' : 'black' }}>{t('VALORACION')}</Text>
-                                    <Ionicons name="filter" style={{ marginRight: 6, color: selectedSort == Sort.Valoracion ? 'white' : 'black' }} size={20} />
+                                    <MaterialIcons name="sports" color={selectedType && selectedType == 'Partido' ? '#04D6C8' : "#333"} size={60} />
+                                    <Text style={{ marginTop: 6, textAlign: 'center' }}>{t('PARTIDO')}</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
-                                    style={{
-                                        marginHorizontal: 10,
-                                        flexDirection: "row",
-                                        alignItems: "center",
-                                        borderWidth: 1,
-                                        borderColor: "#D0D0D0",
-                                        padding: 10,
-                                        borderRadius: 20,
-                                        width: 120,
-                                        justifyContent: "center",
-                                        backgroundColor: selectedSort == Sort.Precio ? '#04D6C8' : 'white',
-                                    }}
-                                    onPress={() => setSort(Sort.Precio)}
+                                    style={{ margin: 10, alignItems: 'center', justifyContent: 'center' }}
+                                    onPress={() => setSelectedType("Evento")}
                                 >
-                                    <Text style={{ marginRight: 6, color: selectedSort == Sort.Precio ? 'white' : 'black' }}>{t('PRECIO')}</Text>
-                                    <Ionicons name="filter" style={{ marginRight: 6, color: selectedSort == Sort.Precio ? 'white' : 'black' }} size={20} />
+                                    <MaterialIcons name="sports" color={selectedType && selectedType == 'Evento' ? '#04D6C8' : "#333"} size={60} />
+                                    <Text style={{ marginTop: 6, textAlign: 'center' }}>{t('EVENTO')}</Text>
                                 </TouchableOpacity>
-
                             </ScrollView>
-                            <View>
-                                <Text className="font-semibold mt-2 mb-4">{t('REINICIAR_BUSQUEDA')}</Text>
-                                <View style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'center'
-                                }}>
-                                    <TouchableOpacity style={styles.buttomReset} onPress={()=>reset()}>
-                                        <Text style={{
-                                            color: 'black',
-                                            fontWeight: 'bold',
-                                        }}>{t('RESETEAR_FILTROS')}</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
+                        </View>
+                        <Text className="font-semibold mt-2 mb-4" style={{ fontSize: 18, marginBottom:20 }}>{t('POR_QUE_ORDENAR')}</Text>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                            <TouchableOpacity
+                                style={{
+                                    marginHorizontal: 10,
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    borderWidth: 1,
+                                    borderColor: "#D0D0D0",
+                                    padding: 10,
+                                    borderRadius: 20,
+                                    width: 120,
+                                    justifyContent: "center",
+                                    backgroundColor: selectedSort == "Distancia" ? '#04D6C8' : 'white',
+                                }}
+                                onPress={() => setSort("Distancia")}
+                            >
+                                <Text style={{ marginRight: 6, color: selectedSort == "Distancia" ? 'white' : 'black' }}>{t('DISTANCIA')}</Text>
+                                <Ionicons name="navigate" style={{ marginRight: 6, color: selectedSort == "Distancia" ? 'white' : 'black' }} size={20} />
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={{
+                                    marginHorizontal: 10,
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    borderWidth: 1,
+                                    borderColor: "#D0D0D0",
+                                    padding: 10,
+                                    borderRadius: 20,
+                                    width: 120,
+                                    justifyContent: "center",
+                                    backgroundColor: selectedSort == "Valoracion" ? '#04D6C8' : 'white',
+                                }}
+                                onPress={() => setSort("Valoracion")}
+                            >
+                                <Text style={{ marginRight: 6, color: selectedSort == "Valoracion" ? 'white' : 'black' }}>{t('VALORACION')}</Text>
+                                <Ionicons name="star" style={{ marginRight: 6, color: selectedSort == "Valoracion" ? 'white' : 'black' }} size={20} />
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={{
+                                    marginHorizontal: 10,
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    borderWidth: 1,
+                                    borderColor: "#D0D0D0",
+                                    padding: 10,
+                                    borderRadius: 20,
+                                    width: 120,
+                                    justifyContent: "center",
+                                    backgroundColor: selectedSort == "Precio" ? '#04D6C8' : 'white',
+                                }}
+                                onPress={() => setSort("Precio")}
+                            >
+                                <Text style={{ marginRight: 6, color: selectedSort == "Precio" ? 'white' : 'black' }}>{t('PRECIO')}</Text>
+                                <Ionicons name="cash" style={{ marginRight: 6, color: selectedSort == "Precio" ? 'white' : 'black' }} size={20} />
+                            </TouchableOpacity>
 
-                            <View style={styles.buttoms}>
-                                <TouchableOpacity style={styles.buttomConfirm} onPress={handleSubmit(onSubmit)}>
-                                    <Text style={styles.buttomText}>{t('FILTRAR')}</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={styles.buttomCancel} onPress={onCancel}>
-                                    <Text style={styles.buttomText}>{t('CANCELAR')}</Text>
-                                </TouchableOpacity>
-                            </View>
-                            <TouchableOpacity style={styles.cancel} onPress={onCancel}>
-                                <XCircleIcon size={24} color="#999" />
+                        </ScrollView>
+
+                        <View style={styles.buttoms}>
+                            <TouchableOpacity style={styles.buttomConfirm} onPress={onSubmit}>
+                                <Text style={styles.buttomText}>{t('FILTRAR')}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.buttomCancel} onPress={onCancel}>
+                                <Text style={styles.buttomText}>{t('CANCELAR')}</Text>
                             </TouchableOpacity>
                         </View>
-
+                        <TouchableOpacity style={styles.cancel} onPress={onCancel}>
+                            <XCircleIcon size={24} color="#999" />
+                        </TouchableOpacity>
                     </View>
+
                 </View>
-            </Modal>
-        </>
+            </View>
+        </Modal>
     );
 };
 const styles = StyleSheet.create({
@@ -188,14 +157,14 @@ const styles = StyleSheet.create({
     },
     title: {
         fontWeight: 'bold',
-        fontSize: 20,
+        fontSize: 24,
         marginBottom: 20,
         textAlign: 'left'
     },
     buttoms: {
         flexDirection: 'row',
         justifyContent: 'flex-end',
-        marginTop: 20
+        marginTop: 40
     },
     buttomReset: {
         marginHorizontal: 10,

@@ -1,4 +1,3 @@
-import { FilterData } from "./components/Filter/CustomFilter";
 import { Deporte } from "./shared/models/Deporte";
 import { Ubication } from "../../shared/models/Ubication";
 
@@ -102,7 +101,7 @@ export interface IProps {
     title:string,
     onConfirm:any,
     onCancel: any,
-    filter:FilterData |undefined
+    filter:Filter | undefined
   }
 
   export type CustomInputMapsProps = {

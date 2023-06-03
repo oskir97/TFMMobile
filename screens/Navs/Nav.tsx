@@ -8,7 +8,7 @@ import LoadingPage from '../Loading/LoadingScreen';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { LoginContext, LoginProvider } from '../../shared/services/hooks/login/contexts/LoginContext';
-import { HomeIcon, CalendarDaysIcon, AdjustmentsHorizontalIcon, ChatBubbleLeftEllipsisIcon, UserGroupIcon, ClockIcon } from "react-native-heroicons/solid";
+import { MagnifyingGlassIcon, CalendarDaysIcon, AdjustmentsHorizontalIcon, ChatBubbleLeftEllipsisIcon, UserGroupIcon, ClockIcon } from "react-native-heroicons/solid";
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import CustomDrawer from '../../components/Drawer/CustomDrawer';
 import Ubicacion from "../FilterWizard/steps/UbicacionScreen";
@@ -23,10 +23,10 @@ const Nav: React.FC = () => {
     const { login, loading } = useContext(LoginContext);
     const { t } = useTranslation();
 
-    const inicioLabel = t('INICIO');
-    const reservasLabel = t('RESERVAS');
-    const partidosLabel = t('PARTIDOS');
-    const eventosLabel = t('EVENTOS');
+    const inicioLabel = t('RESERVAR');
+    const reservasLabel = t('MIS_RESERVAS');
+    const partidosLabel = t('MIS_PARTIDOS');
+    const eventosLabel = t('MIS_EVENTOS');
     const notificacionesLabel = t('NOTIFICACIONES');
     const ajustesLabel = t('AJUSTES');
 
@@ -93,7 +93,7 @@ const Nav: React.FC = () => {
             }} />
             <Drawer.Screen name="Inicio" component={HomePage} options={{
                 drawerIcon: ({ color }) => (
-                    <HomeIcon size={22} color={color} />
+                    <MagnifyingGlassIcon size={22} color={color} />
                 ),
                 drawerLabel: inicioLabel
             }} />

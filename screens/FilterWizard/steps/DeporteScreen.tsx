@@ -24,7 +24,6 @@ const DeporteScreen: React.FC<DeporteScreenProps> = ({ navigation }) => {
     });
   }, [navigation]);
 
-  const isFocused = useIsFocused();
   const { filter, setFilter, localidad } = useContext(LoginContext);
   const [deporteAsignado, setDeporteAsignado] = useState<Deporte | undefined>();
   const [error, setError] = useState(false);
@@ -66,7 +65,7 @@ const DeporteScreen: React.FC<DeporteScreenProps> = ({ navigation }) => {
             <Text style={{ fontSize: 24 }} className="font-semibold mt-1">{t("SELECCIONAR_UN_DEPORTE")}</Text>
           </View>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
-            <SportTypes setSelectedDeporte={setDeporteAsignado} selectedDeporte={deporteAsignado} iddeporte={filter && filter.deporte?filter.deporte : undefined} />
+            <SportTypes setSelectedDeporte={setDeporteAsignado} selectedDeporte={deporteAsignado} iddeporte={filter && filter.deporte?filter.deporte : undefined} vertical={true} />
           </View>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 

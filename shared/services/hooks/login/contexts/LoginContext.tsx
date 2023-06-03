@@ -5,7 +5,7 @@ import { Api, ApiResponse } from "../../../api";
 import { UsuarioRegistrado } from "../../../../models/UsuarioRegistrado";
 import * as Location from 'expo-location';
 import { Alert, PermissionsAndroid } from "react-native";
-import { Filter } from "../../../../models/Filter";
+import { Filter, Sort, TypeReservation } from "../../../../models/Filter";
 import { useTranslation } from "react-i18next";
 import { useDeportes } from "../../deportes/useDeportes";
 interface LoginProviderProps {
@@ -43,6 +43,9 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
     AsyncStorage.removeItem('localidad');
     AsyncStorage.removeItem('iddeporte');
     AsyncStorage.removeItem('fecha');
+    AsyncStorage.removeItem('sort');
+    AsyncStorage.removeItem('type');
+
     setUser(undefined);
     setLogin(false);
     setLocalidad(undefined);
@@ -132,12 +135,29 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
     const localidad = await AsyncStorage.getItem('localidad');
     const iddeporte = await AsyncStorage.getItem('iddeporte');
     const fecha = await AsyncStorage.getItem('fecha');
+    const sort = await AsyncStorage.getItem('sort');
+    const type = await AsyncStorage.getItem('type');
 
-    if(localidad && iddeporte && fecha){
-      filter = {localidad:localidad, deporte:Number(iddeporte), fecha:new Date(fecha)}
+    var sortType = undefined;
+    var typeReservationType = undefined;
+
+    if (sort != null)
+      sortType = convertirStringAType<Sort>(sort)
+
+    if (type != null)
+      typeReservationType = convertirStringAType<TypeReservation>(type)
+
+    if (localidad && iddeporte && fecha) {
+      filter = { localidad: localidad, deporte: Number(iddeporte), fecha: new Date(fecha), sort: sortType, type: typeReservationType}
     }
 
     return filter;
+  }
+
+  type ConvertibleTypes = Sort | TypeReservation;
+
+  function convertirStringAType<T extends ConvertibleTypes>(valorString: string): T | undefined {
+    return valorString as unknown as T;
   }
 
   async function logUser() {
@@ -149,7 +169,7 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
           if (!value.error) {
             getLocation().then(() => {
               console.log("Ubicación obtenida");
-              getStorageFilter().then((result:Filter |undefined) => {
+              getStorageFilter().then((result: Filter | undefined) => {
                 setFilter(result);
                 setUser(value.data);
                 setLogin(token != null);

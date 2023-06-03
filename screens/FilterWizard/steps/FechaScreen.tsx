@@ -6,7 +6,7 @@ import { I18nContext, useTranslation } from "react-i18next";
 import CustomButton from "../../../components/Buttons/CustomButton";
 import { Calendar, LocaleConfig } from "react-native-calendars";
 import Menu from "../../../components/Menu/Menu";
-import { Filter } from "../../../shared/models/Filter";
+import { Filter, Sort, TypeReservation } from "../../../shared/models/Filter";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface UbicationScreenProps {
@@ -21,7 +21,7 @@ const FechaScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
   }, [navigation]);
 
   const { filter, setFilter } = useContext(LoginContext);
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(filter && filter.fecha?filter.fecha : undefined);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(filter && filter.fecha ? filter.fecha : undefined);
   const [error, setError] = useState(false);
   const today = new Date();
 
@@ -53,6 +53,10 @@ const FechaScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
       await AsyncStorage.setItem('localidad', filter.localidad);
       await AsyncStorage.setItem('iddeporte', filter.deporte.toString());
       await AsyncStorage.setItem('fecha', filter.fecha.toDateString());
+      if (filter.sort)
+        await AsyncStorage.setItem('sort', filter.sort.toString());
+      if (filter.type)
+        await AsyncStorage.setItem('type', filter.type.toString());
       return true;
     } else {
       const errormessage = t("ERROR");
@@ -78,6 +82,12 @@ const FechaScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
         filterFecha = { localidad: undefined, fecha: selectedDate, deporte: undefined };
       else
         filterFecha.fecha = selectedDate;
+
+      if (filterFecha.sort = undefined)
+        filterFecha.sort = "Distancia";
+
+      if (filterFecha.type = undefined)
+        filterFecha.type = "Pista";
 
       setFilter(filterFecha);
 

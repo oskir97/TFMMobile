@@ -16,12 +16,11 @@ export const useDeportes = () => {
         const api = new Api<Deporte[]>(value);
         api.get('/Deporte/Listar').then((deportes) => {
           if (!deportes.error && deportes.data) {
-            const updatedDeportes = deportes.data?.map((deporte) => {
+            const updatedDeportes:Deporte[] = [];
+            deportes.data?.forEach((deporte) => {
               const nombreTraducido = deporte.traduccionesDeporte.find((tr) => tr.getIdiomaDeporte.cultura === i18n.language)?.nombre;
-              return {
-                ...deporte,
-                nombre: nombreTraducido || deporte.nombre,
-              };
+              deporte.nombre = nombreTraducido || deporte.nombre;
+              updatedDeportes.push(deporte)
             });
             setDeportes(updatedDeportes);
           } else {

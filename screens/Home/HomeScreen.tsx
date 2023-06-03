@@ -2,34 +2,63 @@ import { View, Text, Dimensions, ImageBackground, Pressable, ScrollView, Touchab
 import React, { useContext, useEffect, useState } from "react";
 import MainContainer from "../../components/Container/MainContainer";
 import DashboardCard from "../../components/Cards/DashboardCard";
-import { MagnifyingGlassIcon, PencilSquareIcon } from "react-native-heroicons/solid";
+import { MagnifyingGlassIcon, AdjustmentsHorizontalIcon } from "react-native-heroicons/solid";
 import { LoginContext } from "../../shared/services/hooks/login/contexts/LoginContext";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from '@expo/vector-icons/Ionicons';
-import CustomFilter, { FilterData } from "../../components/Filter/CustomFilter";
+import CustomFilter from "../../components/Filter/CustomFilter";
 import CustomInputModalMaps from "../../components/Modals/CustomInputModalMaps";
 import Menu from "../../components/Menu/Menu";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from "react-i18next";
+import { Filter, Sort, TypeReservation } from "../../shared/models/Filter";
+import MaterialIcons from "@expo/vector-icons/build/MaterialIcons";
 
 interface HomeScreenProps {
   navigation: any;
 }
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
-  const { user, localidad, setLocalidad, filter } = useContext(LoginContext);
+  const { user, localidad, setLocalidad, filter, setFilter } = useContext(LoginContext);
   const [filterOpen, setFilterOpen] = useState<boolean>(false);
-  const [locationOpen, setLocationOpen] = useState<boolean>(false);
-  const [filterHome, setFilterHome] = useState<FilterData>({ fecha: new Date(), deporte: undefined, sort: undefined });
+  const [type, setType] = useState<TypeReservation | undefined>(filter?.type ? filter?.type : "Pista");
+  const [sort, setSort] = useState<Sort | undefined>(filter?.sort ? filter?.sort : "Distancia");
   const { t } = useTranslation();
 
-  const handleFilters = (filter: FilterData) => {
-    setFilterHome(filter);
-    setFilterOpen(false);
+  const handleFilters = (filter: Filter) => {
+    storageFilter(filter).then(() => {
+      setFilter(filter);
+      setFilterOpen(false);
+
+    });
   }
-  const handleLocation = (localidad: string) => {
-    setLocalidad(localidad);
-    setLocationOpen(false);
+
+  const handleTypeSelected = (type: TypeReservation) => {
+    storageType(type).then(() => {
+      setType(type);
+      var f = filter;
+      if (f) {
+        f.type = type;
+        setFilter(f)
+      }
+    });
+  }
+
+  async function storageFilter(filter: Filter) {
+
+    if (filter.deporte)
+      await AsyncStorage.setItem('iddeporte', filter.deporte.toString());
+    if (filter.fecha)
+      await AsyncStorage.setItem('fecha', filter.fecha.toDateString());
+    if (filter.sort)
+      await AsyncStorage.setItem('sort', filter.sort.toString());
+    if (filter.type)
+      await AsyncStorage.setItem('type', filter.type.toString());
+  }
+
+  async function storageType(type: TypeReservation) {
+
+    await AsyncStorage.setItem('type', type);
   }
 
   useEffect(() => {
@@ -38,10 +67,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       if (!filter) {
         // Navegar a la pantalla "Ubicación"
         navigation.navigate("Ubicación");
+      } else if (!filter.localidad) {
+        AsyncStorage.getItem("localidad").then((value: any) => { filter.localidad = value });
       }
     });
     return unsubscribe;
-  }, [navigation]);
+  }, [navigation, filter]);
 
   const buscarText = t('BUSCAR') as string;
 
@@ -51,21 +82,24 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
         <ScrollView style={{ paddingLeft: 20, paddingRight: 20 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View style={{ flexDirection: 'row', flex: 0.89, borderColor: '#C6C6C6', borderWidth: 1, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 8, marginRight: 10 }}>
+            <View style={{ flexDirection: 'row', flex: 0.91, borderColor: '#C6C6C6', borderWidth: 1, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 8, marginRight: 10 }}>
               <MagnifyingGlassIcon size={22} color={"#C6C6C6"} style={{ marginRight: 5, marginTop: 4 }} />
               <TextInput placeholder={buscarText} style={{ flex: 1 }} />
             </View>
-            <TouchableOpacity style={{ flex: 0.11 }} onPress={() => setFilterOpen(true)}>
-              <Ionicons name="filter" size={30} color={'#04D6C8'} style={{ marginLeft: 6, marginTop: 4 }} />
+            <TouchableOpacity style={{ flex: 0.09 }} onPress={() => setFilterOpen(true)}>
+              <AdjustmentsHorizontalIcon size={30} color={"#04D6C8"} style={{ marginTop: 4 }} />
             </TouchableOpacity>
           </View>
-          <View style={{ flexDirection: 'row' }}>
-            <Text className="text-base font-semibold mt-1">{t("PISTAS_DISPONIBLES")}</Text>
+          <View style={{ flexDirection: 'row', marginTop:10 }}>
+            {
+              (filter?.type == 'Pista' && <Text style={{fontSize:20}} className="font-semibold mt-1">{t("INSTALACIONES_DISPONIBLES")}</Text>) ||
+              (filter?.type == 'Partido' && <Text style={{fontSize:20}} className="text-base font-semibold mt-1">{t("PARTIDOS_DISPONIBLES")}</Text>) ||
+              (filter?.type == 'Evento' && <Text style={{fontSize:20}} className="text-base font-semibold mt-1">{t("EVENTOS_DISPONIBLES")}</Text>)
+            }
           </View>
 
         </ScrollView>
-        <CustomFilter visible={filterOpen} setVisible={setFilterOpen} transparent={true} animationType={"fade"} title={t("FILTRO_PISTAS")} filter={filterHome} onConfirm={handleFilters} onCancel={() => setFilterOpen(false)} />
-        <CustomInputModalMaps login={false} visible={locationOpen} setVisible={setLocationOpen} animationType={"fade"} title={t("MODIFICAR_UBICACION")} lastlocation={localidad} onConfirm={handleLocation} onCancel={() => setLocationOpen(false)} />
+        <CustomFilter visible={filterOpen} setVisible={setFilterOpen} transparent={true} animationType={"fade"} title={t("FILTROS")} filter={filter} onConfirm={handleFilters} onCancel={() => setFilterOpen(false)} />
       </SafeAreaView>
     </>
   );
