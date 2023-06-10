@@ -17,4 +17,5 @@ export type LoginContextType = {
     logout:() => void;
     loginFunction:(email: string, password: string) => void;
     setFilter:(filter:Filter) => void;
+    getLocation:() => Promise<string | undefined>;
   };

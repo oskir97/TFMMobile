@@ -70,7 +70,7 @@ export const useRegister = () => {
         }
     });
 
-    const api = new Api<any>();
+    const api = new Api<RegisterData,any>();
 
     const handleRegistro = async (data: RegisterData) => {
         try {

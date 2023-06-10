@@ -14,23 +14,34 @@ import CustomDateInput from "../InputDate/CustomDateInput";
 import CustomInputMaps from "../Modals/CustomInputModalMaps";
 import { useTranslation } from "react-i18next";
 import { Filter, Sort, TypeReservation } from "../../shared/models/Filter";
+import { Checkbox } from 'react-native-paper';
+import CustomButton from "../Buttons/CustomButton";
 
 const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, title, transparent, animationType, filter }) => {
 
     const [selectedType, setSelectedType] = useState<TypeReservation | undefined>(filter?.type ? filter?.type : "Pista");
     const [selectedSort, setSort] = useState<Sort | undefined>(filter?.sort ? filter?.sort : "Distancia");
+    const [desc, setDesc] = useState(selectedSort ? selectedSort.toLowerCase().includes("desc") : false);
     const { t } = useTranslation();
 
     const { handleSubmit } = useForm<Filter>({
     });
 
-    const onSubmit = () => {
-        filter.sort = selectedSort
-        filter.type = selectedType
-        onConfirm(filter);
+    const handleToggle = () => {
+        const newChecked = !desc;
+        setDesc(newChecked);
     };
 
-    console.log(selectedSort);
+    const onSubmit = () => {
+        if (selectedSort)
+            filter.sort = selectedSort != "Favoritos"? (selectedSort?.replace(" desc", "") + (desc ? " desc" : "")) : "Favoritos";
+        else
+            filter.sort = false;
+
+        filter.type = selectedType
+
+        onConfirm(filter);
+    };
 
     return (
         <Modal transparent={transparent} visible={visible} animationType={animationType}>
@@ -64,11 +75,11 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
                                 </TouchableOpacity>
                             </ScrollView>
                         </View>
-                        <Text className="font-semibold mt-2 mb-4" style={{ fontSize: 18, marginBottom:20 }}>{t('POR_QUE_ORDENAR')}</Text>
-                        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                        <Text className="font-semibold mt-2 mb-4" style={{ fontSize: 18, marginBottom: 20 }}>{t('POR_QUE_ORDENAR')}</Text>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{marginBottom:10}}>
                             <TouchableOpacity
                                 style={{
-                                    marginHorizontal: 10,
+                                    marginHorizontal: 5,
                                     flexDirection: "row",
                                     alignItems: "center",
                                     borderWidth: 1,
@@ -77,16 +88,16 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
                                     borderRadius: 20,
                                     width: 120,
                                     justifyContent: "center",
-                                    backgroundColor: selectedSort == "Distancia" ? '#04D6C8' : 'white',
+                                    backgroundColor: selectedSort?.replace(" desc", "") == "Distancia" ? '#04D6C8' : 'white',
                                 }}
-                                onPress={() => setSort("Distancia")}
+                                onPress={() => { setSort("Distancia"); setDesc(false); }}
                             >
-                                <Text style={{ marginRight: 6, color: selectedSort == "Distancia" ? 'white' : 'black' }}>{t('DISTANCIA')}</Text>
-                                <Ionicons name="navigate" style={{ marginRight: 6, color: selectedSort == "Distancia" ? 'white' : 'black' }} size={20} />
+                                <Text style={{ marginRight: 6, color: selectedSort?.replace(" desc", "") == "Distancia" ? 'white' : 'black' }}>{t('DISTANCIA')}</Text>
+                                <Ionicons name="navigate" style={{ marginRight: 6, color: selectedSort?.replace(" desc", "") == "Distancia" ? 'white' : 'black' }} size={20} />
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={{
-                                    marginHorizontal: 10,
+                                    marginHorizontal: 5,
                                     flexDirection: "row",
                                     alignItems: "center",
                                     borderWidth: 1,
@@ -95,16 +106,16 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
                                     borderRadius: 20,
                                     width: 120,
                                     justifyContent: "center",
-                                    backgroundColor: selectedSort == "Valoracion" ? '#04D6C8' : 'white',
+                                    backgroundColor: selectedSort?.replace(" desc", "") == "Valoracion" ? '#04D6C8' : 'white',
                                 }}
-                                onPress={() => setSort("Valoracion")}
+                                onPress={() => { setSort("Valoracion"); setDesc(false); }}
                             >
-                                <Text style={{ marginRight: 6, color: selectedSort == "Valoracion" ? 'white' : 'black' }}>{t('VALORACION')}</Text>
-                                <Ionicons name="star" style={{ marginRight: 6, color: selectedSort == "Valoracion" ? 'white' : 'black' }} size={20} />
+                                <Text style={{ marginRight: 6, color: selectedSort?.replace(" desc", "") == "Valoracion" ? 'white' : 'black' }}>{t('VALORACION')}</Text>
+                                <Ionicons name="star" style={{ marginRight: 6, color: selectedSort?.replace(" desc", "") == "Valoracion" ? 'white' : 'black' }} size={20} />
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={{
-                                    marginHorizontal: 10,
+                                    marginHorizontal: 5,
                                     flexDirection: "row",
                                     alignItems: "center",
                                     borderWidth: 1,
@@ -113,24 +124,62 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
                                     borderRadius: 20,
                                     width: 120,
                                     justifyContent: "center",
-                                    backgroundColor: selectedSort == "Precio" ? '#04D6C8' : 'white',
+                                    backgroundColor: selectedSort?.replace(" desc", "") == "Precio" ? '#04D6C8' : 'white',
                                 }}
-                                onPress={() => setSort("Precio")}
+                                onPress={() => { setSort("Precio"); setDesc(true); }}
                             >
-                                <Text style={{ marginRight: 6, color: selectedSort == "Precio" ? 'white' : 'black' }}>{t('PRECIO')}</Text>
-                                <Ionicons name="cash" style={{ marginRight: 6, color: selectedSort == "Precio" ? 'white' : 'black' }} size={20} />
+                                <Text style={{ marginRight: 6, color: selectedSort?.replace(" desc", "") == "Precio" ? 'white' : 'black' }}>{t('PRECIO')}</Text>
+                                <Ionicons name="cash" style={{ marginRight: 6, color: selectedSort?.replace(" desc", "") == "Precio" ? 'white' : 'black' }} size={20} />
                             </TouchableOpacity>
+                            {
+                                selectedType == "Pista" &&
+                                <TouchableOpacity
+                                style={{
+                                    marginHorizontal: 5,
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    borderWidth: 1,
+                                    borderColor: "#D0D0D0",
+                                    padding: 10,
+                                    borderRadius: 20,
+                                    width: 120,
+                                    justifyContent: "center",
+                                    backgroundColor: selectedSort == "Favoritos" ? '#04D6C8' : 'white',
+                                }}
+                                onPress={() => { setSort("Favoritos"); setDesc(true); }}
+                            >
+                                <Text style={{ marginRight: 6, color: selectedSort == "Favoritos" ? 'white' : 'black' }}>{t('FAVORITOS')}</Text>
+                                <Ionicons name="cash" style={{ marginRight: 6, color: selectedSort == "Favoritos" ? 'white' : 'black' }} size={20} />
+                            </TouchableOpacity>
+                            }
 
                         </ScrollView>
+                        {
+                            selectedSort != "Favoritos" &&
+                            <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                                <Checkbox.Item label={t('ORDENAR_DESCENDENTE')} status={desc ? 'checked' : 'unchecked'} labelStyle={{ fontSize: 14 }} color="#04D6C8" onPress={handleToggle} />
+                            </View>
+                        }
 
-                        <View style={styles.buttoms}>
-                            <TouchableOpacity style={styles.buttomConfirm} onPress={onSubmit}>
-                                <Text style={styles.buttomText}>{t('FILTRAR')}</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.buttomCancel} onPress={onCancel}>
-                                <Text style={styles.buttomText}>{t('CANCELAR')}</Text>
-                            </TouchableOpacity>
-                        </View>
+                        <CustomButton
+                            onPress={onSubmit}
+                            buttonText={t("FILTRAR")}
+                            colorButtom='#04D6C8'
+                            colorText='white'
+                            colorButtomHover="#04D6C8"
+                            colorTextHover="white"
+
+                        // onPress={() => console.log(password)}
+                        />
+                        <CustomButton
+                            onPress={onCancel}
+                            buttonText={t("CANCELAR")}
+                            colorButtom='transparent'
+                            colorText='#04D6C8'
+                            colorButtomHover="#04D6C850"
+                            colorTextHover="white"
+                        // onPress={() => console.log(password)}
+                        />
                         <TouchableOpacity style={styles.cancel} onPress={onCancel}>
                             <XCircleIcon size={24} color="#999" />
                         </TouchableOpacity>

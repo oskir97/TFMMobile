@@ -120,5 +120,7 @@
   "EVENTOS_DISPONIBLES": "Eventos disponibles",
   "PISTA": "Pista deportiva",
   "PARTIDO": "Partido",
-  "EVENTO": "Evento"
+  "EVENTO": "Evento",
+  "ORDENAR_DESCENDENTE": "Ordenar descendente",
+  "FAVORITOS": "Favoritos"
 }

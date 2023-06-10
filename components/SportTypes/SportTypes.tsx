@@ -27,24 +27,25 @@ const SportTypes: React.FC<SportProps> = ({ setSelectedDeporte, selectedDeporte,
 
   const { i18n } = useContext(I18nContext);
 
-  console.log(iddeporte);
-
   useEffect(() => {
     const updateDeportesWithTranslation = () => {
-      const updatedDeportes = deportes?.map((deporte) => {
-        const nombreTraducido = deporte.traduccionesDeporte.find((t) => t.getIdiomaDeporte.cultura === i18n.language)?.nombre;
-        return {
-          ...deporte,
-          nombre: nombreTraducido || deporte.nombre,
-        };
+      const updatedDeportes:Deporte[] = [];
+      deportes?.forEach((deporte) => {
+        const nombreTraducido = deporte.traduccionesDeporte.find((tr) => tr.getIdiomaDeporte.cultura === i18n.language)?.nombre;
+        deporte.nombre = nombreTraducido || deporte.nombre;
+        updatedDeportes.push(deporte);
       });
       setDeportes(updatedDeportes);
+
+      if (iddeporte) {
+        setSelectedDeporte(updatedDeportes?.find(d => d.iddeporte === iddeporte));
+      }
     };
 
     i18n.on('languageChanged', updateDeportesWithTranslation);
 
     if (iddeporte) {
-      setSelectedDeporte(deportes?.find(d => d.iddeporte = iddeporte));
+      setSelectedDeporte(deportes?.find(d => d.iddeporte === iddeporte));
     }
 
     return () => {

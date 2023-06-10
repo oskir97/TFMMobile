@@ -25,7 +25,10 @@ export const LoginContext = createContext<LoginContextType>({
   setLocalidad: () => { },
   setLocation: () => { },
   loginFunction: (email: string, password: string) => { },
-  setFilter: () => { }
+  setFilter: () => { },
+  getLocation: function (): Promise<string | undefined> {
+    throw new Error("Function not implemented.");
+  }
 });
 
 export const LoginProvider = ({ children }: LoginProviderProps) => {
@@ -51,24 +54,6 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
     setLocalidad(undefined);
     setLocation(undefined);
   };
-
-  const loginContextValue: LoginContextType = {
-    login,
-    loading,
-    user,
-    location,
-    localidad,
-    filter,
-    setLogin,
-    setLoading,
-    setUser,
-    logout,
-    setLocalidad,
-    setLocation,
-    loginFunction,
-    setFilter
-  };
-
   const getLocation = async () => {
     try {
       if (location == undefined || location == null) {
@@ -96,6 +81,24 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
       return undefined;
     }
   }
+
+  const loginContextValue: LoginContextType = {
+    login,
+    loading,
+    user,
+    location,
+    localidad,
+    filter,
+    setLogin,
+    setLoading,
+    setUser,
+    logout,
+    setLocalidad,
+    setLocation,
+    loginFunction,
+    setFilter,
+    getLocation
+  };
 
   const obtenerLocalidad = async (location: Location.LocationObject): Promise<string | undefined> => {
     try {
@@ -163,7 +166,7 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
   async function logUser() {
     await AsyncStorage.getItem('token').then((value) => {
       if (value !== null) {
-        const api = new Api<UsuarioRegistrado>(value);
+        const api = new Api<any,UsuarioRegistrado>(value);
         const token: string = value;
         api.get('/UsuarioRegistrado').then((value) => {
           if (!value.error) {
@@ -205,7 +208,7 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
     logUser();
   }, []);
 
-  const api = new Api<any>();
+  const api = new Api<any,any>();
 
   async function loginFunction(email: string, password: string) {
     const response: ApiResponse<string> = await api.post('/Usuario/Login', { email, password });

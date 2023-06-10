@@ -119,5 +119,7 @@
   "EVENTOS_DISPONIBLES": "Available events",
   "PISTA": "Sport court",
   "PARTIDO": "Match",
-  "EVENTO": "Event"
+  "EVENTO": "Event",
+  "ORDENAR_DESCENDENTE": "Sort descending",
+  "FAVORITOS": "Favorites"
 }

@@ -5,10 +5,10 @@ export interface ApiResponse<TResponse> {
   error?: string;
 }
 
-export class Api<TRequest> {
+export class Api<TRequest, TResponse> {
   private axiosInstance: AxiosInstance;
 
-  constructor(token:string = "", private baseURL: string = "https://8c72-2a0c-5a86-d200-5700-185-a378-7e84-564d.ngrok-free.app/api") {
+  constructor(token:string = "", private baseURL: string = "https://bc1a-2a0c-5a86-d103-e100-2464-5651-491b-d3b2.ngrok-free.app/api") {
     this.axiosInstance = axios.create({
       baseURL: this.baseURL,
     });
@@ -17,7 +17,7 @@ export class Api<TRequest> {
     }
   }
 
-  public async get(endpoint: string): Promise<ApiResponse<TRequest>> {
+  public async get(endpoint: string): Promise<ApiResponse<TResponse>> {
     try {
       const response: AxiosResponse = await this.axiosInstance.get(endpoint);
       return {
@@ -31,7 +31,7 @@ export class Api<TRequest> {
     }
   }
 
-  public async post(endpoint: string, body: TRequest): Promise<ApiResponse<TRequest>> {
+  public async post(endpoint: string, body: TRequest): Promise<ApiResponse<TResponse>> {
     try {
       const response: AxiosResponse = await this.axiosInstance.post(endpoint, body);
       return {
@@ -45,7 +45,7 @@ export class Api<TRequest> {
     }
   }
 
-  public async put(endpoint: string, body: TRequest): Promise<ApiResponse<TRequest>> {
+  public async put(endpoint: string, body: TRequest): Promise<ApiResponse<TResponse>> {
     try {
       const response: AxiosResponse = await this.axiosInstance.put(endpoint, body);
       return {
@@ -59,7 +59,7 @@ export class Api<TRequest> {
     }
   }
 
-  public async delete(endpoint: string): Promise<ApiResponse<TRequest>> {
+  public async delete(endpoint: string): Promise<ApiResponse<TResponse>> {
     try {
       const response: AxiosResponse = await this.axiosInstance.delete(endpoint);
       return {

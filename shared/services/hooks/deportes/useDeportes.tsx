@@ -13,14 +13,14 @@ export const useDeportes = () => {
   useEffect(() => {
     AsyncStorage.getItem('token').then((value) => {
       if (value !== null) {
-        const api = new Api<Deporte[]>(value);
+        const api = new Api<null,Deporte[]>(value);
         api.get('/Deporte/Listar').then((deportes) => {
           if (!deportes.error && deportes.data) {
             const updatedDeportes:Deporte[] = [];
             deportes.data?.forEach((deporte) => {
               const nombreTraducido = deporte.traduccionesDeporte.find((tr) => tr.getIdiomaDeporte.cultura === i18n.language)?.nombre;
               deporte.nombre = nombreTraducido || deporte.nombre;
-              updatedDeportes.push(deporte)
+              updatedDeportes.push(deporte);
             });
             setDeportes(updatedDeportes);
           } else {
