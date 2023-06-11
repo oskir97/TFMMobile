@@ -55,8 +55,12 @@ const FechaScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
       await AsyncStorage.setItem('fecha', filter.fecha.toDateString());
       if (filter.sort)
         await AsyncStorage.setItem('sort', filter.sort.toString());
+      else
+      await AsyncStorage.setItem('sort', 'Distancia');
       if (filter.type)
         await AsyncStorage.setItem('type', filter.type.toString());
+      else
+        await AsyncStorage.setItem('type', 'Pista');
       return true;
     } else {
       const errormessage = t("ERROR");

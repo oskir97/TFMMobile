@@ -11,7 +11,7 @@ export default function useLogin() {
     const { loginFunction } = useContext(LoginContext);
     //Utilizamos el estado para poder saber si está o no cargando
 
-    const api = new Api<any>();
+    const api = new Api<any,any>();
 
     const logFunction =
         ({ email, password }: LoginData) => {
