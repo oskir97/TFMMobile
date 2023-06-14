@@ -121,5 +121,11 @@
   "PARTIDO": "Match",
   "EVENTO": "Event",
   "ORDENAR_DESCENDENTE": "Sort descending",
-  "FAVORITOS": "Favorites"
+  "FAVORITOS": "Favorites",
+  "PISTA_DISPONIBLE": "available sport court",
+  "PISTAS_DISPONIBLES": "available sport courts",
+  "DESDE": "From",
+  "NO_HAY_PARTIDOS_DISPONIBLES": "No matches available",
+  "NO_HAY_INSTALACIONES_DISPONIBLES": "No sports facilities available\r",
+  "NO_HAY_EVENTOS_DISPONIBLES": "No events available"
 }

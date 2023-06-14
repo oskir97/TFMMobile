@@ -122,5 +122,11 @@
   "PARTIDO": "Partido",
   "EVENTO": "Evento",
   "ORDENAR_DESCENDENTE": "Ordenar descendente",
-  "FAVORITOS": "Favoritos"
+  "FAVORITOS": "Favoritos",
+  "PISTA_DISPONIBLE": "pista disponible",
+  "PISTAS_DISPONIBLES": "pistas disponibles",
+  "DESDE": "Desde",
+  "NO_HAY_PARTIDOS_DISPONIBLES": "No hay partidos disponibles",
+  "NO_HAY_INSTALACIONES_DISPONIBLES": "No hay instalaciones disponibles",
+  "NO_HAY_EVENTOS_DISPONIBLES": "No hay eventos disponibles"
 }

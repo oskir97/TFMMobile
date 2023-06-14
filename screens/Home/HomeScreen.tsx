@@ -35,7 +35,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   }
 
   async function storageFilter(filter: Filter) {
-
+    console.log(filter.sort)
     if (filter.sort)
       await AsyncStorage.setItem('sort', filter.sort.toString());
     if (filter.type)
@@ -47,7 +47,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     const unsubscribe = navigation.addListener('focus', () => {
       setTextAssign(filter?.localidad);
 
-      if (!filter) {
+      if (!filter || (filter.fecha && filter.fecha.setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0))) {
         navigation.navigate("Ubicación");
       } else if (!filter.localidad) {
         AsyncStorage.getItem("localidad").then((value: any) => { filter.localidad = value });
@@ -59,6 +59,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   const handleFilterChange = (text:string) => {
     setFilterText(text);
+    setFilterReserva({filtro:text, localidad:filter?.localidad,latitud: location?.coords.latitude.toString(), longitud: location?.coords.longitude.toString(), fecha:filter?.fecha, deporte:filter?.deporte, orden: filter?.sort  });
   };
 
   const buscarText = t('BUSCAR') as string;

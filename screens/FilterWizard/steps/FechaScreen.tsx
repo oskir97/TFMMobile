@@ -21,7 +21,7 @@ const FechaScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
   }, [navigation]);
 
   const { filter, setFilter } = useContext(LoginContext);
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(filter && filter.fecha ? filter.fecha : undefined);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(filter && filter.fecha && filter.fecha.setHours(0, 0, 0, 0) >= new Date().setHours(0, 0, 0, 0) ? filter.fecha : undefined);
   const [error, setError] = useState(false);
   const today = new Date();
 
@@ -53,6 +53,7 @@ const FechaScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
       await AsyncStorage.setItem('localidad', filter.localidad);
       await AsyncStorage.setItem('iddeporte', filter.deporte.toString());
       await AsyncStorage.setItem('fecha', filter.fecha.toDateString());
+
       if (filter.sort)
         await AsyncStorage.setItem('sort', filter.sort.toString());
       else
@@ -87,10 +88,10 @@ const FechaScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
       else
         filterFecha.fecha = selectedDate;
 
-      if (filterFecha.sort = undefined)
+      if (!filterFecha.sort)
         filterFecha.sort = "Distancia";
 
-      if (filterFecha.type = undefined)
+      if (!filterFecha.type)
         filterFecha.type = "Pista";
 
       setFilter(filterFecha);

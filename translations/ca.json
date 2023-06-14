@@ -121,5 +121,11 @@
   "PARTIDO": "Partit",
   "EVENTO": "Esdeveniment",
   "ORDENAR_DESCENDENTE": "Ordenar descendent",
-  "FAVORITOS": "Favorits"
+  "FAVORITOS": "Favorits",
+  "PISTA_DISPONIBLE": "pista disponible",
+  "PISTAS_DISPONIBLES": "pistes disponibles",
+  "DESDE": "Des de",
+  "NO_HAY_PARTIDOS_DISPONIBLES": "No hi ha partits disponibles",
+  "NO_HAY_INSTALACIONES_DISPONIBLES": "No hi ha instal·lacions esportives disponibles",
+  "NO_HAY_EVENTOS_DISPONIBLES": "No hi ha esdeveniments disponibles"
 }

@@ -1,4 +1,5 @@
 import { Entidad } from "./Entidad";
+import { Pista } from "./Pista";
 import { Valoracion } from "./Valoracion";
 
 export interface Instalacion {
@@ -17,4 +18,7 @@ export interface Instalacion {
     longitud: number;
     obtenerEntidadInstalacion: Entidad;
     obtenerValoracionesInstalacion: Valoracion[];
+    pistasDisponibles: Pista[];
+    favorita:boolean;
+    tiempo:string;
   }
