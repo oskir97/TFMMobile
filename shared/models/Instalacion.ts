@@ -21,4 +21,5 @@ export interface Instalacion {
     pistasDisponibles: Pista[];
     favorita:boolean;
     tiempo:string;
+    distancia:string;
   }

@@ -5,7 +5,7 @@ import { Modal, View, Text, Pressable, StyleSheet, Image, useWindowDimensions, T
 import { Appbar, Avatar, Divider, IconButton, Menu } from "react-native-paper";
 import { MenuProps } from "../../tfmmobile";
 
-const CustomLanguagePicker: React.FC<MenuProps> = ({ showReturnWizard, text, showusuario, userMenu }) => {
+const CustomLanguagePicker: React.FC<MenuProps> = ({ showReturnWizard, text, showusuario, userMenu, goBack }) => {
   const { i18n, t } = useTranslation();
   const linkTo = useLinkTo();
 
@@ -28,7 +28,7 @@ const CustomLanguagePicker: React.FC<MenuProps> = ({ showReturnWizard, text, sho
   const isLanguageDisabled = (lang: string) => i18n.language === lang;
 
   const handleGoBack = () => {
-    linkTo('/Ubicación')
+    linkTo(goBack ? goBack : '/Ubicación')
   };
 
   const truncateText = (text: string, maxLength: number): string => {
@@ -53,7 +53,7 @@ const CustomLanguagePicker: React.FC<MenuProps> = ({ showReturnWizard, text, sho
         )}
         {
           text && (
-            <Text className="font-semibold mt-1" style={{color:'white', fontSize: 20}}>{truncateText(text, maxWidth / 10)}</Text>
+            <Text className="font-semibold mt-1" style={{ color: 'white', fontSize: 20 }}>{truncateText(text, maxWidth / 10)}</Text>
           )
         }
         <Appbar.Content title="" />
@@ -82,8 +82,8 @@ const CustomLanguagePicker: React.FC<MenuProps> = ({ showReturnWizard, text, sho
         </Menu>
         {showusuario && (
           <TouchableOpacity onPress={userMenu}>
-          <ImageBackground source={require('../../assets/images/user.png')} style={{ height: 35, width: 35, marginRight:10 }} imageStyle={{ borderRadius: 25 }}></ImageBackground>
-        </TouchableOpacity>
+            <ImageBackground source={require('../../assets/images/user.png')} style={{ height: 35, width: 35, marginRight: 10 }} imageStyle={{ borderRadius: 25 }}></ImageBackground>
+          </TouchableOpacity>
         )}
       </Appbar.Header>
     </View>

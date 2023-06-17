@@ -21,8 +21,9 @@ export const useInstalaciones = () => {
         const result = await response.json();
 
         if (result.routes.length > 0) {
+          const distance = result.routes[0].legs[0].distance.text;
           const duration = result.routes[0].legs[0].duration.text;
-          return duration;
+          return [distance,duration];
         } else {
           return "";
         }
@@ -53,8 +54,10 @@ export const useInstalaciones = () => {
             if (!favorita.error && favorita.data != undefined) {
               instalacion.favorita = favorita.data;
             }
+            var distanciaTiempo = await calculateTravelDuration(instalacion);
 
-            instalacion.tiempo = await calculateTravelDuration(instalacion);
+            instalacion.distancia = distanciaTiempo[0];
+            instalacion.tiempo = distanciaTiempo[1];
 
             const pistas = await apiPistas.post('/Instalacion/ObtenerPistasDisponibles?p_oid=' + instalacion.idinstalacion, filtroInstalacion.fecha);
             if (!pistas.error && pistas.data) {

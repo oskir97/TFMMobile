@@ -128,5 +128,10 @@
   "DESDE": "Desde",
   "NO_HAY_PARTIDOS_DISPONIBLES": "No hay partidos disponibles",
   "NO_HAY_INSTALACIONES_DISPONIBLES": "No hay instalaciones disponibles",
-  "NO_HAY_EVENTOS_DISPONIBLES": "No hay eventos disponibles"
+  "NO_HAY_EVENTOS_DISPONIBLES": "No hay eventos disponibles",
+  "ESTRELLAS": "Estrellas",
+  "VER_RESENAS": "Ver reseñas",
+  "CARGANDO_INSTALACIONES": "Cargando instalaciones",
+  "CARGANDO_PARTIDOS": "Cargando partidos",
+  "CARGANDO_EVENTOS": "Cargando eventos"
 }

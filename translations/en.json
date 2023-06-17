@@ -127,5 +127,10 @@
   "DESDE": "From",
   "NO_HAY_PARTIDOS_DISPONIBLES": "No matches available",
   "NO_HAY_INSTALACIONES_DISPONIBLES": "No sports facilities available\r",
-  "NO_HAY_EVENTOS_DISPONIBLES": "No events available"
+  "NO_HAY_EVENTOS_DISPONIBLES": "No events available",
+  "ESTRELLAS": "Starts",
+  "VER_RESENAS": "See reviews",
+  "CARGANDO_INSTALACIONES": "Loading sports facilities",
+  "CARGANDO_PARTIDOS": "Loading matches",
+  "CARGANDO_EVENTOS": "Loading events"
 }

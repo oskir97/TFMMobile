@@ -9,13 +9,13 @@ import { Pista } from '../../../shared/models/Pista';
 import { useFavoritosInstalaciones } from '../../../shared/services/hooks/instalaciones/useFavoritosInstalaciones';
 
 export interface InstalacionItemProps {
-    item: Instalacion
+    item: Instalacion,
+    navigation: any
 }
 
-const InstalacionItem: React.FC<InstalacionItemProps> = ({ item }) => {
+const InstalacionItem: React.FC<InstalacionItemProps> = ({ item, navigation }) => {
 
     const { t } = useTranslation();
-    const navigation = useNavigation();
     const {Asignarinstalacionfavoritos, Eliminarinstalacionfavoritos} = useFavoritosInstalaciones();
     const [favorita, setFavorita] = useState(item.favorita);
 
@@ -79,7 +79,7 @@ const InstalacionItem: React.FC<InstalacionItemProps> = ({ item }) => {
         <View style={{ margin: 10 }}>
             <Pressable
                 onPress={() =>
-                    navigation.navigate("Menu" as never, { item } as never)
+                    navigation.navigate("InstalacionScreen" as never, { item } as never)
                 }
                 style={{ flexDirection: "row" }}
             >
@@ -108,7 +108,7 @@ const InstalacionItem: React.FC<InstalacionItemProps> = ({ item }) => {
                 <View style={{ marginLeft: 10, flexShrink: 1 }}>
                     <Text style={{ fontSize: 16, fontWeight: 'bold', flexWrap: 'wrap' }} numberOfLines={2}>{item.nombre}</Text>
                     <View style={{ flexDirection: "row", alignItems: "center", marginTop: 3 }}>
-                        <MaterialIcons name="stars" size={24} color="green" />
+                        <MaterialIcons name="stars" size={24} color="orange" />
                         <Text style={{ marginLeft: 3, fontSize: 15, fontWeight: "400" }}>
                             {average(item.obtenerValoracionesInstalacion)}
                         </Text>

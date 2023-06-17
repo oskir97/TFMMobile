@@ -78,7 +78,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               <AdjustmentsHorizontalIcon size={30} color={"#04D6C8"} style={{ marginTop: 4 }} />
             </TouchableOpacity>
           </View>
-          <BookList type={type} filter={filterReserva}/>
+          <BookList type={type} filter={filterReserva} navigation={navigation}/>
         </ScrollView>
         <CustomFilter visible={filterOpen} setVisible={setFilterOpen} transparent={true} animationType={"fade"} title={t("FILTROS")} filter={filter} onConfirm={handleFilters} onCancel={() => setFilterOpen(false)} />
       </SafeAreaView>

@@ -78,7 +78,7 @@ export interface IProps {
   
   export interface CustomButtonProps {
     onPress: ((event: GestureResponderEvent) => void);
-    buttonText: string;
+    buttonText: any;
     colorButtom:string;
     colorText:string;
     colorButtomHover:string;
@@ -122,7 +122,8 @@ export interface IProps {
   export type MenuProps = {
     showReturnWizard:boolean;
     showLang:boolean;
-    text?:string;
+    text?:any;
     showusuario?:any;
     userMenu?:any;
+    goBack?:string;
   }

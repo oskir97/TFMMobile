@@ -14,6 +14,7 @@ import CustomDrawer from '../../components/Drawer/CustomDrawer';
 import Ubicacion from "../FilterWizard/steps/UbicacionScreen";
 import Deporte from "../FilterWizard/steps/DeporteScreen";
 import Fecha from "../FilterWizard/steps/FechaScreen";
+import InstalacionPage from "../Home/InstalacionScreen";
 import { useTranslation } from 'react-i18next';
 
 const Stack = createStackNavigator();
@@ -96,6 +97,11 @@ const Nav: React.FC = () => {
                     <MagnifyingGlassIcon size={22} color={color} />
                 ),
                 drawerLabel: inicioLabel
+            }} />
+            <Drawer.Screen name="InstalacionScreen" component={InstalacionPage} options={{
+                drawerLabel: () => null, drawerItemStyle: {
+                    display: 'none',
+                },
             }} />
             <Drawer.Screen name="Reservas" component={HomePage} options={{
                 drawerIcon: ({ color }) => (
