@@ -132,5 +132,10 @@
   "VER_RESENAS": "Veure ressenyes",
   "CARGANDO_INSTALACIONES": "Carregant instal·lacions esportives",
   "CARGANDO_PARTIDOS": "Carregant partits",
-  "CARGANDO_EVENTOS": "Carregant esdeveniments"
+  "CARGANDO_EVENTOS": "Carregant esdeveniments",
+  "DE": "de",
+  "RESENA_DE": "Resenya de",
+  "LISTA_VALORACIONES": "Llista de ressenyes",
+  "INSTALACIONES": "Instal·lacion",
+  "SOBRE": "sobre"
 }

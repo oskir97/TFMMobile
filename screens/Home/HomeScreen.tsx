@@ -17,15 +17,17 @@ interface HomeScreenProps {
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const { user, localidad, setLocalidad, filter, setFilter, location } = useContext(LoginContext);
   const [filterOpen, setFilterOpen] = useState<boolean>(false);
-  const [type, setType] = useState<TypeReservation | undefined>(filter?.type);
-  const [sort, setSort] = useState<Sort | undefined>(filter?.sort);
+  const [type, setType] = useState<TypeReservation | undefined>(filter?.type?filter?.type:"Pista");
+  const [sort, setSort] = useState<Sort | undefined>(filter?.sort?filter?.sort : "Distancia");
   const [filterText, setFilterText] = useState('');
   const [textAssign, setTextAssign] = useState<string | undefined>(filter?.localidad);
   const [filterReserva, setFilterReserva] = useState<FilterReserva>({filtro:filterText, localidad:filter?.localidad,latitud: location?.coords.latitude.toString(), longitud: location?.coords.longitude.toString(), fecha:filter?.fecha, deporte:filter?.deporte, orden: filter?.sort  });
+  const [loadingFilters, setLoadingFilters] = useState<boolean>(false);
   const { t } = useTranslation();
 
   const handleFilters = (filter: Filter) => {
     storageFilter(filter).then(() => {
+      setLoadingFilters(true);
       setFilter(filter);
       setType(filter.type);
       setSort(filter.sort);
@@ -35,7 +37,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   }
 
   async function storageFilter(filter: Filter) {
-    console.log(filter.sort)
     if (filter.sort)
       await AsyncStorage.setItem('sort', filter.sort.toString());
     if (filter.type)
@@ -52,12 +53,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       } else if (!filter.localidad) {
         AsyncStorage.getItem("localidad").then((value: any) => { filter.localidad = value });
       }
+      setLoadingFilters(false);
       setFilterReserva({filtro:filterText, localidad:filter?.localidad,latitud: location?.coords.latitude.toString(), longitud: location?.coords.longitude.toString(), fecha:filter?.fecha, deporte:filter?.deporte, orden: filter?.sort  });
     });
     return unsubscribe;
   }, [navigation, filter?.localidad]);
 
   const handleFilterChange = (text:string) => {
+    setLoadingFilters(true);
     setFilterText(text);
     setFilterReserva({filtro:text, localidad:filter?.localidad,latitud: location?.coords.latitude.toString(), longitud: location?.coords.longitude.toString(), fecha:filter?.fecha, deporte:filter?.deporte, orden: filter?.sort  });
   };
@@ -75,10 +78,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               <TextInput placeholder={buscarText} style={{ flex: 1 }} value={filterText} onChangeText={handleFilterChange} />
             </View>
             <TouchableOpacity style={{ flex: 0.09 }} onPress={() => setFilterOpen(true)}>
-              <AdjustmentsHorizontalIcon size={30} color={"#04D6C8"} style={{ marginTop: 4 }} />
+              <AdjustmentsHorizontalIcon size={30} color={"#04D6C8"} style={{ marginTop: 8 }} />
             </TouchableOpacity>
           </View>
-          <BookList type={type} filter={filterReserva} navigation={navigation}/>
+          <BookList type={type} filter={filterReserva} navigation={navigation} loading={loadingFilters}/>
         </ScrollView>
         <CustomFilter visible={filterOpen} setVisible={setFilterOpen} transparent={true} animationType={"fade"} title={t("FILTROS")} filter={filter} onConfirm={handleFilters} onCancel={() => setFilterOpen(false)} />
       </SafeAreaView>

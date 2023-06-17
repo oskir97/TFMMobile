@@ -132,5 +132,10 @@
   "VER_RESENAS": "See reviews",
   "CARGANDO_INSTALACIONES": "Loading sports facilities",
   "CARGANDO_PARTIDOS": "Loading matches",
-  "CARGANDO_EVENTOS": "Loading events"
+  "CARGANDO_EVENTOS": "Loading events",
+  "DE": "of",
+  "RESENA_DE": "Review of",
+  "LISTA_VALORACIONES": "List of reviews",
+  "INSTALACIONES": "Sports facilities",
+  "SOBRE": "out of"
 }

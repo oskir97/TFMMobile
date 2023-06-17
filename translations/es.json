@@ -133,5 +133,10 @@
   "VER_RESENAS": "Ver reseñas",
   "CARGANDO_INSTALACIONES": "Cargando instalaciones",
   "CARGANDO_PARTIDOS": "Cargando partidos",
-  "CARGANDO_EVENTOS": "Cargando eventos"
+  "CARGANDO_EVENTOS": "Cargando eventos",
+  "DE": "de",
+  "RESENA_DE": "Reseña de",
+  "LISTA_VALORACIONES": "Lista de reseñas",
+  "INSTALACIONES": "Instalaciones",
+  "SOBRE": "sobre"
 }

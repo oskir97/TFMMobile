@@ -11,7 +11,7 @@ import {
   BackHandler
 } from "react-native";
 import { Button } from "react-native-paper";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { RouteProp, useFocusEffect, useLinkTo, useRoute } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -25,6 +25,7 @@ import CustomButton from "../../components/Buttons/CustomButton";
 import { useFavoritosInstalaciones } from "../../shared/services/hooks/instalaciones/useFavoritosInstalaciones";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Pista } from "../../shared/models/Pista";
+import { LoginContext } from "../../shared/services/hooks/login/contexts/LoginContext";
 // import Modal from "react-native-modal";
 // import { useSelector } from "react-redux";
 
@@ -39,9 +40,9 @@ interface InstalacionScreenProps {
 }
 
 const InstalacionScreen: React.FC<InstalacionScreenProps> = ({ navigation }) => {
-  const linkTo = useLinkTo();
+  const { location } = useContext(LoginContext);
   const route = useRoute<RouteProp<ParamList, 'Item'>>();
-  const [instalacion, setInstalacion] = useState<Instalacion | undefined>();
+  const [instalacion, setInstalacion] = useState<Instalacion | undefined>(route.params.item);
   const { t } = useTranslation();
   const mapRef = useRef<MapView>(null);
   const [mapRegion, setMapRegion] = useState({
@@ -62,15 +63,23 @@ const InstalacionScreen: React.FC<InstalacionScreenProps> = ({ navigation }) => 
   };
 
   const emailInstalacion = () => {
-    const mailtoUrl = `mailto:${route.params.item.obtenerEntidadInstalacion.email}?subject=${""}&body=${encodeURIComponent("")}`;
+    const mailtoUrl = `mailto:${route.params.item?.email && route.params.item?.email != ""?route.params.item?.email : route.params.item?.obtenerEntidadInstalacion.email}?subject=${""}&body=${encodeURIComponent("")}`;
     Linking.openURL(mailtoUrl);
   };
   const { width } = Dimensions.get('window');
 
+  const seeReviews = () => {
+    navigation.navigate("ReviewsScreen" as never, { instalacion: instalacion } as never)
+  };
+
+  const goBack = () => {
+    navigation.navigate("Inicio" as never, { loadingItems: true, instalacion:instalacion } as never)
+  };
+
   useFocusEffect(
     React.useCallback(() => {
       const onBackPress = () => {
-        navigation.navigate("Inicio" as never, { loadingItems:true } as never)
+        goBack();
         return true;
       };
 
@@ -103,6 +112,10 @@ const InstalacionScreen: React.FC<InstalacionScreenProps> = ({ navigation }) => 
 
   function addFav() {
     var result: boolean = !favorita;
+    if(instalacion){
+      instalacion.favorita = result;
+      setInstalacion(instalacion);
+    }
 
     if (result) {
       Asignarinstalacionfavoritos(route.params.item.idinstalacion);
@@ -130,14 +143,9 @@ const InstalacionScreen: React.FC<InstalacionScreenProps> = ({ navigation }) => 
   useEffect(() => {
     const fetchMenu = () => {
       setInstalacion(route.params.item);
-      setFavorita(route.params.item.favorita);
     };
 
     const unsubscribe = navigation.addListener('focus', () => {
-      // Actualiza la ubicación del mapa aquí
-      // Puedes obtener la ubicación actualizada de alguna fuente, como un servicio de geolocalización
-
-      // Por ejemplo, si deseas establecer una ubicación aleatoria cada vez que se carga la pantalla
       const newMapRegion = {
         latitude: route.params.item.latitud,
         longitude: route.params.item.longitud,
@@ -146,16 +154,17 @@ const InstalacionScreen: React.FC<InstalacionScreenProps> = ({ navigation }) => 
       };
 
       setMapRegion(newMapRegion);
+      setFavorita(route.params.item.favorita);
 
       mapRef.current?.fitToSuppliedMarkers(["marker"]);
     });
-
     fetchMenu();
+    
   }, [route.params.item]);
 
   return (
     <>
-      <Menu showReturnWizard={true} showLang={true} text={t("INSTALACIONES")} showusuario={true} userMenu={() => navigation.openDrawer()} goBack="/Inicio" />
+      <Menu showReturnWizard={true} showLang={true} text={t("INSTALACIONES")} showusuario={true} userMenu={() => navigation.openDrawer()} functionGoBack={goBack} />
       <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
         <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
           <View
@@ -220,18 +229,21 @@ const InstalacionScreen: React.FC<InstalacionScreenProps> = ({ navigation }) => 
                   flexDirection: "row",
                   alignItems: "center",
                   marginTop: 7,
+                  minHeight:30
                 }}
               >
                 <MaterialIcons name="stars" size={24} color="orange" />
                 <Text style={{ marginLeft: 3, fontSize: 17, fontWeight: "400" }}>
                   {average(instalacion?.obtenerValoracionesInstalacion)}
                 </Text>
-                <Text style={{ marginLeft: 3, fontSize: 17, fontWeight: "400", marginRight: 10 }}>sobre 5</Text>
-                <Button buttonColor="transparent" style={{ marginLeft: 'auto', borderColor: 'green', borderWidth: 2 }} mode="text" textColor="green" icon={() => <Icon name="hand-o-down" size={15} color="green" />} contentStyle={{ flexDirection: 'row-reverse' }} onPress={() => console.log('Pressed')}>
+                <Text style={{ marginLeft: 3, fontSize: 17, fontWeight: "400", marginRight: 10 }}>{t("SOBRE")} 5</Text>
+                {instalacion?.obtenerValoracionesInstalacion && instalacion?.obtenerValoracionesInstalacion.length > 0 && (
+                  <Button buttonColor="transparent" style={{ marginLeft: 'auto', borderColor: 'green', borderWidth: 2 }} mode="text" textColor="green" icon={() => <Icon name="hand-o-down" size={15} color="green" />} contentStyle={{ flexDirection: 'row-reverse' }} onPress={seeReviews}>
                   <Text style={{ fontSize: 12 }}>
                     {t("VER_RESENAS")}
                   </Text>
                 </Button>
+                )}
               </View>
 
               <View style={{ flexDirection: 'row', marginTop: 10 }}>
@@ -260,7 +272,7 @@ const InstalacionScreen: React.FC<InstalacionScreenProps> = ({ navigation }) => 
                 <TouchableOpacity onPress={emailInstalacion} style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <MaterialIcons name="email" size={24} color="red" />
                   <Text style={{ marginLeft: 3, fontSize: 14, fontWeight: "400" }} numberOfLines={1} ellipsizeMode="tail">
-                    {instalacion?.obtenerEntidadInstalacion.email}
+                    {instalacion?.email && instalacion?.email != ""?instalacion?.email : instalacion?.obtenerEntidadInstalacion.email}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -284,11 +296,14 @@ const InstalacionScreen: React.FC<InstalacionScreenProps> = ({ navigation }) => 
                   width: width * 0.6
                 }}
               >
-                <FontAwesome5 name="walking" size={24} color="brown" />
-                <Text style={{ marginLeft: 7, color: "gray", fontSize: 13 }}>
-                  {instalacion?.distancia} ({instalacion?.tiempo}) |
-                </Text>
-                <Text style={{ marginLeft: 7, color: "gray", fontSize: 13, fontWeight: 'bold', marginRight:5 }} numberOfLines={1} ellipsizeMode="tail">
+                {location && (<>
+                  <FontAwesome5 name="walking" size={24} color="brown" />
+                  <Text style={{ marginLeft: 7, color: "gray", fontSize: 13 }}>
+                    {instalacion?.distancia} ({instalacion?.tiempo}) |
+                  </Text>
+                </>
+                )}
+                <Text style={{ marginLeft: 7, color: "gray", fontSize: 13, fontWeight: 'bold', marginRight: 5 }} numberOfLines={1} ellipsizeMode="tail">
                   {instalacion?.domicilio}
                 </Text>
               </View>

@@ -126,4 +126,5 @@ export interface IProps {
     showusuario?:any;
     userMenu?:any;
     goBack?:string;
+    functionGoBack?:any;
   }

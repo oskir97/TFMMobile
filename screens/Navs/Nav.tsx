@@ -15,6 +15,7 @@ import Ubicacion from "../FilterWizard/steps/UbicacionScreen";
 import Deporte from "../FilterWizard/steps/DeporteScreen";
 import Fecha from "../FilterWizard/steps/FechaScreen";
 import InstalacionPage from "../Home/InstalacionScreen";
+import ReviewsPage from "../Home/ReviewsScreen";
 import { useTranslation } from 'react-i18next';
 
 const Stack = createStackNavigator();
@@ -99,6 +100,11 @@ const Nav: React.FC = () => {
                 drawerLabel: inicioLabel
             }} />
             <Drawer.Screen name="InstalacionScreen" component={InstalacionPage} options={{
+                drawerLabel: () => null, drawerItemStyle: {
+                    display: 'none',
+                },
+            }} />
+            <Drawer.Screen name="ReviewsScreen" component={ReviewsPage} options={{
                 drawerLabel: () => null, drawerItemStyle: {
                     display: 'none',
                 },

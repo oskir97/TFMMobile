@@ -21,6 +21,7 @@ const InstalacionItem: React.FC<InstalacionItemProps> = ({ item, navigation }) =
 
     function addFav() {
         var result: boolean = !favorita;
+        item.favorita = result
 
         if(result){
             Asignarinstalacionfavoritos(item.idinstalacion);
@@ -134,7 +135,7 @@ const InstalacionItem: React.FC<InstalacionItemProps> = ({ item, navigation }) =
                     </View>
 
                     <View style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}>
-                        <MaterialIcons name="payments" size={24} color="#04D6C8" />
+                        <MaterialIcons name="payments" size={24} color="#00CC99" />
 
                         <Text style={{ marginLeft: 4, fontSize: 12, fontWeight: "500" }}>
                             {`${t("DESDE")} ${obtainMinorPistaPrice(item.pistasDisponibles)?.precio.toString()}€`}

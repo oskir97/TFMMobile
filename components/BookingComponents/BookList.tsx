@@ -18,15 +18,17 @@ export interface BookListProps {
     type: TypeReservation | undefined,
     filter: FilterReserva;
     navigation: any;
+    loading:boolean;
 }
 
 type ParamList = {
     loadingItems: {
-      loadingItems?: boolean;
+        loadingItems?: boolean;
+        instalacion?: Instalacion;
     };
-  };
+};
 
-const BookList: React.FC<BookListProps> = ({ type, filter, navigation }) => {
+const BookList: React.FC<BookListProps> = ({ type, filter, navigation, loading }) => {
     const obtenerInstalaciones = useInstalaciones();
     const obtenerEventos = useEventos();
     const obtenerReservas = useReservas();
@@ -38,7 +40,7 @@ const BookList: React.FC<BookListProps> = ({ type, filter, navigation }) => {
     const route = useRoute<RouteProp<ParamList, 'loadingItems'>>();
 
     useEffect(() => {
-        if (!route.params || (route.params && !route.params.loadingItems)) {
+        if (!route.params || (route.params && !route.params.loadingItems && route.params.instalacion) || loading) {
             if (type) {
                 switch (type) {
                     case 'Pista':
@@ -54,6 +56,14 @@ const BookList: React.FC<BookListProps> = ({ type, filter, navigation }) => {
                         obtenerReservas(filter).then((reservas: Reserva[]) => { setPartidos(reservas); setCargando(false); });
                         break;
                 }
+            }
+        } else {
+            if (route.params.instalacion) {
+                instalaciones?.forEach((instalacion) => {
+                    if (instalacion.idinstalacion == route.params.instalacion?.idinstalacion) {
+                        instalacion.favorita = route.params.instalacion.favorita;
+                    }
+                })
             }
         }
     }, [filter]);

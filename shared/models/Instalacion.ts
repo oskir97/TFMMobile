@@ -22,4 +22,5 @@ export interface Instalacion {
     favorita:boolean;
     tiempo:string;
     distancia:string;
+    email:string;
   }

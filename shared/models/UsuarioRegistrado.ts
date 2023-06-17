@@ -1,4 +1,5 @@
 import { Rol } from "./Rol";
+import { Valoracion } from "./Valoracion";
 
 export interface UsuarioRegistrado {
     nombre: string;
@@ -17,4 +18,5 @@ export interface UsuarioRegistrado {
     idusuario: number;
     baja: Date | null;
     obtenerRol: Rol;
+    obtenerValoracionesAlUsuario: Valoracion[];
   }

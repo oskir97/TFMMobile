@@ -5,7 +5,7 @@ import { Modal, View, Text, Pressable, StyleSheet, Image, useWindowDimensions, T
 import { Appbar, Avatar, Divider, IconButton, Menu } from "react-native-paper";
 import { MenuProps } from "../../tfmmobile";
 
-const CustomLanguagePicker: React.FC<MenuProps> = ({ showReturnWizard, text, showusuario, userMenu, goBack }) => {
+const CustomLanguagePicker: React.FC<MenuProps> = ({ showReturnWizard, text, showusuario, userMenu, goBack, functionGoBack }) => {
   const { i18n, t } = useTranslation();
   const linkTo = useLinkTo();
 
@@ -48,12 +48,12 @@ const CustomLanguagePicker: React.FC<MenuProps> = ({ showReturnWizard, text, sho
           <IconButton
             icon="arrow-left"
             iconColor="white"
-            onPress={handleGoBack}
+            onPress={functionGoBack? functionGoBack :handleGoBack}
           />
         )}
         {
           text && (
-            <Text className="font-semibold mt-1" style={{ color: 'white', fontSize: 20 }}>{truncateText(text, maxWidth / 10)}</Text>
+            <Text className="font-semibold mt-1" style={{ color: 'white', fontSize: 20 }}>{truncateText(text, maxWidth / 11)}</Text>
           )
         }
         <Appbar.Content title="" />
