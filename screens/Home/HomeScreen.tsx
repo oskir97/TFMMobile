@@ -57,7 +57,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       setFilterReserva({filtro:filterText, localidad:filter?.localidad,latitud: location?.coords.latitude.toString(), longitud: location?.coords.longitude.toString(), fecha:filter?.fecha, deporte:filter?.deporte, orden: filter?.sort  });
     });
     return unsubscribe;
-  }, [navigation, filter?.localidad]);
+  }, [navigation, filter?.localidad, location]);
 
   const handleFilterChange = (text:string) => {
     setLoadingFilters(true);
