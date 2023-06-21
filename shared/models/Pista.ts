@@ -16,6 +16,7 @@ export interface Pista {
     latitud: number;
     longitud: number;
     obtenerHorarios: Horario[];
+    obtenerHorariosDisponibles: Horario[];
     obtenerInstalaciones: Instalacion;
     obtenerEntidadPista: Entidad;
     obtenerValoracionesPista: Valoracion[];

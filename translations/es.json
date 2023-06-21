@@ -138,5 +138,12 @@
   "RESENA_DE": "Reseña de",
   "LISTA_VALORACIONES": "Lista de reseñas",
   "INSTALACIONES": "Instalaciones",
-  "SOBRE": "sobre"
+  "SOBRE": "sobre",
+  "SELECCIONA_HORARIO": "Selecciona un horario",
+  "SELECCIONAR_PISTA": "Selecciona una pista",
+  "HORARIOS": "Horarios",
+  "SELECCIONAR_PAGO": "Seleccionar pago",
+  "SELECCIONAR_HORARIO": "Seleccionar horario",
+  "RESUMEN": "Resumen",
+  "VOLVER_HORARIO": "Volver a horarios"
 }

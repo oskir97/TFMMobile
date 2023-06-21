@@ -85,6 +85,8 @@ export interface IProps {
     colorTextHover:string;
     iconLeft?:string;
     iconRight?:string;
+    visible?:boolean;
+    animated?:boolean;
   }
 
   export type NavStackParamList = {

@@ -1,14 +1,11 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
-
-import { SubmitHandler, useForm, Controller, Control } from "react-hook-form";
-import { IconButton, MD3Colors, ProgressBar, TextInput } from "react-native-paper";
+import { MD3Colors, ProgressBar } from "react-native-paper";
 import { LoginContext } from "../../../shared/services/hooks/login/contexts/LoginContext";
 import { useTranslation } from "react-i18next";
 import CustomButton from "../../../components/Buttons/CustomButton";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Menu from "../../../components/Menu/Menu";
-import { AdjustmentsHorizontalIcon } from "react-native-heroicons/solid";
 import { Ionicons } from "@expo/vector-icons";
 
 interface UbicationScreenProps {
@@ -24,7 +21,7 @@ const UbicacionScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
 
   const { filter, setFilter, localidad, getLocation } = useContext(LoginContext);
   const [localidadAsignada, setLocalidadAsignada] = useState<string | undefined>(filter && filter.localidad ? filter.localidad : localidad);
-  const [error, setError] = useState(false);
+  // const [error, setError] = useState(false);
 
   const { t } = useTranslation();
 
@@ -39,9 +36,10 @@ const UbicacionScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
       setFilter(filterUbicacion);
 
       navigation.navigate("Deporte");
-    } else {
-      setError(true);
-    }
+    } 
+    // else {
+    //   setError(true);
+    // }
   };
 
   const obtenerUbicacion = () => {
@@ -101,13 +99,14 @@ const UbicacionScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
                     // const codigoPostal = details?.address_components.find(component => component.types.includes('postal_code'));
                     if (localidadMaps) {
                       setLocalidadAsignada(localidadMaps?.long_name);
-                      setError(false);
+                      // setError(false);
                     } else if (localidad != undefined) {
                       setLocalidadAsignada(localidad);
-                      setError(false);
-                    } else {
-                      setError(true);
-                    }
+                      // setError(false);
+                    } 
+                    // else {
+                    //   setError(true);
+                    // }
                   }}
                   query={{
                     key: 'AIzaSyDB2bGI_qo-wtNjBZ690FvrcVeQK4kS7Jg',
@@ -116,9 +115,9 @@ const UbicacionScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
                   }}
                 />
               </View>
-              {error && (
+              {/* {error && (
                 <Text className="text-error">{t("SELECCIONAR_UNA_LOCALIDAD")}</Text>
-              )}
+              )} */}
               <TouchableOpacity style={{ flex: 0.09 }} onPress={() => obtenerUbicacion()}>
                 <Ionicons name="locate" color={"#04D6C8"} size={30} style={{ marginTop: 6 }} />
               </TouchableOpacity>
@@ -133,6 +132,8 @@ const UbicacionScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
             colorButtomHover="#04D6C8"
             colorTextHover="white"
             iconRight="chevron-right"
+            animated={true}
+            visible={localidadAsignada?true : false}
           />
         </View>
       </View>

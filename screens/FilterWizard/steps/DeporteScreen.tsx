@@ -1,11 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Text, View, StyleSheet } from "react-native";
-import Constants from "expo-constants";
-
-import { useForm, Controller } from "react-hook-form";
-import { WizardStore } from "../../../shared/store/WizardStore";
-import { Button, MD3Colors, ProgressBar, TextInput } from "react-native-paper";
-import { useIsFocused } from "@react-navigation/native";
+import { MD3Colors, ProgressBar } from "react-native-paper";
 import CustomButton from "../../../components/Buttons/CustomButton";
 import { useTranslation } from "react-i18next";
 import { Deporte } from "../../../shared/models/Deporte";
@@ -26,7 +21,7 @@ const DeporteScreen: React.FC<DeporteScreenProps> = ({ navigation }) => {
 
   const { filter, setFilter, localidad } = useContext(LoginContext);
   const [deporteAsignado, setDeporteAsignado] = useState<Deporte | undefined>();
-  const [error, setError] = useState(false);
+  // const [error, setError] = useState(false);
 
   const { t } = useTranslation();
 
@@ -40,12 +35,13 @@ const DeporteScreen: React.FC<DeporteScreenProps> = ({ navigation }) => {
 
       setFilter(filterUbicacion);
 
-      setError(false);
+      // setError(false);
 
       navigation.navigate("Fecha");
-    } else {
-      setError(true);
-    }
+    } 
+    // else {
+    //   setError(true);
+    // }
   };
 
   const toUbicacion = () => {
@@ -72,11 +68,11 @@ const DeporteScreen: React.FC<DeporteScreenProps> = ({ navigation }) => {
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 
           </View>
-          {error && (
+          {/* {error && (
             <View style={{alignItems: 'center', justifyContent: 'center'}}>
               <Text className="text-error">{t("SELECCIONAR_UN_DEPORTE")}</Text>
             </View>
-          )}
+          )} */}
         </View>
 
         <View style={{ justifyContent: 'flex-end' }}>
@@ -88,6 +84,8 @@ const DeporteScreen: React.FC<DeporteScreenProps> = ({ navigation }) => {
             colorButtomHover="#04D6C8"
             colorTextHover="white"
             iconRight="chevron-right"
+            animated={true}
+            visible={deporteAsignado?true : false}
           />
           <CustomButton
             onPress={toUbicacion}

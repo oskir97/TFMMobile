@@ -137,5 +137,12 @@
   "RESENA_DE": "Review of",
   "LISTA_VALORACIONES": "List of reviews",
   "INSTALACIONES": "Sports facilities",
-  "SOBRE": "out of"
+  "SOBRE": "out of",
+  "SELECCIONA_HORARIO": "Select a schedule",
+  "SELECCIONAR_PISTA": "Select a sports track",
+  "HORARIOS": "Time schedules",
+  "SELECCIONAR_PAGO": "Select payment",
+  "SELECCIONAR_HORARIO": "Select time",
+  "RESUMEN": "Summary",
+  "VOLVER_HORARIO": "Go back to schedules"
 }

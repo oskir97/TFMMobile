@@ -6,7 +6,7 @@ import { I18nContext, useTranslation } from "react-i18next";
 import CustomButton from "../../../components/Buttons/CustomButton";
 import { Calendar, LocaleConfig } from "react-native-calendars";
 import Menu from "../../../components/Menu/Menu";
-import { Filter, Sort, TypeReservation } from "../../../shared/models/Filter";
+import { Filter } from "../../../shared/models/Filter";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface UbicationScreenProps {
@@ -22,13 +22,13 @@ const FechaScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
 
   const { filter, setFilter } = useContext(LoginContext);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(filter && filter.fecha && filter.fecha.setHours(0, 0, 0, 0) >= new Date().setHours(0, 0, 0, 0) ? filter.fecha : undefined);
-  const [error, setError] = useState(false);
+  // const [error, setError] = useState(false);
   const today = new Date();
 
   const handleDateSelect = (date: string) => {
     const selected = new Date(date);
     setSelectedDate(selected);
-    setError(false);
+    // setError(false);
   };
 
   const { t } = useTranslation();
@@ -108,9 +108,10 @@ const FechaScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
             navigation.navigate("Fecha");
         }
       });
-    } else {
-      setError(true);
-    }
+    } 
+    // else {
+    //   setError(true);
+    // }
   };
 
   const toDeporte = () => {
@@ -214,11 +215,11 @@ const FechaScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
                 minDate={today.toISOString().slice(0, 10)}
               />
             </View>
-            {error && (
+            {/* {error && (
               <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                 <Text className="text-error">{t("SELECCIONAR_UNA_FECHA")}</Text>
               </View>
-            )}
+            )} */}
             {selectedDate && (
               <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10, alignItems: 'center' }}>
                 <Text style={{ fontSize: 18, textAlign: 'center' }}>
@@ -237,6 +238,8 @@ const FechaScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
               colorButtomHover="#04D6C8"
               colorTextHover="white"
               iconRight="search"
+              animated={true}
+              visible={selectedDate?true : false}
             />
             <CustomButton
               onPress={toDeporte}

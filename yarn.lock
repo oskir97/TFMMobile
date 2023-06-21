@@ -1956,7 +1956,7 @@
   resolved "https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.5.tgz"
   integrity sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==
 
-"@types/react-native-vector-icons@^6.4.13":
+"@types/react-native-vector-icons@*", "@types/react-native-vector-icons@^6.4.13":
   version "6.4.13"
   resolved "https://registry.npmjs.org/@types/react-native-vector-icons/-/react-native-vector-icons-6.4.13.tgz"
   integrity sha512-1PqFoKuXTSzMHwGMAr+REdYJBQAbe9xrww3ecZR0FsHcD1K+vGS/rxuAriL4rsI6+p69sZQjDzpEVAbDQcjSwA==
@@ -1964,7 +1964,7 @@
     "@types/react" "*"
     "@types/react-native" "^0.70"
 
-"@types/react-native@^0.70":
+"@types/react-native@*", "@types/react-native@^0.70":
   version "0.70.13"
   resolved "https://registry.npmjs.org/@types/react-native/-/react-native-0.70.13.tgz"
   integrity sha512-VnC/ny8Eynk3fvY4cnNKXpo/0zUhA2gO64RX51yzVofblOP6TR6jciga0kIjI4c+2eUyWNGrahmiolNm+QU6Cw==
@@ -6381,7 +6381,12 @@ react-native-maps@^1.7.1, react-native-maps@>=1.0.0:
   dependencies:
     "@types/geojson" "^7946.0.10"
 
-react-native-paper@^5.8.0:
+react-native-paper-select@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/react-native-paper-select/-/react-native-paper-select-1.0.2.tgz"
+  integrity sha512-QRuHuPii4v3s6mhTcFaWIT5JyFiNMpu0cgkpG/MrB+ysht6edwq2q57hzvfjZy9fbVA5wctZwJrd6xIccBCs6Q==
+
+react-native-paper@*, react-native-paper@^5.8.0:
   version "5.8.0"
   resolved "https://registry.npmjs.org/react-native-paper/-/react-native-paper-5.8.0.tgz"
   integrity sha512-Mde8KkWt+9VD+KMqGK5VyTskJLZCsF/gAQQxoLgRlC2C8RmVPgyG0xhgu1sD3ED7T7FewE8cKrQm+soB9FAD1Q==
@@ -7553,7 +7558,7 @@ type-is@~1.6.18:
     media-typer "0.3.0"
     mime-types "~2.1.24"
 
-typescript@^4.9.4:
+typescript@*, typescript@^4.9.4:
   version "4.9.5"
   resolved "https://registry.npmjs.org/typescript/-/typescript-4.9.5.tgz"
   integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==

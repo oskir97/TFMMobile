@@ -137,7 +137,7 @@ const InstalacionScreen: React.FC<InstalacionScreenProps> = ({ navigation }) => 
   }
 
   function booking() {
-
+    navigation.navigate("Horario" as never, { instalacion: instalacion, previousPage: "Horario"} as never)
   }
 
   useEffect(() => {
