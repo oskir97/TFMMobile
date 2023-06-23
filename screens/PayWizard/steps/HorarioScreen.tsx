@@ -28,7 +28,7 @@ type ParamList = {
     instalacion?: Instalacion;
     evento?: Evento;
     partido?: Reserva;
-    previousPage:string;
+    previousPage: string;
   };
 };
 
@@ -63,11 +63,11 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
 
   const onSubmit = () => {
     if (route.params.instalacion) {
-      navigation.navigate("SelectPago" as never, { instalacion: route.params.instalacion, fecha: fecha ? fecha.toLocaleDateString() : new Date().toLocaleDateString(), pista: pista, horario: horario } as never)
+      navigation.navigate("Resumen" as never, { instalacion: route.params.instalacion, fecha: fecha ? fecha.toLocaleDateString() : new Date().toLocaleDateString(), pista: pista, horario: horario } as never)
     } else if (route.params.evento) {
-      navigation.navigate("SelectPago" as never, { evento: route.params.evento, fecha: fecha ? fecha.toLocaleDateString() : new Date().toLocaleDateString(), pista: pista, horario: horario } as never)
+      navigation.navigate("Resumen" as never, { evento: route.params.evento, fecha: fecha ? fecha.toLocaleDateString() : new Date().toLocaleDateString(), pista: pista, horario: horario } as never)
     } else if (route.params.partido) {
-      navigation.navigate("SelectPago" as never, { partido: route.params.partido, fecha: fecha ? fecha.toLocaleDateString() : new Date().toLocaleDateString(), pista: pista, horario: horario } as never)
+      navigation.navigate("Resumen" as never, { partido: route.params.partido, fecha: fecha ? fecha.toLocaleDateString() : new Date().toLocaleDateString(), pista: pista, horario: horario } as never)
     }
   };
 
@@ -103,7 +103,7 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      if (route.params.previousPage != "SelectPago") {
+      if (route.params.previousPage != "Resumen") {
         setFecha(filter?.fecha);
 
         if (route.params.instalacion) {
@@ -144,6 +144,24 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
     error: t("ERROR_APLICACION")
   };
 
+  const horarioMayor = (fechaInicio: Date | null): boolean => {
+    if (fechaInicio != null && fecha) {
+      const fechaBase = fecha;
+      const fechaI = new Date(fechaInicio);
+      const horas = fechaI.getHours();
+      const minutos = fechaI.getMinutes();
+      const segundos = fechaI.getSeconds();
+
+      fechaBase.setHours(horas);
+      fechaBase.setMinutes(minutos);
+      fechaBase.setSeconds(segundos);
+
+      return fechaBase > new Date();
+    } else {
+      return false;
+    }
+  };
+
   return (
     <>
       <Menu showReturnWizard={true} showLang={true} text={(instalacion && instalacion.nombre) || (evento && evento.nombre) || (partido && `${t("PARTIDO")} ${t("DE")} ${translatesport(partido.obtenerDeporteReserva)}`)} showusuario={true} userMenu={() => navigation.openDrawer()} functionGoBack={goBack} />
@@ -168,16 +186,18 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
               label={t("SELECCIONAR_PISTA")}
               dialogCloseButtonText={translations.cancelLabel}
               dialogDoneButtonText={translations.acceptLabel}
-              dialogCloseButtonStyle={{color:"grey"}}
-              dialogDoneButtonStyle={{color:"#04D6C8"}}
+              dialogCloseButtonStyle={{ color: "grey" }}
+              dialogDoneButtonStyle={{ color: "#04D6C8" }}
               checkboxProps={{
                 checkboxColor: "#04D6C8"
               }}
               searchText={translations.placeholder}
               value={pista ? `${pista.nombre}${pista.ubicacion ? " - " + pista.ubicacion : ""}` : ""}
               onSelection={(value: any) => {
-                setHorario(undefined);
-                setPista(pistas?.find((pista) => pista.idpista.toString() == value.selectedList[0]._id));
+                if (value.selectedList.length > 0) {
+                  setHorario(undefined);
+                  setPista(pistas?.find((pista) => pista.idpista.toString() == value.selectedList[0]._id));
+                }
               }}
               arrayList={pistas ? pistas.map((pista) => ({ value: `${pista.nombre}${pista.ubicacion ? " - " + pista.ubicacion : ""}`, _id: pista.idpista.toString() })) : []}
               multiEnable={false}
@@ -193,7 +213,7 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
                   showsVerticalScrollIndicator={false}
                   style={styles.flatlist}
                   keyExtractor={(item) => item.idhorario.toString()}
-                  data={pista.obtenerHorarios.sort((a, b) => (a.inicio ? new Date(a.inicio).getTime() : 0) - (b.inicio ? new Date(b.inicio).getTime() : 0))}
+                  data={pista.obtenerHorarios.filter((h) => horarioMayor(h.inicio)).sort((a, b) => (a.inicio ? new Date(a.inicio).getTime() : 0) - (b.inicio ? new Date(b.inicio).getTime() : 0))}
                   renderItem={({ item }) => (
                     <TouchableOpacity onPress={() => addTime(item)} style={!horarioDisponible(item) && styles.buttonDisabled} disabled={!horarioDisponible(item)}>
                       <View style={styles.timeContainer}>
@@ -211,7 +231,7 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
 
           <CustomButton
             onPress={() => onSubmit()}
-            buttonText={t("SELECCIONAR_PAGO")}
+            buttonText={t("RESUMEN")}
             colorButtom='#04D6C8'
             colorText='white'
             colorButtomHover="#04D6C8"

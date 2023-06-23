@@ -15,7 +15,7 @@ import Ubicacion from "../FilterWizard/steps/UbicacionScreen";
 import Deporte from "../FilterWizard/steps/DeporteScreen";
 import Fecha from "../FilterWizard/steps/FechaScreen";
 import Horario from "../PayWizard/steps/HorarioScreen";
-import Pago from "../PayWizard/steps/SelectPagoScreen";
+import Resumen from "../PayWizard/steps/ResumScreen";
 import InstalacionPage from "../Home/InstalacionScreen";
 import ReviewsPage from "../Home/ReviewsScreen";
 import { useTranslation } from 'react-i18next';
@@ -95,7 +95,7 @@ const Nav: React.FC = () => {
                     display: 'none',
                 },
             }} />
-            <Drawer.Screen name="SelectPago" component={Pago} options={{
+            <Drawer.Screen name="Resumen" component={Resumen} options={{
                 drawerLabel: () => null, drawerItemStyle: {
                     display: 'none',
                 },

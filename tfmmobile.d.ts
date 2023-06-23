@@ -1,5 +1,5 @@
+import { FilterData } from "./components/Filter/CustomFilter";
 import { Deporte } from "./shared/models/Deporte";
-import { Ubication } from "../../shared/models/Ubication";
 
 export interface IProps {
     children: React.ReactNode;
@@ -7,10 +7,10 @@ export interface IProps {
   
   export interface InputProps {
     label: string;
-    icon?: string;
+    icon?: JSX.Element | null;
     IsSecureText?: boolean | undefined;
     keyboardType?: KeyboardTypeOptions | undefined;
-    placeholder?: any;
+    placeholder?: string | undefined;
     control: any;
     onSubmit?: any;
     nameController: string;
@@ -19,18 +19,12 @@ export interface IProps {
     errors?:any;
     editable:boolean;
     maxLength:number
-    valueAssign?:any;
-    onFocus?:any;
-    onPressIn?:any;
-    onSelectIcon?:any;
-    ref?:any;
-    autoCapitalize?:any;
   }
 
   export interface InputDateProps {
     label: string;
     icon?: JSX.Element | null;
-    placeholder?: any;
+    placeholder?: string | undefined;
     control: any;
     onSubmit?: any;
     nameController: string;
@@ -77,16 +71,10 @@ export interface IProps {
   }
   
   export interface CustomButtonProps {
-    onPress: ((event: GestureResponderEvent) => void);
-    buttonText: any;
-    colorButtom:string;
-    colorText:string;
-    colorButtomHover:string;
-    colorTextHover:string;
-    iconLeft?:string;
-    iconRight?:string;
-    visible?:boolean;
-    animated?:boolean;
+    onPress?: null | ((event: GestureResponderEvent) => void) | undefined;
+    buttonClassNames?: string;
+    textClassNames?: string;
+    buttonText: string;
   }
 
   export type NavStackParamList = {
@@ -103,7 +91,7 @@ export interface IProps {
     title:string,
     onConfirm:any,
     onCancel: any,
-    filter:Filter | undefined
+    filter:FilterData |undefined
   }
 
   export type CustomInputMapsProps = {
@@ -113,20 +101,5 @@ export interface IProps {
     title:string,
     onConfirm:any,
     onCancel: any,
-    lastlocation:Ubication | undefined,
-    login:boolean
-  }
-
-  export type CustomInputTextMapsProps = {
-    setLocation?:any;
-  }
-
-  export type MenuProps = {
-    showReturnWizard:boolean;
-    showLang:boolean;
-    text?:any;
-    showusuario?:any;
-    userMenu?:any;
-    goBack?:string;
-    functionGoBack?:any;
+    lastlocation:string | undefined
   }

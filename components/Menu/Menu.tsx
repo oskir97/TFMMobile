@@ -53,7 +53,7 @@ const CustomLanguagePicker: React.FC<MenuProps> = ({ showReturnWizard, text, sho
         )}
         {
           text && (
-            <Text className="font-semibold mt-1" style={{ color: 'white', fontSize: 20 }}>{truncateText(text, maxWidth / 11)}</Text>
+            <Text className="font-semibold mt-1" onPress={functionGoBack? functionGoBack :handleGoBack} style={{ color: 'white', fontSize: 20 }}>{truncateText(text, maxWidth / 11)}</Text>
           )
         }
         <Appbar.Content title="" />
