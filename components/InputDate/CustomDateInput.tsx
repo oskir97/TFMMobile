@@ -1,6 +1,5 @@
 import { View, Text, Pressable, Platform, StyleSheet } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
-// import MonthPicker from 'react-native-month-year-picker';
 import { TextInput } from "react-native-paper";
 import React, { useEffect, useState } from "react";
 import { InputDateProps } from "../../tfmmobile";
@@ -31,7 +30,7 @@ const CustomDateInput: React.FC<InputDateProps> = ({ label, icon, mode, placehol
         rules={rules}
         render={({ field }) => (
           <>
-            {showPicker && mode != 'month' && (
+            {showPicker && (
               <DateTimePicker className="flex flex-1 bg-transparent text-lg text-[#EFE3C895] h-[50px] pl-2" mode={mode} display={'spinner'} maximumDate={maxDate} minimumDate={minDate}
                 value={field.value} onChange={({ type }, selectedDate) => {
                   if (type == "set") {
@@ -45,13 +44,6 @@ const CustomDateInput: React.FC<InputDateProps> = ({ label, icon, mode, placehol
                   }
                 }} />
             )}
-            {/* {showPicker && mode == 'month' && (
-              <MonthPicker maximumDate={maxDate} minimumDate={minDate}
-                value={field.value} onChange={(selectedDate) => {
-                  field.onChange(selectedDate || maxDate);
-                  toggleDatepicker();
-                }} />
-            )} */}
             {!showPicker && (
               <Pressable onPress={toggleDatepicker}>
                 <TextInput mode="outlined" label={label}

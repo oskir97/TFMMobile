@@ -159,11 +159,12 @@
   "INTRODUCE_TU_TARJETA": "Introduce tu tarjeta",
   "NUM_CARD_REQUERIDO": "Número de tarjeta requerido",
   "FECHA_EXP_REQUERIDA": "Fecha de expiración requerida",
-  "CVC_REQUERIDO": "CVC requerido",
+  "CVV_REQUERIDO": "CVV requerido",
   "NUMERO_TARJETA": "Número de tarjeta",
   "INTRODUCE_TU_NUMERO_TARJETA": "Introduce el número",
   "FECHA_EXPIRACION": "Fecha de expiración",
   "INTRODUCE_LA_FECHA_EXPIRACION": "Introduce la fecha",
-  "CVC": "CVC",
-  "INTRODUCE_EL_CVC": "Introduce el CVC"
+  "CVV": "CVV",
+  "INTRODUCE_EL_CVV": "Introduce el CVV",
+  "NUMERO_TARJETA_INVALIDO": "El número de tarjeta es inválido"
 }

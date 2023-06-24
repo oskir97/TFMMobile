@@ -16,6 +16,8 @@ import Deporte from "../FilterWizard/steps/DeporteScreen";
 import Fecha from "../FilterWizard/steps/FechaScreen";
 import Horario from "../PayWizard/steps/HorarioScreen";
 import Resumen from "../PayWizard/steps/ResumScreen";
+import ProcessingPago from "../PayWizard/steps/ProcessingPagoScreen";
+import CompletedPago from "../PayWizard/steps/CompletedPagoScreen";
 import InstalacionPage from "../Home/InstalacionScreen";
 import ReviewsPage from "../Home/ReviewsScreen";
 import { useTranslation } from 'react-i18next';
@@ -96,6 +98,16 @@ const Nav: React.FC = () => {
                 },
             }} />
             <Drawer.Screen name="Resumen" component={Resumen} options={{
+                drawerLabel: () => null, drawerItemStyle: {
+                    display: 'none',
+                },
+            }} />
+            <Drawer.Screen name="ProcessingPago" component={ProcessingPago} options={{
+                drawerLabel: () => null, drawerItemStyle: {
+                    display: 'none',
+                },
+            }} />
+            <Drawer.Screen name="CompletedPago" component={CompletedPago} options={{
                 drawerLabel: () => null, drawerItemStyle: {
                     display: 'none',
                 },

@@ -1,11 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Text, View, StyleSheet, BackHandler, Pressable, Modal, TouchableOpacity, Dimensions } from "react-native";
+import { Text, View, StyleSheet, BackHandler, Pressable, Modal, TouchableOpacity } from "react-native";
 import { MD3Colors, ProgressBar } from "react-native-paper";
 import CustomButton from "../../../components/Buttons/CustomButton";
 import { I18nContext, useTranslation } from "react-i18next";
-import { Pago } from "../../../shared/models/Pago";
-import { LoginContext } from "../../../shared/services/hooks/login/contexts/LoginContext";
-import SportTypes from "../../../components/SportTypes/SportTypes";
 import Menu from "../../../components/Menu/Menu";
 import { Instalacion } from "../../../shared/models/Instalacion";
 import { Evento } from "../../../shared/models/Evento";
@@ -13,19 +10,17 @@ import { Reserva } from "../../../shared/models/Reserva";
 import { Pista } from "../../../shared/models/Pista";
 import { Horario } from "../../../shared/models/Horario";
 import { RouteProp, useFocusEffect, useRoute } from "@react-navigation/native";
-// import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Deporte } from "../../../shared/models/Deporte";
-import PaymentMethodSelector, { PaymentMethodType } from "../../../components/PaymentMehodSelector/PaymentMehodSelector";
+import { PaymentMethodType } from "../../../components/PaymentMehodSelector/PaymentMehodSelector";
 import { Tarjeta } from "../../../shared/models/Tarjeta";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { XCircleIcon } from "react-native-heroicons/solid";
-import CustomTextInput from "../../../components/InputText/CustomTextInput";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from 'yup';
-import CardIcon from "../../../components/CardIcon/CardIcon";
 import CustomCardInputText from "../../../components/CardInputText/CustomCardInputText";
-import CustomDateInput from "../../../components/InputDate/CustomDateInput";
+import CustomMonthDateInput from "../../../components/InputMonthDate/CustomMonthDateInput";
+import cardValidator from 'card-validator';
 
 interface PagoScreenProps {
   navigation: any;
@@ -54,34 +49,36 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
   const { t } = useTranslation();
   const { i18n } = useContext(I18nContext);
   const [methodType, setMethodType] = useState<PaymentMethodType | undefined>(undefined);
-  const [card, setCard] = useState<Tarjeta | undefined>(undefined);
   const [showCardModal, setShowCardModal] = useState<boolean>(false);
-  const [cardNumber, setCardNumber] = useState('');
-  const [expiration, setExpiration] = useState('');
-  const [cvv, setCvv] = useState('');
+  const [card, setCard] = useState<Tarjeta | undefined>(undefined);
 
   const NUM_CARD_REQUERIDO = t("NUM_CARD_REQUERIDO");
   const FECHA_EXP_REQUERIDA = t("FECHA_EXP_REQUERIDA");
-  const CVC_REQUERIDO = t("CVC_REQUERIDO");
+  const CVV_REQUERIDO = t("CVV_REQUERIDO");
 
   const schema = yup.object().shape({
-    nombre: yup.string().required(NUM_CARD_REQUERIDO),
-    apellidos: yup.string().required(FECHA_EXP_REQUERIDA),
-    email: yup.string().required(CVC_REQUERIDO)
+    numero: yup.string().required(NUM_CARD_REQUERIDO),
+    fechaExp: yup.string().required(FECHA_EXP_REQUERIDA),
+    cvv: yup.string().required(CVV_REQUERIDO)
   });
 
-  const { control, setValue, handleSubmit, formState, register, formState: { errors }, reset } = useForm<Tarjeta>({
-    mode: "onChange",
+  const { control, handleSubmit, formState: { errors }, reset, setError } = useForm<Tarjeta>({
     resolver: yupResolver(schema),
     defaultValues: {
       numero: '',
-      fechaExp: new Date(),
-      csv: ''
+      fechaExp: '',
+      cvv: ''
     },
   });
 
   const onSubmit = () => {
-
+    if (route.params.instalacion) {
+      navigation.navigate("Horario" as never, { instalacion: route.params.instalacion, previousPage: "ProcessingPagoScreen" } as never)
+    } else if (route.params.evento) {
+      navigation.navigate("Horario" as never, { evento: route.params.evento, previousPage: "ProcessingPagoScreen" } as never)
+    } else if (route.params.partido) {
+      navigation.navigate("Horario" as never, { partido: route.params.partido, previousPage: "ProcessingPagoScreen" } as never)
+    }
   };
 
   const goBack = () => {
@@ -113,22 +110,22 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
     }, [navigation])
   );
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      // if (route.params.instalacion) {
-      //   setFecha(route.params.fecha ? route.params.fecha : filter?.fecha);
-      //   setInstalacion(route.params.instalacion);
-      //   obtenerPistas(route.params.fecha ? route.params.fecha : filter?.fecha);
-      // }
-      // setPista(route.params.pista);
-      // setHorario(route.params.horario);
-    });
-    return unsubscribe;
-  }, [navigation, route.params]);
+  // useEffect(() => {
+  //   const unsubscribe = navigation.addListener('focus', () => {
+  //     // if (route.params.instalacion) {
+  //     //   setFecha(route.params.fecha ? route.params.fecha : filter?.fecha);
+  //     //   setInstalacion(route.params.instalacion);
+  //     //   obtenerPistas(route.params.fecha ? route.params.fecha : filter?.fecha);
+  //     // }
+  //     // setPista(route.params.pista);
+  //     // setHorario(route.params.horario);
+  //   });
+  //   return unsubscribe;
+  // }, [navigation, route.params]);
 
-  const toHorario = () => {
-    navigation.navigate("Horario");
-  };
+  // const toHorario = () => {
+  //   navigation.navigate("Horario");
+  // };
 
   // const Tab = createMaterialTopTabNavigator();
 
@@ -141,6 +138,16 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
     } else {
       return "";
     }
+  }
+
+  function formatDate(date: Date | undefined) {
+    if (date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    } else
+      return undefined;
   }
 
   function translatesport(deporte: Deporte) {
@@ -160,10 +167,23 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
 
   };
 
-  const insertCard = async (data: Tarjeta) => {
-
+  const onSubmitCard = async (data: Tarjeta) => {
+    
+    if(cardValidator.number(data.numero).isValid){
+      setCard({numero:data.numero, fechaExp:data.fechaExp, cvv:data.cvv});
+      setMethodType('Tarjeta');
+      setShowCardModal(false);
+    }else{
+      const NUMERO_TARJETA_INVALIDO = t("NUMERO_TARJETA_INVALIDO");
+      setError('numero', {
+        type: 'manual',
+        message: NUMERO_TARJETA_INVALIDO,
+      });
+    }
 
   };
+
+  const today = new Date();
 
   return (
     <>
@@ -189,19 +209,19 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
             )}
             <View style={{ flexDirection: 'row', marginBottom: 10 }}>
               <Text style={{ fontSize: 16 }} >{t("INSTALACION")}: </Text>
-              <Text style={{ fontSize: 16 }} className="font-semibold">{getInstalacion()}</Text>
+              <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{getInstalacion()}</Text>
             </View>
             <View style={{ flexDirection: 'row', marginBottom: 10 }}>
               <Text style={{ fontSize: 16 }} >{t("PISTA")}: </Text>
-              <Text style={{ fontSize: 16 }} className="font-semibold">{route.params.pista.nombre}</Text>
+              <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{route.params.pista.nombre}</Text>
             </View>
             <View style={{ flexDirection: 'row', marginBottom: 10 }}>
               <Text style={{ fontSize: 16 }} >{t("HORARIO")}: </Text>
-              <Text style={{ fontSize: 16 }} className="font-semibold">{formatTime(route.params.horario.inicio)} - {formatTime(route.params.horario.fin)}</Text>
+              <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{formatTime(route.params.horario.inicio)} - {formatTime(route.params.horario.fin)}</Text>
             </View>
             <View style={{ flexDirection: 'row', marginBottom: 10 }}>
               <Text style={{ fontSize: 16 }} >{t("PRECIO")}: </Text>
-              <Text style={{ fontSize: 16 }} className="font-semibold">{route.params.pista.precio}€</Text>
+              <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{route.params.pista.precio}€</Text>
             </View>
           </View>
           <View style={{ marginVertical: 48 }}>
@@ -229,7 +249,7 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
                     <Icon name="paypal" size={24} color="#007DFF" style={{ marginRight: 5 }} />
                     <Text style={styles.boldText}>Paypal</Text>
                   </Pressable>
-                  <Pressable onPress={() => setShowCardModal(true)} style={[styles.selectButton, { marginLeft: 20 }]}>
+                  <Pressable onPress={() => {reset();setShowCardModal(true);}} style={[styles.selectButton, { marginLeft: 20 }]}>
                     <Text style={styles.boldText}>{t("TARJETA")}</Text>
                   </Pressable>
                 </View>
@@ -237,7 +257,7 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
             }
             {methodType &&
               <Pressable
-                onPress={() => setMethodType(undefined)}
+                onPress={() => {setMethodType(undefined);setCard(undefined);}}
                 style={{
                   flexDirection: 'row',
                   justifyContent: 'space-between',
@@ -248,7 +268,7 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
                 <View style={[styles.selectButton, { marginRight: 16 }]}>
                   {methodType !== 'Paypal' && (
                     <Text style={[styles.boldText, { color: '#007DFF' }]}>
-                      ......03564
+                      ......{card?.numero.substring(12)}
                     </Text>
                   )}
                   {methodType === 'Paypal' && (
@@ -315,60 +335,61 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
                   editable={true}
                   keyboardType={'numeric'}
                   maxLength={16}
-                  card={true}
+                  cvv={false}
                   rules={{
                     required: { value: true },
                     pattern: {
                       value: true
                     }
                   }}
-                  errors={formState.errors.numero && (
-                    <Text className="text-error">{formState.errors.numero.message}</Text>
+                  errors={errors.numero && (
+                    <Text className="text-error">{errors.numero.message}</Text>
                   )}
-                  onSubmit={handleSubmit(insertCard)}
+                  onSubmit={handleSubmit(onSubmitCard)}
                 />
-                <CustomDateInput
+                <CustomMonthDateInput
                   nameController="fechaExp"
                   control={control}
                   label={t("FECHA_EXPIRACION")}
                   placeholder={t("INTRODUCE_LA_FECHA_EXPIRACION")}
-                  mode="month"
-                  minDate={new Date()}
+                  minDate={formatDate(new Date())}
+                  maxDate={formatDate(new Date(today.getFullYear() + 10, today.getMonth(), today.getDate()))}
                   rules={{
                     required: { value: true },
                     pattern: {
                       value: true
                     }
                   }}
-                  errors={formState.errors.fechaExp && (
-                    <Text className="text-error">{formState.errors.fechaExp.message}</Text>
+                  errors={errors.fechaExp && (
+                    <Text className="text-error">{errors.fechaExp.message}</Text>
                   )}
-                  onSubmit={handleSubmit(insertCard)}
+                  onSubmit={handleSubmit(onSubmitCard)}
                 />
-                <CustomTextInput
-                  nameController="cvc"
+                <CustomCardInputText
+                  nameController="cvv"
                   // ref={nombreInputRef}
                   control={control}
-                  label={t("CVC")}
-                  placeholder={t("INTRODUCE_EL_CVC")}
+                  label={t("CVV")}
+                  placeholder={t("INTRODUCE_EL_CVV")}
                   editable={true}
                   maxLength={4}
                   keyboardType={'numeric'}
+                  cvv={true}
                   rules={{
                     required: { value: true },
                     pattern: {
                       value: true
                     }
                   }}
-                  errors={formState.errors.fechaExp && (
-                    <Text className="text-error">{formState.errors.fechaExp.message}</Text>
+                  errors={errors.cvv && (
+                    <Text className="text-error">{errors.cvv.message}</Text>
                   )}
-                  onSubmit={handleSubmit(insertCard)}
+                  onSubmit={handleSubmit(onSubmitCard)}
                 />
               </View>
 
               <CustomButton
-                onPress={insertCard}
+                onPress={handleSubmit(onSubmitCard)}
                 buttonText={t("ACEPTAR")}
                 colorButtom='#04D6C8'
                 colorText='white'

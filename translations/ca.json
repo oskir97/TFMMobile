@@ -158,11 +158,12 @@
   "INTRODUCE_TU_TARJETA": "Introduïx la teua targeta",
   "NUM_CARD_REQUERIDO": "Número de targeta requerit",
   "FECHA_EXP_REQUERIDA": "Data de caducitat requerida",
-  "CVC_REQUERIDO": "CVC requerit",
+  "CVV_REQUERIDO": "CVV requerit",
   "NUMERO_TARJETA": "Número de targeta",
   "INTRODUCE_TU_NUMERO_TARJETA": "Introdueix el número",
   "FECHA_EXPIRACION": "Data d'expiració",
   "INTRODUCE_LA_FECHA_EXPIRACION": "Introdueix la data",
-  "CVC": "CVC",
-  "INTRODUCE_EL_CVC": "Introdueix el CVC"
+  "CVV": "CVV",
+  "INTRODUCE_EL_CVV": "Introdueix el CVV",
+  "NUMERO_TARJETA_INVALIDO": "El número de targeta és invàlid"
 }

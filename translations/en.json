@@ -158,11 +158,12 @@
   "INTRODUCE_TU_TARJETA": "Enter your card",
   "NUM_CARD_REQUERIDO": "Card Number Required",
   "FECHA_EXP_REQUERIDA": "Expiration Date Required",
-  "CVC_REQUERIDO": "CVC Required",
+  "CVV_REQUERIDO": "CVV Required",
   "NUMERO_TARJETA": "Card Number",
   "INTRODUCE_TU_NUMERO_TARJETA": "Enter the number",
   "FECHA_EXPIRACION": "Expiration date",
   "INTRODUCE_LA_FECHA_EXPIRACION": "Enter the date",
-  "CVC": "CVC",
-  "INTRODUCE_EL_CVC": "Enter the CVC"
+  "CVV": "CVV",
+  "INTRODUCE_EL_CVV": "Enter the CVV",
+  "NUMERO_TARJETA_INVALIDO": "The card number is invalid"
 }

@@ -1,5 +1,5 @@
-import { FilterData } from "./components/Filter/CustomFilter";
 import { Deporte } from "./shared/models/Deporte";
+import { Ubication } from "../../shared/models/Ubication";
 
 export interface IProps {
     children: React.ReactNode;
@@ -7,10 +7,10 @@ export interface IProps {
   
   export interface InputProps {
     label: string;
-    icon?: JSX.Element | null;
+    icon?: string;
     IsSecureText?: boolean | undefined;
     keyboardType?: KeyboardTypeOptions | undefined;
-    placeholder?: string | undefined;
+    placeholder?: any;
     control: any;
     onSubmit?: any;
     nameController: string;
@@ -19,12 +19,41 @@ export interface IProps {
     errors?:any;
     editable:boolean;
     maxLength:number
+    valueAssign?:any;
+    onFocus?:any;
+    onPressIn?:any;
+    onSelectIcon?:any;
+    ref?:any;
+    autoCapitalize?:any;
+  }
+
+  export interface InputCardProps {
+    label: string;
+    icon?: string;
+    IsSecureText?: boolean | undefined;
+    keyboardType?: KeyboardTypeOptions | undefined;
+    placeholder?: any;
+    control: any;
+    onSubmit?: any;
+    nameController: string;
+    rules?: any;
+    defaultValue?:string;
+    errors?:any;
+    editable:boolean;
+    maxLength:number
+    valueAssign?:any;
+    onFocus?:any;
+    onPressIn?:any;
+    onSelectIcon?:any;
+    ref?:any;
+    autoCapitalize?:any;
+    cvv:boolean = false;
   }
 
   export interface InputDateProps {
     label: string;
     icon?: JSX.Element | null;
-    placeholder?: string | undefined;
+    placeholder?: any;
     control: any;
     onSubmit?: any;
     nameController: string;
@@ -34,6 +63,20 @@ export interface IProps {
     mode:AndroidMode;
     maxDate?:Date|undefined;
     minDate?:Date|undefined;
+  }
+
+  export interface InputMonthDateProps {
+    label: string;
+    icon?: JSX.Element | null;
+    placeholder?: any;
+    control: any;
+    onSubmit?: any;
+    nameController: string;
+    rules?: any;
+    defaultValue?:string;
+    errors?:any;
+    maxDate?:string|undefined;
+    minDate?:string|undefined;
   }
 
   export interface InputPickerProps {
@@ -71,10 +114,16 @@ export interface IProps {
   }
   
   export interface CustomButtonProps {
-    onPress?: null | ((event: GestureResponderEvent) => void) | undefined;
-    buttonClassNames?: string;
-    textClassNames?: string;
-    buttonText: string;
+    onPress: ((event: GestureResponderEvent) => void);
+    buttonText: any;
+    colorButtom:string;
+    colorText:string;
+    colorButtomHover:string;
+    colorTextHover:string;
+    iconLeft?:string;
+    iconRight?:string;
+    visible?:boolean;
+    animated?:boolean;
   }
 
   export type NavStackParamList = {
@@ -91,7 +140,7 @@ export interface IProps {
     title:string,
     onConfirm:any,
     onCancel: any,
-    filter:FilterData |undefined
+    filter:Filter | undefined
   }
 
   export type CustomInputMapsProps = {
@@ -101,5 +150,20 @@ export interface IProps {
     title:string,
     onConfirm:any,
     onCancel: any,
-    lastlocation:string | undefined
+    lastlocation:Ubication | undefined,
+    login:boolean
+  }
+
+  export type CustomInputTextMapsProps = {
+    setLocation?:any;
+  }
+
+  export type MenuProps = {
+    showReturnWizard:boolean;
+    showLang:boolean;
+    text?:any;
+    showusuario?:any;
+    userMenu?:any;
+    goBack?:string;
+    functionGoBack?:any;
   }
