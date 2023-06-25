@@ -8,6 +8,12 @@ import CustomConfirmationModal from "../Modals/CustomConfirmationModal";
 import { useTranslation } from "react-i18next";
 
 const CustomDrawer = (props: any) => {
+  const hideDrawerContent = props.state.routeNames[props.state.index] === 'ProcessingPago';
+
+  if (hideDrawerContent) {
+    return null;
+  }
+
   const { logout, user } = useContext(LoginContext);
   const [showModal, setShowModal] = useState(false);
 

@@ -32,5 +32,32 @@ export const useEventos = () => {
       return [];
     }
   };
-  return obtenerEventos;
+  const eventoDisponible = async (idevento: number | undefined): Promise<boolean> => {
+    if (idevento) {
+      try {
+        const token = await AsyncStorage.getItem('token');
+
+        if (token !== null) {
+          const api = new Api<any, boolean>(token);
+          const evento = await api.post('/Evento/Eventodisponible?p_oid=' + idevento,null);
+          if (!evento.error && typeof evento.data !== 'undefined') {
+            return evento.data;
+          } else {
+            const errormessage = t("ERROR");
+            const erroraplicacion = t("ERROR_RESERVA_EXISTENTE");
+            Alert.alert(errormessage, erroraplicacion);
+            return false;
+          }
+        } else {
+          return false;
+        }
+      } catch (error) {
+        console.error('Error al obtener las reservas:', error);
+        return false;
+      }
+    } else {
+      return false;
+    }
+  };
+  return {obtenerEventos, eventoDisponible};
 };

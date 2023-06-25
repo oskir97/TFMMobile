@@ -165,5 +165,15 @@
   "INTRODUCE_LA_FECHA_EXPIRACION": "Introdueix la data",
   "CVV": "CVV",
   "INTRODUCE_EL_CVV": "Introdueix el CVV",
-  "NUMERO_TARJETA_INVALIDO": "El número de targeta és invàlid"
+  "NUMERO_TARJETA_INVALIDO": "El número de targeta és invàlid",
+  "ERROR_RESERVA_EXISTENTE": "Error, en aquests moments no és possible fer una reserva a l'hora indicada",
+  "REALIZANDO_PAGO": "Processant pagament, de seguida estem de tornada",
+  "FECHA": "Data",
+  "NO_SE_PUEDE_RESERVAR": "No es possible reservar",
+  "RESERVA_NO_DISPONIBLE": "És possible que hagen passat més de 10 minuts des que vas intentar fer la reserva l'última vegada. Torna-ho a intentar.",
+  "PAGO_COMPLETADO": "S'ha completat correctament el pagament, en breu rebrà un missatge de confirmació.",
+  "VOLVER_INICIO": "Tornar a Inici",
+  "PAGO_REALIZADO": "Pagament realitzat",
+  "RESERVA_REALIZADA": "Reserva realitzada",
+  "RESERVA_REALIZADA_EXITO": "Reserva realitzada amb èxit"
 }

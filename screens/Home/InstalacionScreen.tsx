@@ -26,8 +26,6 @@ import { useFavoritosInstalaciones } from "../../shared/services/hooks/instalaci
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Pista } from "../../shared/models/Pista";
 import { LoginContext } from "../../shared/services/hooks/login/contexts/LoginContext";
-// import Modal from "react-native-modal";
-// import { useSelector } from "react-redux";
 
 type ParamList = {
   Item: {

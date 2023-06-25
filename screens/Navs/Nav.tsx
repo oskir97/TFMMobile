@@ -16,7 +16,7 @@ import Deporte from "../FilterWizard/steps/DeporteScreen";
 import Fecha from "../FilterWizard/steps/FechaScreen";
 import Horario from "../PayWizard/steps/HorarioScreen";
 import Resumen from "../PayWizard/steps/ResumScreen";
-import ProcessingPago from "../PayWizard/steps/ProcessingPagoScreen";
+import PagandoPage from "../PayWizard/steps/ProcessingPagoScreen";
 import CompletedPago from "../PayWizard/steps/CompletedPagoScreen";
 import InstalacionPage from "../Home/InstalacionScreen";
 import ReviewsPage from "../Home/ReviewsScreen";
@@ -26,7 +26,7 @@ const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 const Nav: React.FC = () => {
-    const { login, loading } = useContext(LoginContext);
+    const { login, loading, pagando } = useContext(LoginContext);
     const { t } = useTranslation();
 
     const inicioLabel = t('RESERVAR');
@@ -71,6 +71,21 @@ const Nav: React.FC = () => {
         </Stack.Navigator>
     );
 
+    const pagandoNavigator = (
+        <Stack.Navigator
+            initialRouteName="Pagando"
+            screenOptions={{
+                headerShown: false
+            }}
+        >
+            <Stack.Screen
+                name="Pagando"
+                component={PagandoPage}
+                options={{ headerShown: false }}
+            />
+        </Stack.Navigator>
+    );
+
     const filterStepsNavigator = (
 
         <Drawer.Navigator drawerContent={props => <CustomDrawer {...props} />}
@@ -98,11 +113,7 @@ const Nav: React.FC = () => {
                 },
             }} />
             <Drawer.Screen name="Resumen" component={Resumen} options={{
-                drawerLabel: () => null, drawerItemStyle: {
-                    display: 'none',
-                },
-            }} />
-            <Drawer.Screen name="ProcessingPago" component={ProcessingPago} options={{
+                swipeEnabled: false,
                 drawerLabel: () => null, drawerItemStyle: {
                     display: 'none',
                 },
@@ -169,7 +180,7 @@ const Nav: React.FC = () => {
     return (
 
         <NavigationContainer>
-            {loading ? loadingNavigator : (login ? filterStepsNavigator : authNavigator)}
+            {pagando ? pagandoNavigator : (loading ? loadingNavigator : (login ? filterStepsNavigator : authNavigator))}
         </NavigationContainer>
     );
 };

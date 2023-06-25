@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Text, View, StyleSheet, BackHandler, Pressable, Modal, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, BackHandler, Pressable, Modal, TouchableOpacity, Alert } from "react-native";
 import { MD3Colors, ProgressBar } from "react-native-paper";
 import CustomButton from "../../../components/Buttons/CustomButton";
 import { I18nContext, useTranslation } from "react-i18next";
@@ -21,6 +21,12 @@ import * as yup from 'yup';
 import CustomCardInputText from "../../../components/CardInputText/CustomCardInputText";
 import CustomMonthDateInput from "../../../components/InputMonthDate/CustomMonthDateInput";
 import cardValidator from 'card-validator';
+import { useReservas } from "../../../shared/services/hooks/reservas/useReservas";
+import { LoginContext } from "../../../shared/services/hooks/login/contexts/LoginContext";
+import { usePagos } from "../../../shared/services/hooks/pagos/usePagos";
+import { PagoDTO } from "../../../shared/models/dtos/PagoDTO";
+import shortid from 'shortid';
+import { enviarCorreo } from "../../../shared/services/hooks/emails/useEmail";
 
 interface PagoScreenProps {
   navigation: any;
@@ -31,9 +37,10 @@ type ParamList = {
     instalacion?: Instalacion;
     evento?: Evento;
     partido?: Reserva;
-    fecha: string,
     pista: Pista,
-    horario: Horario
+    horario: Horario,
+    reserva: Reserva,
+    fecha: string
   };
 };
 
@@ -47,10 +54,13 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
   const route = useRoute<RouteProp<ParamList, 'Item'>>();
 
   const { t } = useTranslation();
+  const { setPagando } = useContext(LoginContext);
   const { i18n } = useContext(I18nContext);
   const [methodType, setMethodType] = useState<PaymentMethodType | undefined>(undefined);
   const [showCardModal, setShowCardModal] = useState<boolean>(false);
   const [card, setCard] = useState<Tarjeta | undefined>(undefined);
+  const { eliminarReserva } = useReservas();
+  const { crearPago, obtenerTiposPagos } = usePagos();
 
   const NUM_CARD_REQUERIDO = t("NUM_CARD_REQUERIDO");
   const FECHA_EXP_REQUERIDA = t("FECHA_EXP_REQUERIDA");
@@ -72,16 +82,100 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
   });
 
   const onSubmit = () => {
-    if (route.params.instalacion) {
-      navigation.navigate("Horario" as never, { instalacion: route.params.instalacion, previousPage: "ProcessingPagoScreen" } as never)
+    setPagando(true);
+    var idpista = route.params.pista.idpista;
+    var idevento = route.params.evento?.idevento;
+    var idpartido = route.params.partido?.idreserva;
+    var fecha = route.params.fecha;
+    var precio: number = -1;
+    var subtotal: number = -1;
+
+    if (route.params.pista) {
+      precio = route.params.pista.precio;
+      subtotal = calcularPrecioSinIVA(precio, 21);
     } else if (route.params.evento) {
-      navigation.navigate("Horario" as never, { evento: route.params.evento, previousPage: "ProcessingPagoScreen" } as never)
+      precio = route.params.evento.precio;
+      subtotal = calcularPrecioSinIVA(precio, 21);
     } else if (route.params.partido) {
-      navigation.navigate("Horario" as never, { partido: route.params.partido, previousPage: "ProcessingPagoScreen" } as never)
+      precio = route.params.partido.obtenerPista.precio / route.params.partido.maxparticipantes;
+      subtotal = calcularPrecioSinIVA(precio, 21);
+    }
+
+    if (precio > -1 && subtotal > -1) {
+      const pause = setTimeout(() => {
+        obtenerTiposPagos().then((tipospagos) => {
+          if (tipospagos.length > 0) {
+            var tipopago = tipospagos.find(t => methodType == 'Tarjeta' ? t.nombre.includes("tarjeta") : t.nombre.includes("PayPal"));
+            if (tipopago) {
+              const guid = shortid.generate();
+              var pago: PagoDTO = { subtotal: subtotal, total: precio, iva: 0.21, tipo_oid: tipopago?.idtipo, fecha: new Date(fecha), reserva_oid: route.params.reserva.idreserva, token: guid }
+              crearPago(idpista, idevento, idpartido, new Date(fecha), pago).then((pago) => {
+                if (pago) {
+                  enviarCorreo(route.params.reserva.email, t("RESERVA_REALIZADA"),
+                    `${t("RESERVA_REALIZADA_EXITO")}<br><br>
+                  ${route.params.evento || route.params.partido ? ((route.params.evento && t("EVENTO")) || (route.params.partido && t("PARTIDO"))) + ": " + getName() + "<br>" : ""}
+                  ${t("INSTALACION") + ": " + getInstalacion() + "<br>"}
+                  ${t("PISTA") + ": " + route.params.pista.nombre + "<br>"}
+                  ${t("FECHA") + ": " + new Date(route.params.reserva.fecha ? route.params.reserva.fecha : new Date()).toLocaleDateString() + "<br>"}
+                  ${t("HORARIO") + ": " + formatTime(route.params.horario.inicio) + " - " + formatTime(route.params.horario.fin) + "<br>"}
+                  ${t("PISTA") + ": " + route.params.pista.nombre + "<br>"}
+                  ${t("PRECIO") + ": " + route.params.pista.precio + "<br>"}
+                  `
+
+                  );
+                  finishPayment(true);
+                  setPagando(false);
+                } else {
+                  const errormessage = t("NO_SE_PUEDE_RESERVAR");
+                  const erroraplicacion = t("RESERVA_NO_DISPONIBLE");
+                  Alert.alert(errormessage, erroraplicacion);
+                  finishPayment(false);
+                  setPagando(false);
+                }
+              });
+            }
+          }
+        });
+      }, 5000);
     }
   };
 
+  const finishPayment = (payok: boolean) => {
+    if (payok) {
+      navigation.navigate("CompletedPago" as never);
+    } else {
+      if (route.params.reserva)
+        eliminarReserva(route.params.reserva);
+      if (route.params.instalacion) {
+        navigation.navigate("Horario" as never, { instalacion: route.params.instalacion, previousPage: "Resumen" } as never)
+      } else if (route.params.evento) {
+        navigation.navigate("Horario" as never, { evento: route.params.evento, previousPage: "Resumen" } as never)
+      } else if (route.params.partido) {
+        navigation.navigate("Horario" as never, { partido: route.params.partido, previousPage: "Resumen" } as never)
+      }
+    }
+  }
+
+  function calcularPrecioSinIVA(precioConIVA: number, ivaPorcentaje: number): number {
+    const ivaFactor = 1 + (ivaPorcentaje / 100);
+    const precioSinIVA = precioConIVA / ivaFactor;
+    return precioSinIVA;
+  }
+
+  function getPrecio(): number {
+    if (route.params.instalacion)
+      return route.params.pista.precio;
+    else if (route.params.evento)
+      return route.params.evento.precio;
+    else if (route.params.partido)
+      return route.params.partido.obtenerPista.precio / route.params.partido.maxparticipantes;
+    else
+      return 0;
+  }
+
   const goBack = () => {
+    if (route.params.reserva)
+      eliminarReserva(route.params.reserva);
     if (route.params.instalacion) {
       navigation.navigate("Horario" as never, { instalacion: route.params.instalacion, previousPage: "Resumen" } as never)
     } else if (route.params.evento) {
@@ -168,12 +262,12 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
   };
 
   const onSubmitCard = async (data: Tarjeta) => {
-    
-    if(cardValidator.number(data.numero).isValid){
-      setCard({numero:data.numero, fechaExp:data.fechaExp, cvv:data.cvv});
+
+    if (cardValidator.number(data.numero).isValid) {
+      setCard({ numero: data.numero, fechaExp: data.fechaExp, cvv: data.cvv });
       setMethodType('Tarjeta');
       setShowCardModal(false);
-    }else{
+    } else {
       const NUMERO_TARJETA_INVALIDO = t("NUMERO_TARJETA_INVALIDO");
       setError('numero', {
         type: 'manual',
@@ -202,7 +296,7 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
             {(route.params.evento || route.params.partido) && (
               <>
                 <View style={{ flexDirection: 'row', marginBottom: 10 }}>
-                  <Text style={{ fontSize: 16 }} >{(route.params.evento && t("INSTALACION")) || (route.params.partido && t("INSTALACION"))}: </Text>
+                  <Text style={{ fontSize: 16 }} >{(route.params.evento && t("EVENTO")) || (route.params.partido && t("PARTIDO"))}: </Text>
                   <Text style={{ fontSize: 16 }} className="font-semibold">{getName()}</Text>
                 </View>
               </>
@@ -216,12 +310,16 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
               <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{route.params.pista.nombre}</Text>
             </View>
             <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+              <Text style={{ fontSize: 16 }} >{t("FECHA")}: </Text>
+              <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{new Date(route.params.reserva.fecha ? route.params.reserva.fecha : new Date()).toLocaleDateString()}</Text>
+            </View>
+            <View style={{ flexDirection: 'row', marginBottom: 10 }}>
               <Text style={{ fontSize: 16 }} >{t("HORARIO")}: </Text>
               <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{formatTime(route.params.horario.inicio)} - {formatTime(route.params.horario.fin)}</Text>
             </View>
             <View style={{ flexDirection: 'row', marginBottom: 10 }}>
               <Text style={{ fontSize: 16 }} >{t("PRECIO")}: </Text>
-              <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{route.params.pista.precio}€</Text>
+              <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{getPrecio()}€</Text>
             </View>
           </View>
           <View style={{ marginVertical: 48 }}>
@@ -249,7 +347,7 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
                     <Icon name="paypal" size={24} color="#007DFF" style={{ marginRight: 5 }} />
                     <Text style={styles.boldText}>Paypal</Text>
                   </Pressable>
-                  <Pressable onPress={() => {reset();setShowCardModal(true);}} style={[styles.selectButton, { marginLeft: 20 }]}>
+                  <Pressable onPress={() => { reset(); setShowCardModal(true); }} style={[styles.selectButton, { marginLeft: 20 }]}>
                     <Text style={styles.boldText}>{t("TARJETA")}</Text>
                   </Pressable>
                 </View>
@@ -257,7 +355,7 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
             }
             {methodType &&
               <Pressable
-                onPress={() => {setMethodType(undefined);setCard(undefined);}}
+                onPress={() => { setMethodType(undefined); setCard(undefined); }}
                 style={{
                   flexDirection: 'row',
                   justifyContent: 'space-between',

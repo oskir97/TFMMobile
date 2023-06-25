@@ -1,23 +1,23 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Text, View, StyleSheet, TouchableOpacity, Dimensions, Platform, BackHandler } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, Dimensions, Platform, BackHandler, Alert } from "react-native";
 import { MD3Colors, ProgressBar } from "react-native-paper";
 import { PaperSelect } from 'react-native-paper-select';
 import { I18nContext, useTranslation } from "react-i18next";
 import CustomButton from "../../../components/Buttons/CustomButton";
 import Menu from "../../../components/Menu/Menu";
-import { Ionicons } from "@expo/vector-icons";
 import { Instalacion } from "../../../shared/models/Instalacion";
 import { Evento } from "../../../shared/models/Evento";
 import { Reserva } from "../../../shared/models/Reserva";
 import { Deporte } from "../../../shared/models/Deporte";
 import { LoginContext } from "../../../shared/services/hooks/login/contexts/LoginContext";
-import { FlatList, ScrollView } from "react-native-gesture-handler";
+import { FlatList } from "react-native-gesture-handler";
 import { useHorarios } from "../../../shared/services/hooks/horarios/useHorarios";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Horario } from "../../../shared/models/Horario";
 import { RouteProp, useFocusEffect, useRoute } from "@react-navigation/native";
 import { Pista } from "../../../shared/models/Pista";
-import { date } from "yup";
+import { ReservaDTO, TipoReservaEnum } from "../../../shared/models/dtos/ReservaDTO";
+import { useReservas } from "../../../shared/services/hooks/reservas/useReservas";
 
 interface UbicationScreenProps {
   navigation: any;
@@ -28,16 +28,18 @@ type ParamList = {
     instalacion?: Instalacion;
     evento?: Evento;
     partido?: Reserva;
+    deporte?: Deporte;
     previousPage: string;
   };
 };
 
 const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
   const route = useRoute<RouteProp<ParamList, 'Item'>>();
-  const { filter } = useContext(LoginContext);
+  const { filter, user } = useContext(LoginContext);
   const [fecha, setFecha] = useState<Date | undefined>(filter?.fecha);
   const [horario, setHorario] = useState<Horario | undefined>();
   const { obtenerpistasinstalacion } = useHorarios();
+  const { crearReserva } = useReservas();
   const [showPicker, setShowPicker] = useState(false);
   const [instalacion, setInstalacion] = useState<Instalacion | undefined>(route.params.instalacion);
   const [evento, setEvento] = useState<Evento | undefined>(route.params.evento);
@@ -62,14 +64,37 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
   const { i18n } = useContext(I18nContext);
 
   const onSubmit = () => {
-    if (route.params.instalacion) {
-      navigation.navigate("Resumen" as never, { instalacion: route.params.instalacion, fecha: fecha ? fecha.toLocaleDateString() : new Date().toLocaleDateString(), pista: pista, horario: horario } as never)
-    } else if (route.params.evento) {
-      navigation.navigate("Resumen" as never, { evento: route.params.evento, fecha: fecha ? fecha.toLocaleDateString() : new Date().toLocaleDateString(), pista: pista, horario: horario } as never)
-    } else if (route.params.partido) {
-      navigation.navigate("Resumen" as never, { partido: route.params.partido, fecha: fecha ? fecha.toLocaleDateString() : new Date().toLocaleDateString(), pista: pista, horario: horario } as never)
-    }
+    var tipoReserva = route.params.instalacion || route.params.evento ? TipoReservaEnum.Reserva : TipoReservaEnum.Inscripcion;
+    var reservaDTO: ReservaDTO = { nombre: user?.nombre, apellidos: user?.apellidos, email: user?.email, telefono: user?.telefono, cancelada: false, pista_oid: pista?pista.idpista:-1, maxparticipantes: 1, horario_oid: horario?.idhorario, fecha: fecha, tipo: tipoReserva, usuario_oid: user?.idusuario, deporte_oid: route.params.deporte?route.params.deporte.iddeporte:-1, evento_oid: route.params.evento?route.params.evento.idevento:-1 };
+    var date = createDateTime();
+    crearReserva(reservaDTO, date).then((reserva) => {
+      if (reserva) {
+        if (route.params.instalacion) {
+          navigation.navigate("Resumen" as never, { instalacion: route.params.instalacion, pista: pista, horario: horario, reserva: reserva, fecha:date?.toString() } as never)
+        } else if (route.params.evento) {
+          navigation.navigate("Resumen" as never, { evento: route.params.evento, pista: pista, horario: horario, reserva: reserva, fecha:date?.toString() } as never)
+        } else if (route.params.partido) {
+          navigation.navigate("Resumen" as never, { partido: route.params.partido, pista: pista, horario: horario, reserva: reserva, fecha:date?.toString() } as never)
+        }
+      }else{
+        const errormessage = t("NO_SE_PUEDE_RESERVAR");
+        const erroraplicacion = t("RESERVA_NO_DISPONIBLE");
+        Alert.alert(errormessage, erroraplicacion);
+      }
+    });
   };
+
+  const createDateTime = () =>{
+    if(fecha){
+      const anio = fecha.getFullYear();
+      const mes = fecha.getMonth() + 1;
+      const dia = fecha.getDate();
+      const formatoFecha = `${anio}-${mes.toString().padStart(2, '0')}-${dia.toString().padStart(2, '0')}`;
+      const hora = formatTime(horario?.inicio) + ":00";
+      const fechaTiempo = `${formatoFecha}T${hora}.000Z`;
+      return new Date(fechaTiempo);
+    }
+  }
 
   const goBack = () => {
     if (route.params.instalacion) {
@@ -126,8 +151,8 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
     return pista?.obtenerHorariosDisponibles.find(h => h.idhorario == horario.idhorario) ? true : false;
   }
 
-  function formatTime(timeString: Date | null): string {
-    if (timeString != null) {
+  function formatTime(timeString: Date | null | undefined): string {
+    if (timeString && timeString != null) {
       const date = new Date(timeString);
       const hours = date.getHours().toString().padStart(2, '0');
       const minutes = date.getMinutes().toString().padStart(2, '0');

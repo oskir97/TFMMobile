@@ -166,5 +166,15 @@
   "INTRODUCE_LA_FECHA_EXPIRACION": "Introduce la fecha",
   "CVV": "CVV",
   "INTRODUCE_EL_CVV": "Introduce el CVV",
-  "NUMERO_TARJETA_INVALIDO": "El número de tarjeta es inválido"
+  "NUMERO_TARJETA_INVALIDO": "El número de tarjeta es inválido",
+  "ERROR_RESERVA_EXISTENTE": "Error, no es posible reservar a la hora indicada en estos momentos",
+  "REALIZANDO_PAGO": "Procesando pago, enseguida estamos de vuelta",
+  "FECHA": "Fecha",
+  "NO_SE_PUEDE_RESERVAR": "No se puede reservar",
+  "RESERVA_NO_DISPONIBLE": "Es posible que hayan pasado más de 10 min desde que intentaste reservar por última vez, vuelva a intentarlo.",
+  "PAGO_COMPLETADO": "Se ha completado correctamente el pago, en breve recibirá un mensaje de confirmación.",
+  "VOLVER_INICIO": "Volver a Inicio",
+  "PAGO_REALIZADO": "Pago realizado",
+  "RESERVA_REALIZADA": "Reserva realizada",
+  "RESERVA_REALIZADA_EXITO": "Reserva realizada con éxito"
 }

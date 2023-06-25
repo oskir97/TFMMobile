@@ -10,6 +10,9 @@ export interface Evento {
     descripcion: string;
     activo: boolean;
     plazas: number;
+    precio:number;
+    inicio:Date |null;
+    fin:Date |null;
     obtenerInstructores: UsuarioRegistrado[];
     obtenerHorariosEvento: Horario[];
     obtenerDeporteEvento: Deporte;

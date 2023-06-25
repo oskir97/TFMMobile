@@ -14,12 +14,14 @@ interface LoginProviderProps {
 export const LoginContext = createContext<LoginContextType>({
   login: false,
   loading: true,
+  pagando: true,
   user: undefined,
   location: undefined,
   localidad: undefined,
   filter: undefined,
   setLogin: () => { },
   setLoading: () => { },
+  setPagando: () => { },
   setUser: () => { },
   logout: () => { },
   setLocalidad: () => { },
@@ -34,6 +36,7 @@ export const LoginContext = createContext<LoginContextType>({
 export const LoginProvider = ({ children }: LoginProviderProps) => {
   const [login, setLogin] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [pagando, setPagando] = useState(false);
   const [user, setUser] = useState<UsuarioRegistrado | undefined>(undefined);
   const [location, setLocation] = useState<Location.LocationObject>();
   const [localidad, setLocalidad] = useState<string | undefined>();
@@ -85,12 +88,14 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
   const loginContextValue: LoginContextType = {
     login,
     loading,
+    pagando,
     user,
     location,
     localidad,
     filter,
     setLogin,
     setLoading,
+    setPagando,
     setUser,
     logout,
     setLocalidad,

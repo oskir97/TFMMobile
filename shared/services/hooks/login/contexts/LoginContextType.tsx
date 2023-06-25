@@ -5,6 +5,7 @@ import * as Location from 'expo-location';
 export type LoginContextType = {
     login:boolean;
     loading:boolean;
+    pagando:boolean;
     location:Location.LocationObject | undefined;
     localidad:string | undefined;
     user:UsuarioRegistrado | undefined;
@@ -13,6 +14,7 @@ export type LoginContextType = {
     setLocation:(location: Location.LocationObject | undefined) => void;
     setLocalidad:(localidad: string) => void;
     setLoading:(loading: boolean) => void;
+    setPagando:(pagando: boolean) => void;
     setUser:(user: UsuarioRegistrado) => void;
     logout:() => void;
     loginFunction:(email: string, password: string) => void;
