@@ -16,33 +16,47 @@ export const usePagos = () => {
   const { existeReserva, partidoDisponible } = useReservas();
   const { eventoDisponible } = useEventos();
 
-  const crearPago = async (idpista: number | undefined, idevento: number | undefined, idpartido: number | undefined, fecha: Date, pago: PagoDTO | undefined): Promise<Pago | undefined> => {
-    if (pago && fecha) {
+  const sePuedePagar = async (idpista: number | undefined, idevento: number | undefined, idpartido: number | undefined, fecha: Date): Promise<boolean> => {
+    if (fecha) {
       try {
         const token = await AsyncStorage.getItem('token');
 
         if (token !== null) {
-          const api = new Api<any, boolean>(token);
-          var disponible:boolean = false;
-          if(idpista){
+          var disponible: boolean = false;
+          if (idpista) {
             disponible = !(await existeReserva(idpista, fecha));
-          }else if(idevento){
+          } else if (idevento) {
             disponible = await eventoDisponible(idevento);
-          }else if(idpartido){
+          } else if (idpartido) {
             disponible = await partidoDisponible(idpartido);
           }
-          if (disponible) {
-            const apiPagos = new Api<any, Pago>(token);
-            const pagos = await apiPagos.post('/Pago/Crear', pago);
-            if (!pagos.error && pagos.data) {
-              return pagos.data;
-            } else {
-              const errormessage = t("ERROR");
-              const erroraplicacion = t("ERROR_APLICACION");
-              Alert.alert(errormessage, erroraplicacion);
-              return undefined;
-            }
+          return disponible;
+        } else {
+          return false;
+        }
+      } catch (error) {
+        console.error('Error al crear el pago:', error);
+        return false;
+      }
+    } else {
+      return false;
+    }
+  };
+
+  const crearPago = async (pago: PagoDTO | undefined): Promise<Pago | undefined> => {
+    if (pago) {
+      try {
+        const token = await AsyncStorage.getItem('token');
+
+        if (token !== null) {
+          const apiPagos = new Api<any, Pago>(token);
+          const pagos = await apiPagos.post('/Pago/Crear', pago);
+          if (!pagos.error && pagos.data) {
+            return pagos.data;
           } else {
+            const errormessage = t("ERROR");
+            const erroraplicacion = t("ERROR_APLICACION");
+            Alert.alert(errormessage, erroraplicacion);
             return undefined;
           }
         } else {
@@ -58,27 +72,27 @@ export const usePagos = () => {
   };
   const obtenerTiposPagos = async (): Promise<TipoPago[]> => {
     try {
-        const token = await AsyncStorage.getItem('token');
+      const token = await AsyncStorage.getItem('token');
 
-        if (token !== null) {
-            const api = new Api<any, TipoPago[]>(token);
-            const horarios = await api.get('/PagoTipo/Listar');
+      if (token !== null) {
+        const api = new Api<any, TipoPago[]>(token);
+        const horarios = await api.get('/PagoTipo/Listar');
 
-            if (!horarios.error && horarios.data) {
-                return horarios.data;
-            } else {
-                const errormessage = t("ERROR");
-                const erroraplicacion = t("ERROR_APLICACION");
-                Alert.alert(errormessage, erroraplicacion);
-                return [];
-            }
+        if (!horarios.error && horarios.data) {
+          return horarios.data;
         } else {
-            return [];
+          const errormessage = t("ERROR");
+          const erroraplicacion = t("ERROR_APLICACION");
+          Alert.alert(errormessage, erroraplicacion);
+          return [];
         }
-    } catch (error) {
-        console.error('Error al obtener los horarios disponibles:', error);
+      } else {
         return [];
+      }
+    } catch (error) {
+      console.error('Error al obtener los horarios disponibles:', error);
+      return [];
     }
-};
-  return { crearPago, obtenerTiposPagos };
+  };
+  return { crearPago, obtenerTiposPagos, sePuedePagar };
 };

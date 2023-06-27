@@ -176,5 +176,12 @@
   "PAGO_REALIZADO": "Pagament realitzat",
   "RESERVA_REALIZADA": "Reserva realitzada",
   "RESERVA_REALIZADA_EXITO": "Reserva realitzada amb èxit",
-  "VOLVER_RESUMEN": "Tornar al resum"
+  "VOLVER_RESUMEN": "Tornar al resum",
+  "REDIRIGIENDO_PAYPAL": "Redirigint a paypal",
+  "PAGO_NO_REALIZADO": "Pagament no completat",
+  "PAGO_NO_PROCESADO": "El pagament no ha pogut ser processat",
+  "RESERVA_DE": "Booking for",
+  "INSCRIPCION_A": "Registration for",
+  "RESERVA": "Reserva",
+  "INSCRIPCION": "Inscripció"
 }

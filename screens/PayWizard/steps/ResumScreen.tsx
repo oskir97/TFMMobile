@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Text, View, StyleSheet, BackHandler, Pressable, Modal, TouchableOpacity, Alert } from "react-native";
+import { Text, View, StyleSheet, BackHandler, Pressable, Modal, TouchableOpacity, Alert, ImageBackground } from "react-native";
 import { MD3Colors, ProgressBar } from "react-native-paper";
 import CustomButton from "../../../components/Buttons/CustomButton";
 import { I18nContext, useTranslation } from "react-i18next";
@@ -30,6 +30,7 @@ import { enviarCorreo } from "../../../shared/services/hooks/emails/useEmail";
 import paypalApi from '../../../shared/services/hooks/paypal/paypalApi';
 import queryString from 'query-string';
 import WebView from "react-native-webview";
+import { TipoPago } from "../../../shared/models/TipoPago";
 
 interface PagoScreenProps {
   navigation: any;
@@ -64,8 +65,9 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
   const [card, setCard] = useState<Tarjeta | undefined>(undefined);
   const [accessToken, setAccessToken] = useState<string | undefined>(undefined);
   const [paypalUrl, setPaypalUrl] = useState<any>(null);
+  const [toPaypal, setToPaypal] = useState<boolean>(false);
   const { eliminarReserva } = useReservas();
-  const { crearPago, obtenerTiposPagos } = usePagos();
+  const { crearPago, sePuedePagar, obtenerTiposPagos } = usePagos();
 
   const NUM_CARD_REQUERIDO = t("NUM_CARD_REQUERIDO");
   const FECHA_EXP_REQUERIDA = t("FECHA_EXP_REQUERIDA");
@@ -87,18 +89,52 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
   });
 
   const onSubmit = () => {
-
-    if (methodType == 'Tarjeta') {
-      pay();
-    } else if (methodType == 'Paypal') {
-      paypal();
+    if (methodType == 'Paypal') {
+      setToPaypal(true);
+    }else{
+      setPagando(true);
     }
+    canPay();
   };
+
+  let orderDetail = {
+    "intent": "CAPTURE",
+    "purchase_units": [
+      {
+        "items": [
+          {
+            "name": `${t("RESERVA_DE")}`,
+            "description": `${route.params.pista ? t("RESERVA_DE") : t("INSCRIPCION_A")} ${getName()}`,
+            "quantity": "1",
+            "unit_amount": {
+              "currency_code": "EUR",
+              "value": `${getPrecio()}`
+            }
+          }
+        ],
+        "amount": {
+          "currency_code": "EUR",
+          "value": `${getPrecio()}`,
+          "breakdown": {
+            "item_total": {
+              "currency_code": "EUR",
+              "value": `${getPrecio()}`
+            }
+          }
+        }
+      }
+    ],
+    "application_context": {
+      "locale": `${i18n.language == "es" ? "es-ES" : "en-US"}`,
+      "return_url": "https://example.com/return",
+      "cancel_url": "https://example.com/cancel"
+    }
+  }
 
   const paypal = async () => {
     try {
       const token = await paypalApi.generateToken()
-      const res = await paypalApi.createOrder(token)
+      const res = await paypalApi.createOrder(token, orderDetail)
       setAccessToken(token)
       console.log("res++++++", res)
       if (!!res?.links) {
@@ -136,10 +172,16 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
     try {
       const res = paypalApi.capturePayment(id, accessToken)
       console.log("capturePayment res++++", res)
-      alert("Payment sucessfull...!!!")
+      console.log("Payment sucessfull...!!!")
       clearPaypalState()
+      pay(route.params.fecha);
     } catch (error) {
       console.log("error raised in payment capture", error)
+      const errormessage = t("PAGO_NO_REALIZADO");
+      const erroraplicacion = t("PAGO_NO_PROCESADO");
+      Alert.alert(errormessage, erroraplicacion);
+      finishPayment(false);
+      setPagando(false);
     }
   }
 
@@ -149,63 +191,102 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
     setAccessToken(undefined)
   }
 
-  function pay() {
-    setPagando(true);
+  function canPay() {
     var idpista = route.params.pista.idpista;
     var idevento = route.params.evento?.idevento;
     var idpartido = route.params.partido?.idreserva;
     var fecha = route.params.fecha;
-    var precio: number = -1;
-    var subtotal: number = -1;
+    sePuedePagar(idpista, idevento, idpartido, new Date(fecha)).then((disponible: boolean) => {
+      if (disponible) {
+        if (methodType == 'Tarjeta') {
+          setTimeout(() => {
+            pay(fecha);
+          }, 5000);
+        } else {
+          paypal().then(() => setToPaypal(false));
+        }
+      } else {
+        const errormessage = t("NO_SE_PUEDE_RESERVAR");
+        const erroraplicacion = t("RESERVA_NO_DISPONIBLE");
+        Alert.alert(errormessage, erroraplicacion);
+        finishPayment(false);
+        setPagando(false);
+      }
+    });
+  }
 
-    if (route.params.pista) {
-      precio = route.params.pista.precio;
-      subtotal = calcularPrecioSinIVA(precio, 21);
-    } else if (route.params.evento) {
-      precio = route.params.evento.precio;
-      subtotal = calcularPrecioSinIVA(precio, 21);
-    } else if (route.params.partido) {
-      precio = route.params.partido.obtenerPista.precio / route.params.partido.maxparticipantes;
-      subtotal = calcularPrecioSinIVA(precio, 21);
-    }
+  function pay(fecha: string) {
+    obtenerTiposPagos().then((tipospagos) => {
+      if (tipospagos.length > 0) {
+        setPagando(true);
+        var tipopago = tipospagos.find(t => methodType == 'Tarjeta' ? t.nombre.includes("tarjeta") : t.nombre.includes("PayPal"));
+        if (tipopago) {
+          const guid = shortid.generate();
+          var precio: number = -1;
+          var subtotal: number = -1;
 
-    if (precio > -1 && subtotal > -1) {
-      const pause = setTimeout(() => {
-        obtenerTiposPagos().then((tipospagos) => {
-          if (tipospagos.length > 0) {
-            var tipopago = tipospagos.find(t => methodType == 'Tarjeta' ? t.nombre.includes("tarjeta") : t.nombre.includes("PayPal"));
-            if (tipopago) {
-              const guid = shortid.generate();
-              var pago: PagoDTO = { subtotal: subtotal, total: precio, iva: 0.21, tipo_oid: tipopago?.idtipo, fecha: new Date(fecha), reserva_oid: route.params.reserva.idreserva, token: guid }
-              crearPago(idpista, idevento, idpartido, new Date(fecha), pago).then((pago) => {
-                if (pago) {
-                  enviarCorreo(route.params.reserva.email, t("RESERVA_REALIZADA"),
-                    `${t("RESERVA_REALIZADA_EXITO")}<br><br>
-                  ${route.params.evento || route.params.partido ? ((route.params.evento && t("EVENTO")) || (route.params.partido && t("PARTIDO"))) + ": " + getName() + "<br>" : ""}
-                  ${t("INSTALACION") + ": " + getInstalacion() + "<br>"}
-                  ${t("PISTA") + ": " + route.params.pista.nombre + "<br>"}
-                  ${t("FECHA") + ": " + new Date(route.params.reserva.fecha ? route.params.reserva.fecha : new Date()).toLocaleDateString() + "<br>"}
-                  ${t("HORARIO") + ": " + formatTime(route.params.horario.inicio) + " - " + formatTime(route.params.horario.fin) + "<br>"}
-                  ${t("PISTA") + ": " + route.params.pista.nombre + "<br>"}
-                  ${t("PRECIO") + ": " + route.params.pista.precio + "<br>"}
-                  `
-
-                  );
-                  finishPayment(true);
-                  setPagando(false);
-                } else {
-                  const errormessage = t("NO_SE_PUEDE_RESERVAR");
-                  const erroraplicacion = t("RESERVA_NO_DISPONIBLE");
-                  Alert.alert(errormessage, erroraplicacion);
-                  finishPayment(false);
-                  setPagando(false);
-                }
-              });
-            }
+          if (route.params.pista) {
+            precio = route.params.pista.precio;
+            subtotal = calcularPrecioSinIVA(precio, 21);
+          } else if (route.params.evento) {
+            precio = route.params.evento.precio;
+            subtotal = calcularPrecioSinIVA(precio, 21);
+          } else if (route.params.partido) {
+            precio = route.params.partido.obtenerPista.precio / route.params.partido.maxparticipantes;
+            subtotal = calcularPrecioSinIVA(precio, 21);
           }
-        });
-      }, 5000);
-    }
+
+          if (precio > -1 && subtotal > -1) {
+            var pago: PagoDTO = { subtotal: subtotal, total: precio, iva: 0.21, tipo_oid: tipopago?.idtipo, fecha: new Date(fecha), reserva_oid: route.params.reserva.idreserva, token: guid }
+            crearPago(pago).then((pago) => {
+              if (pago) {
+                enviarCorreo(route.params.reserva.email, t("RESERVA_REALIZADA"),
+                  `${t("RESERVA_REALIZADA_EXITO")}<br><br>
+                          ${route.params.evento || route.params.partido ? ((route.params.evento && t("EVENTO")) || (route.params.partido && t("PARTIDO"))) + ": " + getName() + "<br>" : ""}
+                          ${t("INSTALACION") + ": " + getInstalacion() + "<br>"}
+                          ${t("PISTA") + ": " + route.params.pista.nombre + "<br>"}
+                          ${t("FECHA") + ": " + new Date(route.params.reserva.fecha ? route.params.reserva.fecha : new Date()).toLocaleDateString() + "<br>"}
+                          ${t("HORARIO") + ": " + formatTime(route.params.horario.inicio) + " - " + formatTime(route.params.horario.fin) + "<br>"}
+                          ${t("PISTA") + ": " + route.params.pista.nombre + "<br>"}
+                          ${t("PRECIO") + ": " + route.params.pista.precio + "<br>"}
+                          `
+
+                );
+                finishPayment(true);
+                setPagando(false);
+              } else {
+                const errormessage = t("PAGO_NO_REALIZADO");
+                const erroraplicacion = t("PAGO_NO_PROCESADO");
+                Alert.alert(errormessage, erroraplicacion);
+                finishPayment(false);
+                setPagando(false);
+              }
+            });
+          } else {
+            const errormessage = t("PAGO_NO_REALIZADO");
+            const erroraplicacion = t("PAGO_NO_PROCESADO");
+            Alert.alert(errormessage, erroraplicacion);
+            finishPayment(false);
+            setPagando(false);
+            finishPayment(false);
+            setPagando(false);
+          }
+
+        } else {
+          const errormessage = t("PAGO_NO_REALIZADO");
+          const erroraplicacion = t("PAGO_NO_PROCESADO");
+          Alert.alert(errormessage, erroraplicacion);
+          finishPayment(false);
+          setPagando(false);
+        }
+      } else {
+        const errormessage = t("PAGO_NO_REALIZADO");
+        const erroraplicacion = t("PAGO_NO_PROCESADO");
+        Alert.alert(errormessage, erroraplicacion);
+        finishPayment(false);
+        setPagando(false);
+      }
+    });
   }
 
   const finishPayment = (payok: boolean) => {
@@ -272,25 +353,6 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
     }, [navigation])
   );
 
-  // useEffect(() => {
-  //   const unsubscribe = navigation.addListener('focus', () => {
-  //     // if (route.params.instalacion) {
-  //     //   setFecha(route.params.fecha ? route.params.fecha : filter?.fecha);
-  //     //   setInstalacion(route.params.instalacion);
-  //     //   obtenerPistas(route.params.fecha ? route.params.fecha : filter?.fecha);
-  //     // }
-  //     // setPista(route.params.pista);
-  //     // setHorario(route.params.horario);
-  //   });
-  //   return unsubscribe;
-  // }, [navigation, route.params]);
-
-  // const toHorario = () => {
-  //   navigation.navigate("Horario");
-  // };
-
-  // const Tab = createMaterialTopTabNavigator();
-
   function formatTime(timeString: Date | null): string {
     if (timeString != null) {
       const date = new Date(timeString);
@@ -356,134 +418,146 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
           progress={0.35}
           color={MD3Colors.primary60}
         />
-        <View style={{ flex: 1, justifyContent: 'space-between', margin: 20 }}>
-          <View style={{ justifyContent: 'flex-start' }}>
-            <View style={{ flexDirection: 'row', marginBottom: 20 }}>
-              <Text style={{ fontSize: 24 }} className="font-semibold">{t("RESUMEN")}</Text>
+        {!toPaypal &&
+          <View style={{ flex: 1, justifyContent: 'space-between', margin: 20 }}>
+            <View style={{ justifyContent: 'flex-start' }}>
+              <View style={{ flexDirection: 'row', marginBottom: 20 }}>
+                <Text style={{ fontSize: 24 }} className="font-semibold">{t("RESUMEN")}</Text>
+              </View>
+              {(route.params.evento || route.params.partido) && (
+                <>
+                  <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+                    <Text style={{ fontSize: 16 }} >{(route.params.evento && t("EVENTO")) || (route.params.partido && t("PARTIDO"))}: </Text>
+                    <Text style={{ fontSize: 16 }} className="font-semibold">{getName()}</Text>
+                  </View>
+                </>
+              )}
+              <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+                <Text style={{ fontSize: 16 }} >{t("INSTALACION")}: </Text>
+                <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{getInstalacion()}</Text>
+              </View>
+              <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+                <Text style={{ fontSize: 16 }} >{t("PISTA")}: </Text>
+                <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{route.params.pista.nombre}</Text>
+              </View>
+              <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+                <Text style={{ fontSize: 16 }} >{t("FECHA")}: </Text>
+                <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{new Date(route.params.reserva.fecha ? route.params.reserva.fecha : new Date()).toLocaleDateString()}</Text>
+              </View>
+              <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+                <Text style={{ fontSize: 16 }} >{t("HORARIO")}: </Text>
+                <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{formatTime(route.params.horario.inicio)} - {formatTime(route.params.horario.fin)}</Text>
+              </View>
+              <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+                <Text style={{ fontSize: 16 }} >{t("PRECIO")}: </Text>
+                <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{getPrecio()}€</Text>
+              </View>
             </View>
-            {(route.params.evento || route.params.partido) && (
-              <>
-                <View style={{ flexDirection: 'row', marginBottom: 10 }}>
-                  <Text style={{ fontSize: 16 }} >{(route.params.evento && t("EVENTO")) || (route.params.partido && t("PARTIDO"))}: </Text>
-                  <Text style={{ fontSize: 16 }} className="font-semibold">{getName()}</Text>
-                </View>
-              </>
-            )}
-            <View style={{ flexDirection: 'row', marginBottom: 10 }}>
-              <Text style={{ fontSize: 16 }} >{t("INSTALACION")}: </Text>
-              <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{getInstalacion()}</Text>
+            <View style={{ marginVertical: 48 }}>
+              {!methodType &&
+                <>
+                  <Text style={{
+                    marginBottom: 20,
+                    fontSize: 14,
+                    letterSpacing: 1.5,
+                    fontWeight: 'bold',
+                    color: 'black',
+                    textTransform: 'uppercase',
+                    textAlign: 'center'
+                  }}>
+                    {t("SELECCIONA_METODO_PAGO")}
+                  </Text>
+                  <View style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginHorizontal: 16,
+                    marginTop: 8
+                  }}>
+                    <Pressable onPress={() => setMethodType('Paypal')} style={[styles.selectButton, { flexDirection: 'row', alignItems: 'center' }]}>
+                      <Icon name="paypal" size={24} color="#007DFF" style={{ marginRight: 5 }} />
+                      <Text style={styles.boldText}>Paypal</Text>
+                    </Pressable>
+                    <Pressable onPress={() => { reset(); setShowCardModal(true); }} style={[styles.selectButton, { marginLeft: 20 }]}>
+                      <Text style={styles.boldText}>{t("TARJETA")}</Text>
+                    </Pressable>
+                  </View>
+                </>
+              }
+              {methodType &&
+                <Pressable
+                  onPress={() => { setMethodType(undefined); setCard(undefined); }}
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    paddingVertical: 8,
+                  }}
+                >
+                  <View style={[styles.selectButton, { marginRight: 16 }]}>
+                    {methodType !== 'Paypal' && (
+                      <Text style={[styles.boldText, { color: '#007DFF' }]}>
+                        ......{card?.numero.substring(12)}
+                      </Text>
+                    )}
+                    {methodType === 'Paypal' && (
+                      <Text style={[styles.boldText, { color: '#007DFF' }]}>
+                        <Icon name="paypal" size={24} color="#007DFF" />
+                      </Text>
+                    )}
+                  </View>
+                  <Text style={[styles.boldText, { color: '#007DFF', flex: 1 }]}>
+                    {t("CAMBIAR_METODO_PAGO")}
+                  </Text>
+                </Pressable>
+              }
             </View>
-            <View style={{ flexDirection: 'row', marginBottom: 10 }}>
-              <Text style={{ fontSize: 16 }} >{t("PISTA")}: </Text>
-              <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{route.params.pista.nombre}</Text>
-            </View>
-            <View style={{ flexDirection: 'row', marginBottom: 10 }}>
-              <Text style={{ fontSize: 16 }} >{t("FECHA")}: </Text>
-              <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{new Date(route.params.reserva.fecha ? route.params.reserva.fecha : new Date()).toLocaleDateString()}</Text>
-            </View>
-            <View style={{ flexDirection: 'row', marginBottom: 10 }}>
-              <Text style={{ fontSize: 16 }} >{t("HORARIO")}: </Text>
-              <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{formatTime(route.params.horario.inicio)} - {formatTime(route.params.horario.fin)}</Text>
-            </View>
-            <View style={{ flexDirection: 'row', marginBottom: 10 }}>
-              <Text style={{ fontSize: 16 }} >{t("PRECIO")}: </Text>
-              <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{getPrecio()}€</Text>
-            </View>
-          </View>
-          <View style={{ marginVertical: 48 }}>
-            {!methodType &&
-              <>
-                <Text style={{
-                  marginBottom: 20,
-                  fontSize: 14,
-                  letterSpacing: 1.5,
-                  fontWeight: 'bold',
-                  color: 'black',
-                  textTransform: 'uppercase',
-                  textAlign: 'center'
-                }}>
-                  {t("SELECCIONA_METODO_PAGO")}
-                </Text>
-                <View style={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginHorizontal: 16,
-                  marginTop: 8
-                }}>
-                  <Pressable onPress={() => setMethodType('Paypal')} style={[styles.selectButton, { flexDirection: 'row', alignItems: 'center' }]}>
-                    <Icon name="paypal" size={24} color="#007DFF" style={{ marginRight: 5 }} />
-                    <Text style={styles.boldText}>Paypal</Text>
-                  </Pressable>
-                  <Pressable onPress={() => { reset(); setShowCardModal(true); }} style={[styles.selectButton, { marginLeft: 20 }]}>
-                    <Text style={styles.boldText}>{t("TARJETA")}</Text>
-                  </Pressable>
-                </View>
-              </>
-            }
-            {methodType &&
-              <Pressable
-                onPress={() => { setMethodType(undefined); setCard(undefined); }}
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  paddingVertical: 8,
-                }}
-              >
-                <View style={[styles.selectButton, { marginRight: 16 }]}>
-                  {methodType !== 'Paypal' && (
-                    <Text style={[styles.boldText, { color: '#007DFF' }]}>
-                      ......{card?.numero.substring(12)}
-                    </Text>
-                  )}
-                  {methodType === 'Paypal' && (
-                    <Text style={[styles.boldText, { color: '#007DFF' }]}>
-                      <Icon name="paypal" size={24} color="#007DFF" />
-                    </Text>
-                  )}
-                </View>
-                <Text style={[styles.boldText, { color: '#007DFF', flex: 1 }]}>
-                  {t("CAMBIAR_METODO_PAGO")}
-                </Text>
-              </Pressable>
-            }
-          </View>
-          {/* <Tab.Navigator
-              initialRouteName="PaymentForm"
-              screenOptions={{
-                tabBarPressColor: "#04D6C8",
-                tabBarIndicatorStyle: { borderBottomColor: "#106F69", borderBottomWidth: 3 }
-              }}
-            >
-              <Tab.Screen name={"PaymentForm"} component={PaymentFormScreen} options={{ title: translations.tab1 }} />
-              <Tab.Screen name="SavedPayments" component={SavedUserPaymentsScreen} options={{ title: translations.tab2 }} />
-            </Tab.Navigator> */}
+            {/* <Tab.Navigator
+                      initialRouteName="PaymentForm"
+                      screenOptions={{
+                        tabBarPressColor: "#04D6C8",
+                        tabBarIndicatorStyle: { borderBottomColor: "#106F69", borderBottomWidth: 3 }
+                      }}
+                    >
+                      <Tab.Screen name={"PaymentForm"} component={PaymentFormScreen} options={{ title: translations.tab1 }} />
+                      <Tab.Screen name="SavedPayments" component={SavedUserPaymentsScreen} options={{ title: translations.tab2 }} />
+                    </Tab.Navigator> */}
 
-          <View style={{ justifyContent: 'flex-end' }}>
-            <CustomButton
-              onPress={() => onSubmit()}
-              buttonText={t("PAGAR")}
-              colorButtom='#04D6C8'
-              colorText='white'
-              colorButtomHover="#04D6C8"
-              colorTextHover="white"
-              iconRight="chevron-right"
-              animated={true}
-              visible={methodType ? true : false}
-            />
-            <CustomButton
-              onPress={goBack}
-              buttonText={t("VOLVER_HORARIO")}
-              colorButtom='transparent'
-              colorText='#04D6C8'
-              colorButtomHover="#04D6C850"
-              colorTextHover="white"
-              iconLeft="chevron-left"
-            // onPress={() => console.log(password)}
-            />
+            <View style={{ justifyContent: 'flex-end' }}>
+              <CustomButton
+                onPress={() => onSubmit()}
+                buttonText={t("PAGAR")}
+                colorButtom='#04D6C8'
+                colorText='white'
+                colorButtomHover="#04D6C8"
+                colorTextHover="white"
+                iconRight="chevron-right"
+                animated={true}
+                visible={methodType ? true : false}
+              />
+              <CustomButton
+                onPress={goBack}
+                buttonText={t("VOLVER_HORARIO")}
+                colorButtom='transparent'
+                colorText='#04D6C8'
+                colorButtomHover="#04D6C850"
+                colorTextHover="white"
+                iconLeft="chevron-left"
+              // onPress={() => console.log(password)}
+              />
+            </View>
           </View>
-        </View>
+        }
+        {toPaypal &&
+          <View style={{ flex: 1, backgroundColor: '#fff' }}>
+            <View style={{ flexDirection: 'row', alignItems: "center", alignContent: 'center', justifyContent: 'center', paddingTop: 25 }}>
+              <Text style={{ fontSize: 22 }} className="font-semibold">{t("REDIRIGIENDO_PAYPAL")}</Text>
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: 'center', paddingTop: 10 }}>
+              <ImageBackground source={require('../../../assets/images/loading.gif')} style={{ height: 230, width: 230 }} imageStyle={{ borderRadius: 10 }}></ImageBackground>
+            </View>
+          </View>
+        }
       </View>
       <Modal transparent={true} visible={showCardModal} animationType={"fade"}>
         <View style={styles.containerModal}>
@@ -538,7 +612,7 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
                   label={t("CVV")}
                   placeholder={t("INTRODUCE_EL_CVV")}
                   editable={true}
-                  maxLength={4}
+                  maxLength={3}
                   keyboardType={'numeric'}
                   cvv={true}
                   rules={{
@@ -586,10 +660,10 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
       >
         <TouchableOpacity
           onPress={clearPaypalState}
-          style={{ margin: 24, flexDirection:'row' }}
+          style={{ margin: 24, flexDirection: 'row' }}
         >
           <ArrowLeftIcon size={24} color="black" />
-          <Text style={{marginLeft:10, fontWeight:'bold', fontSize:16}}>{t("VOLVER_RESUMEN")}</Text>
+          <Text style={{ marginLeft: 10, fontWeight: 'bold', fontSize: 16 }}>{t("VOLVER_RESUMEN")}</Text>
         </TouchableOpacity>
         <View style={{ flex: 1 }}>
           <WebView

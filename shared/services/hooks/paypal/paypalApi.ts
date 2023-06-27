@@ -4,42 +4,6 @@ const base64 = require('base-64');
 let clientId = 'AcdrEjQmBk5QFpFja7nFW95FypeESknyKys_A2qmH3qv38-2NTEaCBgcb1DmvjC5OdALY36dWNd0ZPRQ';
 let secretKey = 'EB7fmUwGKJTuOGvv0WB8rx1_xnli2BCsLYHxN1JiU8SzVT1HMjpeNG0w0rwHzFjwaASBuI4eXnu7jHgA';
 
-
-let orderDetail = {
-    "intent": "CAPTURE",
-    "purchase_units": [
-        {
-            "items": [
-                {
-                    "name": "T-Shirt",
-                    "description": "Green XL",
-                    "quantity": "1",
-                    "unit_amount": {
-                        "currency_code": "EUR",
-                        "value": "0.01"
-                    }
-                }
-            ],
-            "amount": {
-                "currency_code": "EUR",
-                "value": "0.01",
-                "breakdown": {
-                    "item_total": {
-                        "currency_code": "EUR",
-                        "value": "0.01"
-                    }
-                }
-            }
-        }
-    ],
-    "application_context": {
-        "locale": "es-ES",
-        "return_url": "https://example.com/return",
-        "cancel_url": "https://example.com/cancel"
-    }
-}
-
-
 const generateToken = (): Promise<string> => {
     var headers = new Headers()
     headers.append("Content-Type", "application/x-www-form-urlencoded");
@@ -63,7 +27,7 @@ const generateToken = (): Promise<string> => {
     })
 }
 
-const createOrder = (token = ''): Promise<any> => {
+const createOrder = (token = '', orderDetail:any): Promise<any> => {
     var requestOptions = {
         method: 'POST',
         headers: {

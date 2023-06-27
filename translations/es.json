@@ -177,5 +177,12 @@
   "PAGO_REALIZADO": "Pago realizado",
   "RESERVA_REALIZADA": "Reserva realizada",
   "RESERVA_REALIZADA_EXITO": "Reserva realizada con éxito",
-  "VOLVER_RESUMEN": "Volver al resumen"
+  "VOLVER_RESUMEN": "Volver al resumen",
+  "REDIRIGIENDO_PAYPAL": "Redirigiendo a paypal",
+  "PAGO_NO_REALIZADO": "Pago no realizado",
+  "PAGO_NO_PROCESADO": "El pago no ha podido ser procesado",
+  "RESERVA_DE": "Reserva de",
+  "INSCRIPCION_A": "Inscripción a",
+  "RESERVA": "Reserva",
+  "INSCRIPCION": "Inscripción"
 }

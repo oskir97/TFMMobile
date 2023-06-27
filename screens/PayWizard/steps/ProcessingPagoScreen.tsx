@@ -1,17 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Text, View, StyleSheet, Dimensions, Alert, ImageBackground, BackHandler } from "react-native";
+import React, { useState } from "react";
+import { Text, View, StyleSheet, ImageBackground, BackHandler } from "react-native";
 import { MD3Colors, ProgressBar } from "react-native-paper";
-import { LoginContext } from "../../../shared/services/hooks/login/contexts/LoginContext";
-import { I18nContext, useTranslation } from "react-i18next";
-import CustomButton from "../../../components/Buttons/CustomButton";
-import { Calendar, LocaleConfig } from "react-native-calendars";
+import { useTranslation } from "react-i18next";
 import Menu from "../../../components/Menu/Menu";
-import { Filter, Sort, TypeReservation } from "../../../shared/models/Filter";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Instalacion } from "../../../shared/models/Instalacion";
-import { Evento } from "../../../shared/models/Evento";
-import { Reserva } from "../../../shared/models/Reserva";
-import { RouteProp, useFocusEffect, useRoute } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 
 interface CompletedPagoScreenProps {
     navigation: any;
