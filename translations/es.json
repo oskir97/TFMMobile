@@ -176,5 +176,6 @@
   "VOLVER_INICIO": "Volver a Inicio",
   "PAGO_REALIZADO": "Pago realizado",
   "RESERVA_REALIZADA": "Reserva realizada",
-  "RESERVA_REALIZADA_EXITO": "Reserva realizada con éxito"
+  "RESERVA_REALIZADA_EXITO": "Reserva realizada con éxito",
+  "VOLVER_RESUMEN": "Volver al resumen"
 }

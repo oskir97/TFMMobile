@@ -175,5 +175,6 @@
   "VOLVER_INICIO": "Go back to Home",
   "PAGO_REALIZADO": "Payment successful",
   "RESERVA_REALIZADA": "Reservation made",
-  "RESERVA_REALIZADA_EXITO": "Reservation successfully made"
+  "RESERVA_REALIZADA_EXITO": "Reservation successfully made",
+  "VOLVER_RESUMEN": "Back to summary"
 }

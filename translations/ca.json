@@ -175,5 +175,6 @@
   "VOLVER_INICIO": "Tornar a Inici",
   "PAGO_REALIZADO": "Pagament realitzat",
   "RESERVA_REALIZADA": "Reserva realitzada",
-  "RESERVA_REALIZADA_EXITO": "Reserva realitzada amb èxit"
+  "RESERVA_REALIZADA_EXITO": "Reserva realitzada amb èxit",
+  "VOLVER_RESUMEN": "Tornar al resum"
 }

@@ -14,7 +14,7 @@ import { Deporte } from "../../../shared/models/Deporte";
 import { PaymentMethodType } from "../../../components/PaymentMehodSelector/PaymentMehodSelector";
 import { Tarjeta } from "../../../shared/models/Tarjeta";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { XCircleIcon } from "react-native-heroicons/solid";
+import { XCircleIcon, ArrowLeftIcon } from "react-native-heroicons/solid";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from 'yup';
@@ -27,6 +27,9 @@ import { usePagos } from "../../../shared/services/hooks/pagos/usePagos";
 import { PagoDTO } from "../../../shared/models/dtos/PagoDTO";
 import shortid from 'shortid';
 import { enviarCorreo } from "../../../shared/services/hooks/emails/useEmail";
+import paypalApi from '../../../shared/services/hooks/paypal/paypalApi';
+import queryString from 'query-string';
+import WebView from "react-native-webview";
 
 interface PagoScreenProps {
   navigation: any;
@@ -59,6 +62,8 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
   const [methodType, setMethodType] = useState<PaymentMethodType | undefined>(undefined);
   const [showCardModal, setShowCardModal] = useState<boolean>(false);
   const [card, setCard] = useState<Tarjeta | undefined>(undefined);
+  const [accessToken, setAccessToken] = useState<string | undefined>(undefined);
+  const [paypalUrl, setPaypalUrl] = useState<any>(null);
   const { eliminarReserva } = useReservas();
   const { crearPago, obtenerTiposPagos } = usePagos();
 
@@ -82,6 +87,69 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
   });
 
   const onSubmit = () => {
+
+    if (methodType == 'Tarjeta') {
+      pay();
+    } else if (methodType == 'Paypal') {
+      paypal();
+    }
+  };
+
+  const paypal = async () => {
+    try {
+      const token = await paypalApi.generateToken()
+      const res = await paypalApi.createOrder(token)
+      setAccessToken(token)
+      console.log("res++++++", res)
+      if (!!res?.links) {
+        const findUrl = res.links.find((data: any) => data?.rel == "approve")
+        console.log(findUrl.href);
+        setPaypalUrl(findUrl.href)
+      }
+
+
+    } catch (error) {
+      console.log("error", error)
+
+    }
+  }
+
+  const onUrlChange = (webviewState: any) => {
+    console.log("webviewStatewebviewState", webviewState)
+    if (webviewState.url.includes('https://example.com/cancel')) {
+      clearPaypalState()
+      return;
+    }
+    if (webviewState.url.includes('https://example.com/return')) {
+
+      const urlValues = queryString.parseUrl(webviewState.url)
+      console.log("my urls value", urlValues)
+      const { token } = urlValues.query
+      if (!!token) {
+        paymentSucess(token.toString())
+      }
+
+    }
+  }
+
+  const paymentSucess = async (id: string) => {
+    try {
+      const res = paypalApi.capturePayment(id, accessToken)
+      console.log("capturePayment res++++", res)
+      alert("Payment sucessfull...!!!")
+      clearPaypalState()
+    } catch (error) {
+      console.log("error raised in payment capture", error)
+    }
+  }
+
+
+  const clearPaypalState = () => {
+    setPaypalUrl(null)
+    setAccessToken(undefined)
+  }
+
+  function pay() {
     setPagando(true);
     var idpista = route.params.pista.idpista;
     var idevento = route.params.evento?.idevento;
@@ -138,7 +206,7 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
         });
       }, 5000);
     }
-  };
+  }
 
   const finishPayment = (payok: boolean) => {
     if (payok) {
@@ -512,6 +580,26 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
 
           </View>
         </View>
+      </Modal>
+      <Modal
+        visible={!!paypalUrl}
+      >
+        <TouchableOpacity
+          onPress={clearPaypalState}
+          style={{ margin: 24, flexDirection:'row' }}
+        >
+          <ArrowLeftIcon size={24} color="black" />
+          <Text style={{marginLeft:10, fontWeight:'bold', fontSize:16}}>{t("VOLVER_RESUMEN")}</Text>
+        </TouchableOpacity>
+        <View style={{ flex: 1 }}>
+          <WebView
+            // setSupportMultipleWindows={false}
+            source={{ uri: paypalUrl }}
+            onNavigationStateChange={onUrlChange}
+
+          />
+        </View>
+
       </Modal>
     </>
   );
