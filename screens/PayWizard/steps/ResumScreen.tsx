@@ -24,6 +24,8 @@ import cardValidator from 'card-validator';
 import { useReservas } from "../../../shared/services/hooks/reservas/useReservas";
 import { LoginContext } from "../../../shared/services/hooks/login/contexts/LoginContext";
 import { usePagos } from "../../../shared/services/hooks/pagos/usePagos";
+import { crearNotificacion } from "../../../shared/services/hooks/notifications/useNotifications"
+import showNotification from "../../../shared/services/hooks/notifications/useNotificationsPush"
 import { PagoDTO } from "../../../shared/models/dtos/PagoDTO";
 import shortid from 'shortid';
 import { enviarCorreo } from "../../../shared/services/hooks/emails/useEmail";
@@ -31,6 +33,7 @@ import paypalApi from '../../../shared/services/hooks/paypal/paypalApi';
 import queryString from 'query-string';
 import WebView from "react-native-webview";
 import { TipoPago } from "../../../shared/models/TipoPago";
+import { TipoNotificacion } from "../../../shared/models/TiposNotificacion";
 
 interface PagoScreenProps {
   navigation: any;
@@ -91,7 +94,7 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
   const onSubmit = () => {
     if (methodType == 'Paypal') {
       setToPaypal(true);
-    }else{
+    } else {
       setPagando(true);
     }
     canPay();
@@ -240,18 +243,27 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
             var pago: PagoDTO = { subtotal: subtotal, total: precio, iva: 0.21, tipo_oid: tipopago?.idtipo, fecha: new Date(fecha), reserva_oid: route.params.reserva.idreserva, token: guid }
             crearPago(pago).then((pago) => {
               if (pago) {
-                enviarCorreo(route.params.reserva.email, t("RESERVA_REALIZADA"),
-                  `${t("RESERVA_REALIZADA_EXITO")}<br><br>
-                          ${route.params.evento || route.params.partido ? ((route.params.evento && t("EVENTO")) || (route.params.partido && t("PARTIDO"))) + ": " + getName() + "<br>" : ""}
-                          ${t("INSTALACION") + ": " + getInstalacion() + "<br>"}
-                          ${t("PISTA") + ": " + route.params.pista.nombre + "<br>"}
-                          ${t("FECHA") + ": " + new Date(route.params.reserva.fecha ? route.params.reserva.fecha : new Date()).toLocaleDateString() + "<br>"}
-                          ${t("HORARIO") + ": " + formatTime(route.params.horario.inicio) + " - " + formatTime(route.params.horario.fin) + "<br>"}
-                          ${t("PISTA") + ": " + route.params.pista.nombre + "<br>"}
-                          ${t("PRECIO") + ": " + route.params.pista.precio + "<br>"}
-                          `
 
-                );
+                if (route.params.reserva && ((route.params.instalacion && route.params.pista) || route.params.evento || route.params.partido)) {
+                  crearNotificacion(route.params.reserva.obtenerUsuarioCreador, route.params.reserva, getName(), route.params.instalacion, route.params.pista, route.params.evento, route.params.partido, route.params.reserva.fecha, formatTime(route.params.horario.inicio) + " - " + formatTime(route.params.horario.fin), TipoNotificacion.confirmacion).then((notif)=>{
+                    console.log(notif);
+                    if(notif)
+                    showNotification({title: notif.asunto, body: notif.descripcion, url: "Notificaciones", navigation:navigation});
+                  })
+                }
+
+                // enviarCorreo(route.params.reserva.email, t("RESERVA_REALIZADA"),
+                //   `${t("RESERVA_REALIZADA_EXITO")}<br><br>
+                //           ${route.params.evento || route.params.partido ? ((route.params.evento && t("EVENTO")) || (route.params.partido && t("PARTIDO"))) + ": " + getName() + "<br>" : ""}
+                //           ${t("INSTALACION") + ": " + getInstalacion() + "<br>"}
+                //           ${t("PISTA") + ": " + route.params.pista.nombre + "<br>"}
+                //           ${t("FECHA") + ": " + new Date(route.params.reserva.fecha ? route.params.reserva.fecha : new Date()).toLocaleDateString() + "<br>"}
+                //           ${t("HORARIO") + ": " + formatTime(route.params.horario.inicio) + " - " + formatTime(route.params.horario.fin) + "<br>"}
+                //           ${t("PISTA") + ": " + route.params.pista.nombre + "<br>"}
+                //           ${t("PRECIO") + ": " + route.params.pista.precio + "<br>"}
+                //           `
+
+                // );
                 finishPayment(true);
                 setPagando(false);
               } else {
