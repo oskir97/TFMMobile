@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Text, View, StyleSheet, BackHandler, Pressable, Modal, TouchableOpacity, Alert, ImageBackground } from "react-native";
+import { Text, View, StyleSheet, BackHandler, Pressable, Modal, TouchableOpacity, Alert, ImageBackground, Dimensions } from "react-native";
 import { MD3Colors, ProgressBar } from "react-native-paper";
 import CustomButton from "../../../components/Buttons/CustomButton";
 import { I18nContext, useTranslation } from "react-i18next";
@@ -34,6 +34,7 @@ import queryString from 'query-string';
 import WebView from "react-native-webview";
 import { TipoPago } from "../../../shared/models/TipoPago";
 import { TipoNotificacion } from "../../../shared/models/TiposNotificacion";
+import { useHorarios } from "../../../shared/services/hooks/horarios/useHorarios";
 
 interface PagoScreenProps {
   navigation: any;
@@ -69,8 +70,10 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
   const [accessToken, setAccessToken] = useState<string | undefined>(undefined);
   const [paypalUrl, setPaypalUrl] = useState<any>(null);
   const [toPaypal, setToPaypal] = useState<boolean>(false);
+  const [pista, setPista] = useState<string | undefined>();
   const { eliminarReserva } = useReservas();
   const { crearPago, sePuedePagar, obtenerTiposPagos } = usePagos();
+  const { obtenerPistaHorario } = useHorarios();
 
   const NUM_CARD_REQUERIDO = t("NUM_CARD_REQUERIDO");
   const FECHA_EXP_REQUERIDA = t("FECHA_EXP_REQUERIDA");
@@ -195,7 +198,7 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
   }
 
   function canPay() {
-    var idpista = route.params.pista.idpista;
+    var idpista = route.params.pista?.idpista;
     var idevento = route.params.evento?.idevento;
     var idpartido = route.params.partido?.idreserva;
     var fecha = route.params.fecha;
@@ -243,12 +246,11 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
             var pago: PagoDTO = { subtotal: subtotal, total: precio, iva: 0.21, tipo_oid: tipopago?.idtipo, fecha: new Date(fecha), reserva_oid: route.params.reserva.idreserva, token: guid }
             crearPago(pago).then((pago) => {
               if (pago) {
-
                 if (route.params.reserva && ((route.params.instalacion && route.params.pista) || route.params.evento || route.params.partido)) {
-                  crearNotificacion(route.params.reserva.obtenerUsuarioCreador, route.params.reserva, getName(), route.params.instalacion, route.params.pista, route.params.evento, route.params.partido, route.params.reserva.fecha, formatTime(route.params.horario.inicio) + " - " + formatTime(route.params.horario.fin), TipoNotificacion.confirmacion).then((notif)=>{
+                  crearNotificacion(route.params.reserva.obtenerUsuarioCreador, route.params.reserva, getName(), route.params.instalacion, route.params.pista, route.params.evento, route.params.partido, route.params.reserva.fecha, route.params.instalacion && (formatTime(route.params.horario.inicio) + " - " + formatTime(route.params.horario.fin)), TipoNotificacion.confirmacion).then((notif) => {
                     console.log(notif);
-                    if(notif)
-                    showNotification({title: notif.asunto, body: notif.descripcion, url: "Notificaciones", navigation:navigation});
+                    if (notif)
+                      showNotification({ title: notif.asunto, body: notif.descripcion, url: "Notificaciones", navigation: navigation });
                   })
                 }
 
@@ -306,13 +308,13 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
       navigation.navigate("CompletedPago" as never);
     } else {
       if (route.params.reserva)
-        eliminarReserva(route.params.reserva);
+        eliminarReserva(route.params.reserva.idreserva);
       if (route.params.instalacion) {
         navigation.navigate("Horario" as never, { instalacion: route.params.instalacion, previousPage: "Resumen" } as never)
       } else if (route.params.evento) {
-        navigation.navigate("Horario" as never, { evento: route.params.evento, previousPage: "Resumen" } as never)
+        navigation.navigate("EventoScreen" as never, { item: route.params.evento } as never)
       } else if (route.params.partido) {
-        navigation.navigate("Horario" as never, { partido: route.params.partido, previousPage: "Resumen" } as never)
+        navigation.navigate("PartidoScreen" as never, { item: route.params.partido } as never)
       }
     }
   }
@@ -336,13 +338,13 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
 
   const goBack = () => {
     if (route.params.reserva)
-      eliminarReserva(route.params.reserva);
+      eliminarReserva(route.params.reserva.idreserva);
     if (route.params.instalacion) {
       navigation.navigate("Horario" as never, { instalacion: route.params.instalacion, previousPage: "Resumen" } as never)
     } else if (route.params.evento) {
-      navigation.navigate("Horario" as never, { evento: route.params.evento, previousPage: "Resumen" } as never)
+      navigation.navigate("EventoScreen" as never, { item: route.params.evento } as never)
     } else if (route.params.partido) {
-      navigation.navigate("Horario" as never, { partido: route.params.partido, previousPage: "Resumen" } as never)
+      navigation.navigate("PartidoScreen" as never, { item: route.params.partido } as never)
     }
   };
 
@@ -362,7 +364,7 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
 
       return () =>
         BackHandler.removeEventListener('hardwareBackPress', onBackPress);
-    }, [navigation])
+    }, [navigation, route.params])
   );
 
   function formatTime(timeString: Date | null): string {
@@ -386,10 +388,24 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
       return undefined;
   }
 
+  function formatDate2(date: Date | undefined): string {
+    if (date) {
+      return new Date(date).toLocaleDateString(i18n.language == "en" ? 'en-US' : 'es');
+    }
+    return '';
+  }
+
   function translatesport(deporte: Deporte) {
     const nombreTraducido = deporte.traduccionesDeporte.find((tr) => tr.getIdiomaDeporte.cultura === i18n.language)?.nombre;
     return nombreTraducido;
   }
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      getPista();
+    });
+    return unsubscribe;
+  }, [navigation, route.params]);
 
   function getName(): string | undefined {
     return (route.params.evento && route.params.evento.nombre) || (route.params.partido && `${t("PARTIDO")} ${t("DE")} ${translatesport(route.params.partido.obtenerDeporteReserva)}`);
@@ -397,6 +413,19 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
 
   function getInstalacion(): string | undefined {
     return (route.params.instalacion && route.params.instalacion.nombre) || (route.params.evento && route.params.evento.obtenerInstalacion.nombre) || (route.params.partido && route.params.pista.obtenerInstalaciones.nombre);
+  }
+
+  const getPista = async () => {
+    if (route.params.pista) {
+      setPista(route.params.pista.nombre);
+    } else if (route.params.evento && route.params.evento.obtenerHorariosEvento) {
+      const pista = await obtenerPistaHorario(route.params.evento.obtenerHorariosEvento[0].idhorario).then((pista) => { if (pista) return pista.nombre });
+      setPista(pista);
+    } else if (route.params.partido) {
+      setPista(route.params.partido.obtenerPista.nombre);
+    } else {
+      setPista(undefined);
+    }
   }
 
   const selectPayment = () => {
@@ -419,11 +448,36 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
 
   };
 
+  function formatHorarios(horarios: Horario[] | undefined): JSX.Element {
+    if (horarios) {
+      const formattedHorarios: JSX.Element[] = [];
+
+      for (const horario of horarios) {
+        const diasSemana = horario.obtenerDiasSemana.map(dia => t(dia.nombre.toUpperCase().replace("É", "E").replace("Á", "A"))).join(', ');
+        const inicio = horario.inicio ? new Date(horario.inicio).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+        const fin = horario.fin ? new Date(horario.fin).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+
+        const diasSemanaElement = <Text style={{ fontWeight: 'bold', marginBottom: 4, fontSize:16 }} numberOfLines={3} ellipsizeMode="tail">{diasSemana}</Text>;
+        const horasElement = <Text style={{ fontWeight: 'bold' }} numberOfLines={1} ellipsizeMode="tail">{t('DE2')} {inicio} {t('A2')} {fin}</Text>;
+        formattedHorarios.push(
+          <View key={horario.idhorario}>
+            {diasSemanaElement}
+            {horasElement}
+          </View>
+        );
+      }
+
+      return <>{formattedHorarios}</>;
+    } else {
+      return <></>
+    }
+  }
+
   const today = new Date();
 
   return (
     <>
-      <Menu showReturnWizard={true} showLang={true} text={t("SELECCIONAR_HORARIO")} showusuario={true} userMenu={() => navigation.openDrawer()} functionGoBack={goBack} />
+      <Menu showReturnWizard={true} showLang={true} text={route.params.instalacion ? t("SELECCIONAR_HORARIO") : getName()} showusuario={true} userMenu={() => navigation.openDrawer()} functionGoBack={goBack} />
       <View style={styles.container}>
         <ProgressBar
           style={styles.progressBar}
@@ -432,7 +486,7 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
         />
         {!toPaypal &&
           <View style={{ flex: 1, justifyContent: 'space-between', margin: 20 }}>
-            <View style={{ justifyContent: 'flex-start' }}>
+            <View style={{ justifyContent: 'flex-start', width: Dimensions.get("window").width * 0.8 }}>
               <View style={{ flexDirection: 'row', marginBottom: 20 }}>
                 <Text style={{ fontSize: 24 }} className="font-semibold">{t("RESUMEN")}</Text>
               </View>
@@ -444,22 +498,51 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
                   </View>
                 </>
               )}
-              <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+              <View style={{ flexDirection: 'row', marginBottom: 10, marginRight: 10 }}>
                 <Text style={{ fontSize: 16 }} >{t("INSTALACION")}: </Text>
                 <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{getInstalacion()}</Text>
               </View>
-              <View style={{ flexDirection: 'row', marginBottom: 10 }}>
-                <Text style={{ fontSize: 16 }} >{t("PISTA")}: </Text>
-                <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{route.params.pista.nombre}</Text>
-              </View>
-              <View style={{ flexDirection: 'row', marginBottom: 10 }}>
-                <Text style={{ fontSize: 16 }} >{t("FECHA")}: </Text>
-                <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{new Date(route.params.reserva.fecha ? route.params.reserva.fecha : new Date()).toLocaleDateString()}</Text>
-              </View>
-              <View style={{ flexDirection: 'row', marginBottom: 10 }}>
-                <Text style={{ fontSize: 16 }} >{t("HORARIO")}: </Text>
-                <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{formatTime(route.params.horario.inicio)} - {formatTime(route.params.horario.fin)}</Text>
-              </View>
+              {(route.params.evento && route.params.evento.obtenerHorariosEvento != null) && (
+                <>
+                  <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+                    <Text style={{ fontSize: 16 }} >{t("PISTA")}: </Text>
+                    <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{pista}</Text>
+                  </View>
+                </>
+              )}
+              {(route.params.instalacion || route.params.partido) && (
+                <>
+                  <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+                    <Text style={{ fontSize: 16 }} >{t("FECHA")}: </Text>
+                    <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{new Date(route.params.reserva.fecha ? route.params.reserva.fecha : new Date()).toLocaleDateString()}</Text>
+                  </View>
+                </>
+              )}
+              {(route.params.evento) && (
+                <>
+                  <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+                    <Text style={{ fontSize: 16 }} >{t("FECHA")}: </Text>
+                    <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{`${t("DEL")} ${formatDate2(route.params.evento?.inicio)} ${t("AL")} ${formatDate2(route.params.evento?.fin)}`}</Text>
+                  </View>
+                </>
+              )}
+              {(route.params.instalacion || route.params.partido) && (
+                <>
+                  <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+                    <Text style={{ fontSize: 16 }} >{t("HORARIO")}: </Text>
+                    <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{formatTime(route.params.horario.inicio)} - {formatTime(route.params.horario.fin)}</Text>
+                  </View>
+                </>
+              )}
+              {(route.params.evento) && (
+                <>
+                  <View style={{ flexDirection: 'row', marginBottom: 10, marginRight: 30 }}>
+                    <Text style={{ fontSize: 16 }} >{t("HORARIO")}: </Text>
+                    {/* <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{formatTime(route.params.horario.inicio)} - {formatTime(route.params.horario.fin)}</Text> */}
+                    {formatHorarios(route.params.evento?.obtenerHorariosEvento)}
+                  </View>
+                </>
+              )}
               <View style={{ flexDirection: 'row', marginBottom: 10 }}>
                 <Text style={{ fontSize: 16 }} >{t("PRECIO")}: </Text>
                 <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{getPrecio()}€</Text>
@@ -555,7 +638,6 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
                 colorButtomHover="#04D6C850"
                 colorTextHover="white"
                 iconLeft="chevron-left"
-              // onPress={() => console.log(password)}
               />
             </View>
           </View>
@@ -648,7 +730,6 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
                 colorButtomHover="#04D6C8"
                 colorTextHover="white"
 
-              // onPress={() => console.log(password)}
               />
               <CustomButton
                 onPress={() => setShowCardModal(false)}
@@ -657,7 +738,6 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
                 colorText='#04D6C8'
                 colorButtomHover="#04D6C850"
                 colorTextHover="white"
-              // onPress={() => console.log(password)}
               />
               <TouchableOpacity style={styles.cancel} onPress={() => setShowCardModal(false)}>
                 <XCircleIcon size={24} color="#999" />

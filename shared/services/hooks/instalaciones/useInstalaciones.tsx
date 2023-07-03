@@ -80,5 +80,41 @@ export const useInstalaciones = () => {
       return [];
     }
   };
-  return obtenerInstalaciones;
+
+  const obtenerInstalacion = async (idinstalacion:number | undefined): Promise<Instalacion> => {
+    if(idinstalacion){
+      try {
+        const token = await AsyncStorage.getItem('token');
+  
+        if (token !== null) {
+          const api = new Api<any, Instalacion>(token);
+          const instalaciones = await api.get('/Instalacion/'+idinstalacion);
+  
+          if (!instalaciones.error && instalaciones.data) {
+
+            var distanciaTiempo = await calculateTravelDuration(instalaciones.data);
+  
+            instalaciones.data.distancia = distanciaTiempo[0];
+            instalaciones.data.tiempo = distanciaTiempo[1];
+  
+            return instalaciones.data;
+          } else {
+            console.log("Error al obtener la instalacion");
+            const errormessage = t("ERROR");
+            const erroraplicacion = t("ERROR_APLICACION");
+            Alert.alert(errormessage, erroraplicacion);
+            return undefined;
+          }
+        } else {
+          return undefined;
+        }
+      } catch (error) {
+        console.error('Error al obtener las instalaciones:', error);
+        return undefined;
+      }
+    }else{
+      return undefined;
+    }
+  };
+  return {obtenerInstalaciones, obtenerInstalacion};
 };

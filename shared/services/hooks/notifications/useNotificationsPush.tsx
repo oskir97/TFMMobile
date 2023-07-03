@@ -26,7 +26,7 @@ const showNotification = ({ title, body, url, navigation }: NotificationProps) =
               name: 'default',
               importance: Notifications.AndroidImportance.MAX,
               vibrationPattern: [0, 250, 250, 250],
-              lightColor: '#FF231F7C',
+              lightColor: '#04D6C8',
             });
           }
 

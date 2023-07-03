@@ -72,5 +72,30 @@ export const useHorarios = () => {
         }
     };
 
-    return { obtenerpistasinstalacion };
+    const obtenerPistaHorario = async (idhorario:number): Promise<Pista | undefined> => {
+        try {
+            const token = await AsyncStorage.getItem('token');
+
+            if (token !== null) {
+                const api = new Api<any, Pista>(token);
+                const horarios = await api.get('/Pista/ObtenerPistaHorario?idHorario=' + idhorario);
+
+                if (!horarios.error && horarios.data) {
+                    return horarios.data;
+                } else {
+                    const errormessage = t("ERROR");
+                    const erroraplicacion = t("ERROR_APLICACION");
+                    Alert.alert(errormessage, erroraplicacion);
+                    return undefined;
+                }
+            } else {
+                return undefined;
+            }
+        } catch (error) {
+            console.error('Error al obtener los horarios disponibles:', error);
+            return undefined;
+        }
+    };
+
+    return { obtenerpistasinstalacion, obtenerPistaHorario };
 };

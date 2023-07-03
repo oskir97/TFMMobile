@@ -93,7 +93,7 @@ export const useReservas = () => {
   };
 
   const crearReserva = async (reserva: ReservaDTO, fecha: Date | undefined): Promise<Reserva | undefined> => {
-    if (reserva && fecha) {
+    if (reserva && (fecha || reserva.pista_oid < 0)) {
       try {
         const token = await AsyncStorage.getItem('token');
 
@@ -103,7 +103,7 @@ export const useReservas = () => {
           if(reserva.tipo == TipoReservaEnum.Reserva && reserva.evento_oid == -1){
             disponible = await existeReserva(reserva.pista_oid, fecha);
             disponible = !disponible;
-          }else if(reserva.tipo == TipoReservaEnum.Reserva && reserva.evento_oid > -1){
+          }else if(reserva.tipo == TipoReservaEnum.Inscripcion && reserva.evento_oid > -1){
             disponible = await eventoDisponible(reserva.evento_oid);
           }else if(reserva.tipo == TipoReservaEnum.Inscripcion){
             disponible = await partidoDisponible(reserva.pista_oid);
@@ -133,13 +133,13 @@ export const useReservas = () => {
       return undefined;
     }
   };
-  const eliminarReserva = async (reserva: Reserva): Promise<boolean> => {
+  const eliminarReserva = async (idreserva: number): Promise<boolean> => {
     try {
       const token = await AsyncStorage.getItem('token');
 
       if (token !== null) {
         const api = new Api<any, any>(token);
-        const reservas = await api.delete('/Reserva/Eliminar?p_reserva_oid=' + reserva.idreserva);
+        const reservas = await api.delete('/Reserva/Eliminar?p_reserva_oid=' + idreserva);
         if (!reservas.error && reservas.data == "") {
           return true;
         } else {

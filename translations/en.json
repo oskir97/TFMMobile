@@ -183,5 +183,12 @@
   "RESERVA_DE": "Reserva de",
   "INSCRIPCION_A": "Inscripció a",
   "RESERVA": "Booking",
-  "INSCRIPCION": "Registration"
+  "INSCRIPCION": "Registration",
+  "QUEDAN": "There are",
+  "PLAZAS": "spots left",
+  "DEL": "From",
+  "AL": "to",
+  "INSCRIBIRSE": "Sign up",
+  "DE2": "From",
+  "A2": "to"
 }

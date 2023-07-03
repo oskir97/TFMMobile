@@ -29,9 +29,9 @@ type ParamList = {
 };
 
 const BookList: React.FC<BookListProps> = ({ type, filter, navigation, loading }) => {
-    const obtenerInstalaciones = useInstalaciones();
-    const obtenerEventos = useEventos();
-    const obtenerReservas = useReservas();
+    const {obtenerInstalaciones} = useInstalaciones();
+    const {obtenerEventos} = useEventos();
+    const {obtenerReservas} = useReservas();
     const [instalaciones, setInstalaciones] = useState<Instalacion[] | undefined>([]);
     const [eventos, setEventos] = useState<Evento[] | undefined>([]);
     const [partidos, setPartidos] = useState<Reserva[] | undefined>([]);
@@ -131,7 +131,7 @@ const BookList: React.FC<BookListProps> = ({ type, filter, navigation, loading }
                         </View>
                         {
                             (!cargando && eventos && eventos.length > 0 && eventos?.map((item, index) => (
-                                <EventoItem key={index} item={item} />
+                                <EventoItem key={index} item={item} navigation={navigation} />
                             ))) ||
                             (!cargando && (!eventos || eventos.length == 0) &&
                                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 100 }}>
