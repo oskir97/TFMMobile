@@ -191,5 +191,12 @@
   "AL": "al",
   "INSCRIBIRSE": "Inscribirse",
   "DE2": "De",
-  "A2": "a"
+  "A2": "a",
+  "BASICO": "Básico",
+  "MEDIO": "Medio",
+  "AVANZADO": "Avanzado",
+  "NIVEL": "Nivel",
+  "CREADO_POR": "Creado por",
+  "USUARIO_YA_INSCRITO": "Usuario ya inscrito al partido",
+  "USUARIO_INSCRITO": "Usuario ya inscrito"
 }

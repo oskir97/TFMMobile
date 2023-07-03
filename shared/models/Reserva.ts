@@ -1,5 +1,6 @@
 import { Deporte } from "./Deporte";
 import { Horario } from "./Horario";
+import { NivelPartido } from "./NivelPartido";
 import { Pago } from "./Pago";
 import { Pista } from "./Pista";
 import { TipoReserva } from "./TipoReserva";
@@ -22,4 +23,6 @@ export interface Reserva {
     obtenerUsuarioCreador: UsuarioRegistrado;
     obtenerHorarioReserva: Horario;
     obtenerDeporteReserva: Deporte;
+    obtenerInscripciones: Reserva[];
+    nivelpartido?: NivelPartido;
   }

@@ -1,8 +1,9 @@
 import { View, FlatList, ScrollView, Text, ImageBackground } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next';
+import React, { useContext, useEffect, useState } from 'react'
+import { I18nContext, useTranslation } from 'react-i18next';
 import { FilterReserva, TypeReservation } from '../../shared/models/Filter';
 import { useInstalaciones } from '../../shared/services/hooks/instalaciones/useInstalaciones';
+import { useDeportes } from '../../shared/services/hooks/deportes/useDeportes';
 import { useEventos } from '../../shared/services/hooks/eventos/useEventos';
 import { useReservas } from '../../shared/services/hooks/reservas/useReservas';
 import { Instalacion } from '../../shared/models/Instalacion';
@@ -13,12 +14,13 @@ import PartidoItem from './Items/PartidoItem';
 import EventoItem from './Items/EventoItem';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { Deporte } from '../../shared/models/Deporte';
 
 export interface BookListProps {
     type: TypeReservation | undefined,
     filter: FilterReserva;
     navigation: any;
-    loading:boolean;
+    loading: boolean;
 }
 
 type ParamList = {
@@ -29,14 +31,17 @@ type ParamList = {
 };
 
 const BookList: React.FC<BookListProps> = ({ type, filter, navigation, loading }) => {
-    const {obtenerInstalaciones} = useInstalaciones();
-    const {obtenerEventos} = useEventos();
-    const {obtenerReservas} = useReservas();
+    const { obtenerInstalaciones } = useInstalaciones();
+    const { obtenerEventos } = useEventos();
+    const { obtenerReservas } = useReservas();
+    const { obtenerDeporte } = useDeportes();
     const [instalaciones, setInstalaciones] = useState<Instalacion[] | undefined>([]);
     const [eventos, setEventos] = useState<Evento[] | undefined>([]);
     const [partidos, setPartidos] = useState<Reserva[] | undefined>([]);
     const [cargando, setCargando] = useState<boolean>(true);
+    const [deporte, setDeporte] = useState<string | undefined>(undefined);
     const { t } = useTranslation();
+    const { i18n } = useContext(I18nContext);
     const route = useRoute<RouteProp<ParamList, 'loadingItems'>>();
 
     useEffect(() => {
@@ -53,6 +58,7 @@ const BookList: React.FC<BookListProps> = ({ type, filter, navigation, loading }
                         break;
                     case 'Partido':
                         setCargando(true);
+                        obtenerDeporte(filter.deporte).then((d: Deporte |undefined) => {setDeporte( d?.traduccionesDeporte.find((tr) => tr.getIdiomaDeporte.cultura === i18n.language)?.nombre); });
                         obtenerReservas(filter).then((reservas: Reserva[]) => { setPartidos(reservas); setCargando(false); });
                         break;
                 }
@@ -101,11 +107,11 @@ const BookList: React.FC<BookListProps> = ({ type, filter, navigation, loading }
                 ) || (type == 'Partido' &&
                     <>
                         <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                            <Text style={{ fontSize: 20 }} className="text-base font-semibold mt-1">{t("PARTIDOS_DISPONIBLES")}</Text>
+                            <Text style={{ fontSize: 20 }} className="text-base font-semibold mt-1">{`${t("PARTIDOS_DISPONIBLES")} ${t("DE")} ${deporte}`}</Text>
                         </View>
                         {
                             (!cargando && partidos && partidos.length > 0 && partidos?.map((item, index) => (
-                                <PartidoItem key={index} item={item} />
+                                <PartidoItem key={index} item={item} navigation={navigation} />
                             ))) ||
                             (!cargando &&
                                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 100 }}>

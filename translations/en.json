@@ -190,5 +190,12 @@
   "AL": "to",
   "INSCRIBIRSE": "Sign up",
   "DE2": "From",
-  "A2": "to"
+  "A2": "to",
+  "BASICO": "Basic",
+  "MEDIO": "Intermediate",
+  "AVANZADO": "Advanced",
+  "NIVEL": "Level",
+  "CREADO_POR": "Created by",
+  "USUARIO_YA_INSCRITO": "User already registered for the match",
+  "USUARIO_INSCRITO": "User already registered"
 }

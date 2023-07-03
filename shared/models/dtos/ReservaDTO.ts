@@ -1,3 +1,5 @@
+import { NivelPartido } from "../NivelPartido";
+
 export interface ReservaDTO {
     idreserva?: number | undefined;
     nombre: string | undefined;
@@ -19,6 +21,7 @@ export interface ReservaDTO {
     fechaCancelada?: Date | null;
     deporte_oid: number;
     evento_oid?: number;
+    nivelpartido?: NivelPartido;
 }
 
 export enum TipoReservaEnum {

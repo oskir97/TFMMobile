@@ -20,6 +20,7 @@ import PagandoPage from "../PayWizard/steps/ProcessingPagoScreen";
 import CompletedPago from "../PayWizard/steps/CompletedPagoScreen";
 import InstalacionPage from "../Home/InstalacionScreen";
 import EventoPage from "../Home/EventoScreen";
+import PartidoPage from "../Home/PartidoScreen";
 import ReviewsPage from "../Home/ReviewsScreen";
 import { useTranslation } from 'react-i18next';
 
@@ -141,6 +142,11 @@ const Nav: React.FC = () => {
                 },
             }} />
             <Drawer.Screen name="EventoScreen" component={EventoPage} options={{
+                drawerLabel: () => null, drawerItemStyle: {
+                    display: 'none',
+                },
+            }} />
+            <Drawer.Screen name="PartidoScreen" component={PartidoPage} options={{
                 drawerLabel: () => null, drawerItemStyle: {
                     display: 'none',
                 },

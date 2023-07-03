@@ -331,9 +331,16 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
     else if (route.params.evento)
       return route.params.evento.precio;
     else if (route.params.partido)
-      return route.params.partido.obtenerPista.precio / route.params.partido.maxparticipantes;
+      return obtenerDosPrimerosDecimales(route.params.partido.obtenerPista.precio / route.params.partido.maxparticipantes);
     else
       return 0;
+  }
+
+  function obtenerDosPrimerosDecimales(numero: number): number {
+    const parteEntera = Math.floor(numero);
+    const decimales = Number((numero % 1).toFixed(2));
+    const numeroFinal = parteEntera + decimales;
+    return numeroFinal;
   }
 
   const goBack = () => {
@@ -412,7 +419,7 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
   }
 
   function getInstalacion(): string | undefined {
-    return (route.params.instalacion && route.params.instalacion.nombre) || (route.params.evento && route.params.evento.obtenerInstalacion.nombre) || (route.params.partido && route.params.pista.obtenerInstalaciones.nombre);
+    return (route.params.instalacion && route.params.instalacion.nombre) || (route.params.evento && route.params.evento.obtenerInstalacion.nombre) || (route.params.partido && route.params.partido.obtenerPista.obtenerInstalaciones.nombre);
   }
 
   const getPista = async () => {
@@ -510,6 +517,14 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
                   </View>
                 </>
               )}
+              {(route.params.partido) && (
+                <>
+                  <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+                    <Text style={{ fontSize: 16 }} >{t("PISTA")}: </Text>
+                    <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{route.params.partido.obtenerPista.nombre}</Text>
+                  </View>
+                </>
+              )}
               {(route.params.instalacion || route.params.partido) && (
                 <>
                   <View style={{ flexDirection: 'row', marginBottom: 10 }}>
@@ -526,11 +541,19 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
                   </View>
                 </>
               )}
-              {(route.params.instalacion || route.params.partido) && (
+              {(route.params.instalacion ) && (
                 <>
                   <View style={{ flexDirection: 'row', marginBottom: 10 }}>
                     <Text style={{ fontSize: 16 }} >{t("HORARIO")}: </Text>
                     <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{formatTime(route.params.horario.inicio)} - {formatTime(route.params.horario.fin)}</Text>
+                  </View>
+                </>
+              )}
+              {(route.params.partido) && (
+                <>
+                  <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+                    <Text style={{ fontSize: 16 }} >{t("HORARIO")}: </Text>
+                    <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{formatTime(route.params.partido.obtenerHorarioReserva.inicio)} - {formatTime(route.params.partido.obtenerHorarioReserva.fin)}</Text>
                   </View>
                 </>
               )}

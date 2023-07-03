@@ -1,20 +1,121 @@
-import { View, FlatList, ScrollView, Text } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next';
+import { View, Text, Pressable, ImageBackground, Linking } from 'react-native'
+import React, { useContext } from 'react'
+import { I18nContext, useTranslation } from 'react-i18next';
 import { Reserva } from '../../../shared/models/Reserva';
+import { MaterialIcons } from '@expo/vector-icons';
+import { Valoracion } from '../../../shared/models/Valoracion';
 
-export interface    PartidoItemProps {
-    key:number,
-    item:Reserva
+export interface PartidoItemProps {
+    item: Reserva,
+    navigation: any
 }
 
-const PartidoItem: React.FC<PartidoItemProps> = ({key, item }) => {
+const PartidoItem: React.FC<PartidoItemProps> = ({ item, navigation }) => {
 
     const { t } = useTranslation();
+    const { i18n } = useContext(I18nContext);
+
+    function openMaps() {
+        if (item.obtenerPista.obtenerInstalaciones.latitud != null && item.obtenerPista.obtenerInstalaciones.longitud) {
+            const url = `geo:${item.obtenerPista.obtenerInstalaciones.latitud},${item.obtenerPista.obtenerInstalaciones.longitud}`;
+            Linking.openURL(url).catch((err) => console.error('No se puede abrir la app de Mapas:', err));
+        }
+    }
+
+    function average(valoraciones: Valoracion[]): number | null {
+        if (valoraciones.length === 0) {
+            return 0;
+        }
+
+        var array: number[] = [];
+
+        valoraciones.forEach((valoracion) => {
+            array.push(valoracion.estrellas);
+        })
+
+        const suma = array.reduce((total, num) => total + num, 0);
+        const media = suma / array.length;
+
+        return media;
+    }
+
+    function formatDate(date: Date | undefined): string {
+        if (date) {
+            return new Date(date).toLocaleDateString(i18n.language == "en" ? 'en-US' : 'es');
+        }
+        return '';
+    }
+
+    function formatTime(timeString: Date | null | undefined): string {
+        if (timeString && timeString != null) {
+            const date = new Date(timeString);
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            return `${hours}:${minutes}`;
+        } else {
+            return "";
+        }
+    }
+
+    function obtenerDosPrimerosDecimales(numero: number): number {
+        const parteEntera = Math.floor(numero);
+        const decimales = Number((numero % 1).toFixed(2));
+        const numeroFinal = parteEntera + decimales;
+        return numeroFinal;
+    }
 
     return (
-        <View>
+        <View style={{ margin: 10 }}>
+            <Pressable
+                onPress={() =>
+                    navigation.navigate("PartidoScreen" as never, { item } as never)
+                }
 
+            >
+                <View>
+                    <ImageBackground
+                        imageStyle={{ borderRadius: 6 }}
+                        style={{ height: 190 }}
+                        source={require('../../../assets/images/partidodefault.jpg')}
+                    >
+                    </ImageBackground>
+                </View>
+
+                <View style={{ marginLeft: 10, flexShrink: 1, marginTop: 5 }}>
+                    <Text style={{ fontSize: 18, fontWeight: 'bold', flexWrap: 'wrap' }} numberOfLines={2}>{`${item?.nombre} ${item?.apellidos}`}</Text>
+                    <Text style={{ fontSize: 14, fontWeight: 'bold', flexWrap: 'wrap', color: "gray" }} numberOfLines={2}>{item.obtenerPista.obtenerInstalaciones.nombre}</Text>
+                    <View style={{ flexDirection: "row", alignItems: "center", marginTop: 3 }}>
+                        <MaterialIcons name="stars" size={24} color="orange" />
+                        <Text style={{ marginLeft: 3, fontSize: 15, fontWeight: "400" }}>
+                            {average(item?.obtenerUsuarioCreador.obtenerValoracionesAlUsuario)}
+                        </Text>
+                        <Text style={{ marginLeft: 3 }}>•</Text>
+                        <Text style={{ marginLeft: 3, fontSize: 15, fontWeight: "400" }}>
+                            {item?.obtenerPista.obtenerInstalaciones.tiempo}
+                        </Text>
+                        <Pressable
+                            onPress={() =>
+                                openMaps()
+                            }
+                            style={{ flexDirection: "row" }}
+                        >
+                            <MaterialIcons name="location-on" size={24} color="red" />
+                        </Pressable>
+                        <MaterialIcons name="payments" size={24} color="#00CC99" style={{ marginLeft: 10 }} />
+
+                        <Text style={{ marginLeft: 4, fontSize: 12, fontWeight: "500" }}>
+                            {`${t("PRECIO")} ${obtenerDosPrimerosDecimales(item.obtenerPista.precio / item.maxparticipantes)}€`}
+                        </Text>
+                    </View>
+                    <View style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}>
+                        <Text style={{ marginLeft: 6, fontSize: 12 }}>{new Date(item.fecha).toLocaleDateString(i18n.language == "en" ? 'en-US' : 'es')}</Text>
+                        <Text style={{ marginLeft: 6, fontSize: 12 }}>{`${formatTime(item.obtenerHorarioReserva.inicio)} - ${formatTime(item.obtenerHorarioReserva.fin)}`}</Text>
+                    </View>
+                    <View style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}>
+                        <Text style={{ marginLeft: 6, fontSize: 14, fontWeight: 'bold' }}>{t("QUEDAN")} {item.maxparticipantes - item.obtenerInscripciones.length} {t("PLAZAS")}!</Text>
+                    </View>
+                </View>
+            </Pressable>
         </View>
     );
 };

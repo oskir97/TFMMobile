@@ -190,5 +190,12 @@
   "AL": "al",
   "INSCRIBIRSE": "Inscriure's",
   "DE2": "De",
-  "A2": "a"
+  "A2": "a",
+  "BASICO": "Bàsic",
+  "MEDIO": "Mitjà",
+  "AVANZADO": "Avançat",
+  "NIVEL": "Nivell",
+  "CREADO_POR": "Creat per",
+  "USUARIO_YA_INSCRITO": "Usuari ja inscrit en el partit",
+  "USUARIO_INSCRITO": "Usuari ja inscrit"
 }

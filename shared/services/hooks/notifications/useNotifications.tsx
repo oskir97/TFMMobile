@@ -25,7 +25,7 @@ export const crearNotificacion = async (usuario: UsuarioRegistrado | undefined, 
                             notificacion = { entidad_oid: instalacion.obtenerEntidadInstalacion.identidad, reserva_oid: reserva.idreserva, receptor_oid: usuario?.idusuario, asunto: "Pista reservada", descripcion: "Se ha reservado la pista " + pista.nombre + " para el día " + reserva.fecha + " de " + horario, leida: false, tipo: TipoNotificacion.confirmacion };
                         } else if (reserva && evento) {
                             notificacion = { entidad_oid: evento.obtenerInstalacion.obtenerEntidadInstalacion.identidad, evento_oid: evento.idevento, receptor_oid: usuario?.idusuario, asunto: "Evento inscrito", descripcion: "Se ha inscrito en el evento " + evento.nombre, leida: false, tipo: TipoNotificacion.confirmacion };
-                        } else if (reserva && partido && nombrePartido && fecha && horario) {
+                        } else if (reserva && partido && nombrePartido) {
                             notificacion = { entidad_oid: partido.obtenerPista.obtenerEntidadPista.identidad, reserva_oid: reserva.idreserva, receptor_oid: usuario?.idusuario, asunto: "Partido inscrito", descripcion: "Se ha inscrito al partido " + nombrePartido + " para el día " + reserva.fecha + " de " + horario, leida: false, tipo: TipoNotificacion.confirmacion };
                         }
                         break;
