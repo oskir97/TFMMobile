@@ -102,7 +102,8 @@ const EventoScreen: React.FC<EventoScreenProps> = ({ navigation }) => {
   }
 
   function booking() {
-    var reservaDTO: ReservaDTO = { nombre: user?.nombre, horario_oid: -1, pista_oid: -1, partido_oid: -1, apellidos: user?.apellidos, email: user?.email, telefono: user?.telefono, cancelada: false, maxparticipantes: 1, tipo: TipoReservaEnum.Inscripcion, usuario_oid: user?.idusuario, deporte_oid: evento.obtenerDeporteEvento.iddeporte, evento_oid: evento.idevento };
+    if (!evento.obtenerInscripciones.find(i=>i.obtenerUsuarioCreador.idusuario = user.idusuario)) {
+      var reservaDTO: ReservaDTO = { nombre: user?.nombre, horario_oid: -1, pista_oid: -1, partido_oid: -1, apellidos: user?.apellidos, email: user?.email, telefono: user?.telefono, cancelada: false, maxparticipantes: 1, tipo: TipoReservaEnum.Inscripcion, usuario_oid: user?.idusuario, deporte_oid: evento.obtenerDeporteEvento.iddeporte, evento_oid: evento.idevento };
     crearReserva(reservaDTO, null).then((reserva) => {
       if (reserva) {
         navigation.navigate("Resumen" as never, { evento: evento, reserva: reserva } as never)
@@ -112,6 +113,11 @@ const EventoScreen: React.FC<EventoScreenProps> = ({ navigation }) => {
         Alert.alert(errormessage, erroraplicacion);
       }
     });
+    }else {
+      const errormessage = t("USUARIO_INSCRITO");
+      const erroraplicacion = t("USUARIO_YA_INSCRITO_EVENTO");
+      Alert.alert(errormessage, erroraplicacion);
+    }
   }
 
   function formatDate(date: Date | undefined): string {
@@ -242,7 +248,7 @@ const EventoScreen: React.FC<EventoScreenProps> = ({ navigation }) => {
               <View style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}>
                 <Text style={{ marginLeft: 6, fontSize: 14 }}>{`${t("DEL")} ${formatDate(evento?.inicio)} ${t("AL")} ${formatDate(evento?.fin)}`}</Text>
                 <Text style={{ marginLeft: 10, fontSize: 14, fontWeight: 'bold' }}>{`|`}</Text>
-                <Text style={{ marginLeft: 10, fontSize: 14, fontWeight: 'bold' }}>{`${evento?.plazas - evento?.obtenerInscripciones.length} ${t("PLAZAS")}`}</Text>
+                <Text style={{ marginLeft: 10, fontSize: 14, fontWeight: 'bold' }}>{`${evento?.plazas - evento?.obtenerInscripciones.length} ${evento?.plazas - evento?.obtenerInscripciones.length > 1?t("PLAZAS") : t("PLAZA")}`}</Text>
               </View>
 
               <View

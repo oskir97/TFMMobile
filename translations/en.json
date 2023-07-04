@@ -197,5 +197,21 @@
   "NIVEL": "Level",
   "CREADO_POR": "Created by",
   "USUARIO_YA_INSCRITO": "User already registered for the match",
-  "USUARIO_INSCRITO": "User already registered"
+  "USUARIO_INSCRITO": "User already registered",
+  "PLAZA": "spot left",
+  "QUEDA": "There is",
+  "USUARIO_YA_INSCRITO_EVENTO": "User already registered for the event",
+  "PISTA_RESERVADA": "Track reserved",
+  "RESERVADO_LA_PISTA": "The track has been reserved",
+  "PARA_EL_DIA": "for the day",
+  "EVENTO_INSCRITO": "Event registered",
+  "SE_HA_INSCRITO_EVENTO": "Registered for the event",
+  "PARTIDO_INSCRITO": "Match registered",
+  "SE_HA_INSCRITO_PARTIDO": "Registered for the match",
+  "PISTA_CANCELADA": "Track canceled",
+  "SE_CANCELADO_RESERVA_PISTA": "The track reservation has been canceled",
+  "EVENTO_CANCELADO": "Event canceled",
+  "CANCELADO_INSCRIPCION_EVENTO": "The event registration has been canceled",
+  "INSCRIPCION_PARTIDO_CANCELADA": "Match registration canceled",
+  "CANCELADO_INSCRIPCION_PARTIDO": "Match canceled"
 }

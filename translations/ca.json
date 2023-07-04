@@ -197,5 +197,21 @@
   "NIVEL": "Nivell",
   "CREADO_POR": "Creat per",
   "USUARIO_YA_INSCRITO": "Usuari ja inscrit en el partit",
-  "USUARIO_INSCRITO": "Usuari ja inscrit"
+  "USUARIO_INSCRITO": "Usuari ja inscrit",
+  "PLAZA": "plaça",
+  "QUEDA": "Queda",
+  "USUARIO_YA_INSCRITO_EVENTO": "Usuari ja inscrit en el event",
+  "PISTA_RESERVADA": "Pista reservada",
+  "RESERVADO_LA_PISTA": "S'ha reservat la pista",
+  "PARA_EL_DIA": "per al dia",
+  "EVENTO_INSCRITO": "Event inscrit",
+  "SE_HA_INSCRITO_EVENTO": "S'ha inscrit en l'event",
+  "PARTIDO_INSCRITO": "Partit inscrit",
+  "SE_HA_INSCRITO_PARTIDO": "S'ha inscrit al partit",
+  "PISTA_CANCELADA": "Pista cancel·lada",
+  "SE_CANCELADO_RESERVA_PISTA": "S'ha cancel·lat la reserva de la pista",
+  "EVENTO_CANCELADO": "Event cancel·lat",
+  "CANCELADO_INSCRIPCION_EVENTO": "S'ha cancel·lat la inscripció a l'event",
+  "INSCRIPCION_PARTIDO_CANCELADA": "Inscripció al partit cancel·lada",
+  "CANCELADO_INSCRIPCION_PARTIDO": "Partit cancel·lat"
 }

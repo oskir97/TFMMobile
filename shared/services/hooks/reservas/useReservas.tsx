@@ -25,6 +25,7 @@ export const useReservas = () => {
           for (const reserva of reservas.data) {
             const reservas = await ObtenerInscripciones(reserva.idreserva);
             if (reservas) {
+              console.log(reservas);
               reserva.obtenerInscripciones = reservas.filter(i=>i.getPagoOfReserva != null);
             }
             const instalacion = await obtenerInstalacion(reserva.obtenerPista.obtenerInstalaciones.idinstalacion);
@@ -160,6 +161,7 @@ export const useReservas = () => {
             disponible = await eventoDisponible(reserva.evento_oid);
           }else if(reserva.tipo == TipoReservaEnum.Inscripcion){
             disponible = await partidoDisponible(reserva.partido_oid);
+            console.log(disponible);
           }
           if (disponible) {
             const apiReservas = new Api<any, Reserva>(token);

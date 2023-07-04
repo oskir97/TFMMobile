@@ -247,7 +247,7 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
             crearPago(pago).then((pago) => {
               if (pago) {
                 if (route.params.reserva && ((route.params.instalacion && route.params.pista) || route.params.evento || route.params.partido)) {
-                  crearNotificacion(route.params.reserva.obtenerUsuarioCreador, route.params.reserva, getName(), route.params.instalacion, route.params.pista, route.params.evento, route.params.partido, route.params.reserva.fecha, route.params.instalacion && (formatTime(route.params.horario.inicio) + " - " + formatTime(route.params.horario.fin)), TipoNotificacion.confirmacion).then((notif) => {
+                  crearNotificacion(t, route.params.reserva.obtenerUsuarioCreador, route.params.reserva, getName(), route.params.instalacion, route.params.pista, route.params.evento, route.params.partido, route.params.partido? route.params.partido.fecha : route.params.reserva.fecha, (route.params.instalacion && (formatTime(route.params.horario.inicio) + " - " + formatTime(route.params.horario.fin))) || (route.params.partido && (formatTime(route.params.partido.obtenerHorarioReserva.inicio) + " - " + formatTime(route.params.partido.obtenerHorarioReserva.fin))), TipoNotificacion.confirmacion).then((notif) => {
                     console.log(notif);
                     if (notif)
                       showNotification({ title: notif.asunto, body: notif.descripcion, url: "Notificaciones", navigation: navigation });

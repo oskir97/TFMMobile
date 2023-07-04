@@ -11,9 +11,11 @@ import { NotificacionDTO } from '../../../models/dtos/NotificacionDTO';
 import { Notificacion } from '../../../models/Notificacion';
 import { UsuarioRegistrado } from '../../../models/UsuarioRegistrado';
 import { TipoReserva } from '../../../models/TipoReserva';
+import { TFunction } from 'i18next';
 
-export const crearNotificacion = async (usuario: UsuarioRegistrado | undefined, reserva: Reserva | undefined, nombrePartido: string | undefined, instalacion: Instalacion | undefined, pista: Pista | undefined, evento: Evento | undefined, partido: Reserva | undefined, fecha: Date | null, horario: string | undefined, tipoNotificacion: TipoNotificacion): Promise<Notificacion |undefined> => {
-    if (fecha || evento) {
+export const crearNotificacion = async (t: TFunction<"translation", undefined>, usuario: UsuarioRegistrado | undefined, reserva: Reserva | undefined, nombrePartido: string | undefined, instalacion: Instalacion | undefined, pista: Pista | undefined, evento: Evento | undefined, partido: Reserva | undefined, fecha: Date | null, horario: string | undefined, tipoNotificacion: TipoNotificacion): Promise<Notificacion | undefined> => {
+
+    if (fecha || evento || partido) {
         try {
             const token = await AsyncStorage.getItem('token');
 
@@ -22,22 +24,22 @@ export const crearNotificacion = async (usuario: UsuarioRegistrado | undefined, 
                 switch (tipoNotificacion) {
                     case TipoNotificacion.confirmacion:
                         if (reserva && instalacion && pista && fecha && horario) {
-                            notificacion = { entidad_oid: instalacion.obtenerEntidadInstalacion.identidad, reserva_oid: reserva.idreserva, receptor_oid: usuario?.idusuario, asunto: "Pista reservada", descripcion: "Se ha reservado la pista " + pista.nombre + " para el día " + reserva.fecha + " de " + horario, leida: false, tipo: TipoNotificacion.confirmacion };
+                            notificacion = { entidad_oid: instalacion.obtenerEntidadInstalacion.identidad, reserva_oid: reserva.idreserva, receptor_oid: usuario?.idusuario, asunto: t("PISTA_RESERVADA"), descripcion: t("RESERVADO_LA_PISTA") + " " + pista.nombre + " " + t("PARA_EL_DIA") + " " + new Date(reserva.fecha).toLocaleDateString() + " " + t("DE") + " " + horario, leida: false, tipo: TipoNotificacion.confirmacion };
                         } else if (reserva && evento) {
-                            notificacion = { entidad_oid: evento.obtenerInstalacion.obtenerEntidadInstalacion.identidad, evento_oid: evento.idevento, receptor_oid: usuario?.idusuario, asunto: "Evento inscrito", descripcion: "Se ha inscrito en el evento " + evento.nombre, leida: false, tipo: TipoNotificacion.confirmacion };
+                            notificacion = { entidad_oid: evento.obtenerInstalacion.obtenerEntidadInstalacion.identidad, evento_oid: evento.idevento, receptor_oid: usuario?.idusuario, asunto: t("EVENTO_INSCRITO"), descripcion: t("SE_HA_INSCRITO_EVENTO") + " " + evento.nombre, leida: false, tipo: TipoNotificacion.confirmacion };
                         } else if (reserva && partido && nombrePartido) {
-                            notificacion = { entidad_oid: partido.obtenerPista.obtenerEntidadPista.identidad, reserva_oid: reserva.idreserva, receptor_oid: usuario?.idusuario, asunto: "Partido inscrito", descripcion: "Se ha inscrito al partido " + nombrePartido + " para el día " + reserva.fecha + " de " + horario, leida: false, tipo: TipoNotificacion.confirmacion };
+                            notificacion = { entidad_oid: partido.obtenerPista.obtenerEntidadPista.identidad, reserva_oid: reserva.idreserva, receptor_oid: usuario?.idusuario, asunto: t("PARTIDO_INSCRITO"), descripcion: t("SE_HA_INSCRITO_PARTIDO") + " " + nombrePartido + " " + t("PARA_EL_DIA") + " " + new Date(reserva.fecha).toLocaleDateString() + " " + t("DE") + " " + horario, leida: false, tipo: TipoNotificacion.confirmacion };
                         }
                         break;
                     case TipoNotificacion.cancelacion:
-                        if (reserva && reserva.tipo == TipoReserva.reserva && instalacion && pista && fecha && horario) {
-                            notificacion = { entidad_oid: instalacion.obtenerEntidadInstalacion.identidad, reserva_oid: reserva.idreserva, receptor_oid: usuario?.idusuario, asunto: "Reserva cancelada", descripcion: "Se ha cancelado la reserva de la pista " + pista.nombre + " para el día " + reserva.fecha + " de " + horario, leida: false, tipo: TipoNotificacion.confirmacion };
-                        } else if (reserva && evento && fecha && horario) {
-                            notificacion = { entidad_oid: evento.obtenerInstalacion.obtenerEntidadInstalacion.identidad, evento_oid: evento.idevento, receptor_oid: usuario?.idusuario, asunto: "Evento cancelado", descripcion: "Se ha cancelado la subscripción al evento " + evento.nombre, leida: false, tipo: TipoNotificacion.confirmacion };
-                        } else if (reserva && reserva.tipo == TipoReserva.inscripcion && nombrePartido && fecha && horario) {
-                            notificacion = { entidad_oid: reserva.obtenerPista.obtenerEntidadPista.identidad, reserva_oid: reserva.idreserva, receptor_oid: usuario?.idusuario, asunto: "Inscripción a partido cancelada", descripcion: "Se ha cancela la inscripción al partido " + nombrePartido + " para el día " + reserva.fecha + " de " + horario, leida: false, tipo: TipoNotificacion.confirmacion };
+                        if (reserva && instalacion && pista && fecha && horario) {
+                            notificacion = { entidad_oid: instalacion.obtenerEntidadInstalacion.identidad, reserva_oid: reserva.idreserva, receptor_oid: usuario?.idusuario, asunto: t("PISTA_CANCELADA"), descripcion: t("SE_CANCELADO_RESERVA_PISTA") + " " + pista.nombre + " " + t("PARA_EL_DIA") + " " + new Date(reserva.fecha).toLocaleDateString() + " " + t("DE") + " " + horario, leida: false, tipo: TipoNotificacion.cancelacion };
+                        } else if (reserva && evento) {
+                            notificacion = { entidad_oid: evento.obtenerInstalacion.obtenerEntidadInstalacion.identidad, evento_oid: evento.idevento, receptor_oid: usuario?.idusuario, asunto: t("EVENTO_CANCELADO"), descripcion: t("CANCELADO_INSCRIPCION_EVENTO") + " " + evento.nombre, leida: false, tipo: TipoNotificacion.cancelacion };
+                        } else if (reserva && partido && nombrePartido) {
+                            notificacion = { entidad_oid: partido.obtenerPista.obtenerEntidadPista.identidad, reserva_oid: reserva.idreserva, receptor_oid: usuario?.idusuario, asunto: t("INSCRIPCION_PARTIDO_CANCELADA"), descripcion: t("CANCELADO_INSCRIPCION_PARTIDO") + " " + nombrePartido + " " + t("PARA_EL_DIA") + " " + new Date(reserva.fecha).toLocaleDateString() + " " + t("DE") + " " + horario, leida: false, tipo: TipoNotificacion.cancelacion };
                         } else if (reserva && reserva.tipo == TipoReserva.partido && nombrePartido && fecha && horario) {
-                            notificacion = { entidad_oid: reserva.obtenerPista.obtenerEntidadPista.identidad, reserva_oid: reserva.idreserva, receptor_oid: usuario?.idusuario, asunto: "Partido cancelado", descripcion: "Se ha cancelado el partido " + nombrePartido + " para el día " + reserva.fecha + " de " + horario, leida: false, tipo: TipoNotificacion.confirmacion };
+                            notificacion = { entidad_oid: reserva.obtenerPista.obtenerEntidadPista.identidad, reserva_oid: reserva.idreserva, receptor_oid: usuario?.idusuario, asunto: t("PARTIDO_CANCELADO"), descripcion: t("CANCELADO_PARTIDO") + " " + nombrePartido + " " + t("PARA_EL_DIA") + " " + reserva.fecha + " " + t("DE") + " " + horario, leida: false, tipo: TipoNotificacion.cancelacion };
                         }
                         break;
                     case TipoNotificacion.envio:
@@ -46,7 +48,7 @@ export const crearNotificacion = async (usuario: UsuarioRegistrado | undefined, 
                 }
                 var route = "CrearNotifReserva";
 
-                if(evento)
+                if (evento)
                     route = "CrearNotifEvento";
 
                 if (notificacion) {

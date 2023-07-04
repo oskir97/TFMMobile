@@ -93,7 +93,7 @@ const EventoItem: React.FC<EventoItemProps> = ({ item, navigation }) => {
                         <Text style={{ marginLeft: 6, fontSize: 12 }}>{`${t("DEL")} ${formatDate(item?.inicio)} ${t("AL")} ${formatDate(item?.fin)}`}</Text>
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}>
-                        <Text style={{ marginLeft: 6, fontSize: 14, fontWeight: 'bold' }}>{t("QUEDAN")} {item.plazas - item.obtenerInscripciones.length} {t("PLAZAS")}!</Text>
+                    <Text style={{ marginLeft: 6, fontSize: 14, fontWeight: 'bold' }}>{item?.plazas - item?.obtenerInscripciones.length > 1?t("QUEDAN") : t("QUEDA")} {item.plazas - item.obtenerInscripciones.length} {item?.plazas - item?.obtenerInscripciones.length > 1?t("PLAZAS") : t("PLAZA")}!</Text>
                     </View>
                 </View>
             </Pressable>

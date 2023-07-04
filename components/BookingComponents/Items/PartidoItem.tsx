@@ -112,7 +112,7 @@ const PartidoItem: React.FC<PartidoItemProps> = ({ item, navigation }) => {
                         <Text style={{ marginLeft: 6, fontSize: 12 }}>{`${formatTime(item.obtenerHorarioReserva.inicio)} - ${formatTime(item.obtenerHorarioReserva.fin)}`}</Text>
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}>
-                        <Text style={{ marginLeft: 6, fontSize: 14, fontWeight: 'bold' }}>{t("QUEDAN")} {item.maxparticipantes - item.obtenerInscripciones.length} {t("PLAZAS")}!</Text>
+                        <Text style={{ marginLeft: 6, fontSize: 14, fontWeight: 'bold' }}>{item?.maxparticipantes - item?.obtenerInscripciones.length > 1?t("QUEDAN") : t("QUEDA")} {item.maxparticipantes - item.obtenerInscripciones.length} {item?.maxparticipantes - item?.obtenerInscripciones.length > 1?t("PLAZAS") : t("PLAZA")}!</Text>
                     </View>
                 </View>
             </Pressable>

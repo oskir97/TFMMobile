@@ -103,9 +103,9 @@ const PartidoScreen: React.FC<PartidoScreenProps> = ({ navigation }) => {
   }
 
   function booking() {
-    if (user.idusuario != partido.obtenerUsuarioCreador.idusuario) {
-      var reservaDTO: ReservaDTO = { nombre: user?.nombre, horario_oid: -1, pista_oid: -1, evento_oid: -1, apellidos: user?.apellidos, email: user?.email, telefono: user?.telefono, cancelada: false, maxparticipantes: 1, tipo: TipoReservaEnum.Inscripcion, usuario_oid: user?.idusuario, deporte_oid: partido.obtenerDeporteReserva.iddeporte, partido_oid: partido.idreserva };
-      crearReserva(reservaDTO, null).then((reserva) => {
+    if (user.idusuario != partido.obtenerUsuarioCreador.idusuario && !partido.obtenerInscripciones.find(i=>i.obtenerUsuarioCreador.idusuario = user.idusuario)) {
+      var reservaDTO: ReservaDTO = { nombre: user?.nombre, horario_oid: -1, pista_oid: -1, evento_oid: -1, apellidos: user?.apellidos, email: user?.email, telefono: user?.telefono, cancelada: false, maxparticipantes: 1, tipo: TipoReservaEnum.Inscripcion, usuario_oid: user?.idusuario, deporte_oid: partido.obtenerDeporteReserva.iddeporte, partido_oid: partido.idreserva, fecha:partido.fecha };
+      crearReserva(reservaDTO, reservaDTO.fecha).then((reserva) => {
         if (reserva) {
           navigation.navigate("Resumen" as never, { partido: partido, reserva: reserva } as never)
         } else {
@@ -275,7 +275,7 @@ const PartidoScreen: React.FC<PartidoScreenProps> = ({ navigation }) => {
                 <Text style={{ marginLeft: 6, fontSize: 12 }}>{new Date(partido?.fecha).toLocaleDateString(i18n.language == "en" ? 'en-US' : 'es')}</Text>
                 <Text style={{ marginLeft: 6, fontSize: 12 }}>{`${formatTime(partido?.obtenerHorarioReserva.inicio)} - ${formatTime(partido?.obtenerHorarioReserva.fin)}`}</Text>
                 <Text style={{ marginLeft: 10, fontSize: 14, fontWeight: 'bold' }}>{`|`}</Text>
-                <Text style={{ marginLeft: 10, fontSize: 14, fontWeight: 'bold' }}>{`${partido?.maxparticipantes - partido?.obtenerInscripciones.length} ${t("PLAZAS")}`}</Text>
+                <Text style={{ marginLeft: 10, fontSize: 14, fontWeight: 'bold' }}>{`${partido?.maxparticipantes - partido?.obtenerInscripciones.length} ${partido?.maxparticipantes - partido?.obtenerInscripciones.length > 1?t("PLAZAS") : t("PLAZA")}`}</Text>
               </View>
               <View style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}>
                 <Text style={{ marginLeft: 6, fontSize: 15 }}>{partido?.obtenerPista.obtenerInstalaciones.nombre}</Text>
