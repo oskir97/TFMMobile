@@ -216,5 +216,12 @@
   "INSCRIPCION_PARTIDO_CANCELADA": "Inscripción a partido cancelada",
   "CANCELADO_INSCRIPCION_PARTIDO": "Se ha cancelado la inscripción al partido",
   "PARTIDO_CANCELADO": "Partido cancelado",
-  "CANCELADO_PARTIDO": "Se ha cancelado el partido"
+  "CANCELADO_PARTIDO": "Se ha cancelado el partido",
+  "ACTIVAS": "Activas",
+  "ACTIVOS": "Activos",
+  "FINALIZADAS": "Finalizadas",
+  "FINALIZADOS": "Finalizados",
+  "CANCELADAS": "Canceladas",
+  "CANCELADOS": "Cancelados",
+  "NO_HAY_RESERVAS": "No hay reservas"
 }

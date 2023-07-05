@@ -6652,10 +6652,20 @@ react-native-modern-datepicker@^1.0.0-beta.91:
     moment-jalaali "^0.9.2"
     prop-types "^15.7.2"
 
+react-native-pager-view@*:
+  version "6.2.0"
+  resolved "https://registry.npmjs.org/react-native-pager-view/-/react-native-pager-view-6.2.0.tgz"
+  integrity sha512-pf9OnL/Tkr+5s4Gjmsn7xh91PtJLDa6qxYa/bmtUhd/+s4cQdWQ8DIFoOFghwZIHHHwVdWtoXkp6HtpjN+r20g==
+
 react-native-paper-select@^1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/react-native-paper-select/-/react-native-paper-select-1.0.2.tgz"
   integrity sha512-QRuHuPii4v3s6mhTcFaWIT5JyFiNMpu0cgkpG/MrB+ysht6edwq2q57hzvfjZy9fbVA5wctZwJrd6xIccBCs6Q==
+
+react-native-paper-tabs@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.npmjs.org/react-native-paper-tabs/-/react-native-paper-tabs-0.7.0.tgz"
+  integrity sha512-TXz1G1hLJNvykJ57VhjKFVRgRDC2bxzb/bwPJ59POK9nGO0yD+Rx7+W5D0i5/ZQF1uKSV92IMv+eowd/BRM46Q==
 
 react-native-paper@*, react-native-paper@^5.8.0:
   version "5.8.0"

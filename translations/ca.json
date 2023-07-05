@@ -213,5 +213,14 @@
   "EVENTO_CANCELADO": "Event cancel·lat",
   "CANCELADO_INSCRIPCION_EVENTO": "S'ha cancel·lat la inscripció a l'event",
   "INSCRIPCION_PARTIDO_CANCELADA": "Inscripció al partit cancel·lada",
-  "CANCELADO_INSCRIPCION_PARTIDO": "Partit cancel·lat"
+  "CANCELADO_INSCRIPCION_PARTIDO": "Partit cancel·lat",
+  "PARTIDO_CANCELADO": "Partit cancel·lat",
+  "CANCELADO_PARTIDO": "S'ha cancel·lat el partit",
+  "ACTIVAS": "Actives",
+  "ACTIVOS": "Actius",
+  "FINALIZADAS": "Finalitzades",
+  "FINALIZADOS": "Finalitzats",
+  "CANCELADAS": "Cancel·lades",
+  "CANCELADOS": "Cancel·lats",
+  "NO_HAY_RESERVAS": "No hi ha reserves"
 }

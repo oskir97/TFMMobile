@@ -22,6 +22,7 @@ import InstalacionPage from "../Home/InstalacionScreen";
 import EventoPage from "../Home/EventoScreen";
 import PartidoPage from "../Home/PartidoScreen";
 import ReviewsPage from "../Home/ReviewsScreen";
+import ReservasPage from "../Reservas/ReservasScreen";
 import { useTranslation } from 'react-i18next';
 
 const Stack = createStackNavigator();
@@ -156,7 +157,7 @@ const Nav: React.FC = () => {
                     display: 'none',
                 },
             }} />
-            <Drawer.Screen name="Reservas" component={HomePage} options={{
+            <Drawer.Screen name="Reservas" component={ReservasPage} options={{
                 drawerIcon: ({ color }) => (
                     <CalendarDaysIcon size={22} color={color} />
                 ),

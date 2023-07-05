@@ -7,11 +7,13 @@ import { FilterReserva } from '../../../models/Filter';
 import { ReservaDTO, TipoReservaEnum } from '../../../models/dtos/ReservaDTO';
 import { useEventos } from '../eventos/useEventos';
 import { useInstalaciones } from '../instalaciones/useInstalaciones';
+import { Evento } from '../../../models/Evento';
+import { TipoReserva } from '../../../models/TipoReserva';
 
 export const useReservas = () => {
   const { t } = useTranslation();
   const { eventoDisponible } = useEventos();
-  const {obtenerInstalacion} = useInstalaciones();
+  const { obtenerInstalacion } = useInstalaciones();
 
   const obtenerReservas = async (filtroReserva: FilterReserva): Promise<Reserva[]> => {
     try {
@@ -26,7 +28,7 @@ export const useReservas = () => {
             const reservas = await ObtenerInscripciones(reserva.idreserva);
             if (reservas) {
               console.log(reservas);
-              reserva.obtenerInscripciones = reservas.filter(i=>i.getPagoOfReserva != null);
+              reserva.obtenerInscripciones = reservas.filter(i => i.getPagoOfReserva != null);
             }
             const instalacion = await obtenerInstalacion(reserva.obtenerPista.obtenerInstalaciones.idinstalacion);
             if (instalacion) {
@@ -51,18 +53,18 @@ export const useReservas = () => {
   };
 
   const ObtenerInscripciones = async (idreserva: number): Promise<Reserva[]> => {
-    if(idreserva){
+    if (idreserva) {
       try {
         const token = await AsyncStorage.getItem('token');
-  
+
         if (token !== null) {
           const api = new Api<number, Reserva[]>(token);
           const reservas = await api.get('/Reserva/Reserva_obtenerinscripciones?p_idreserva=' + idreserva);
           if (!reservas.error) {
-            if(reservas.data)
+            if (reservas.data)
               return reservas.data;
-              else
-                return [];
+            else
+              return [];
           } else {
             const errormessage = t("ERROR");
             const erroraplicacion = t("ERROR_APLICACION");
@@ -82,11 +84,11 @@ export const useReservas = () => {
   function agregarMinutosSegundos(fechaBase: Date, fechaAgregar: Date): Date {
     const minutos = fechaAgregar.getMinutes();
     const segundos = fechaAgregar.getSeconds();
-  
+
     const nuevaFecha = new Date(fechaBase.getTime());
     nuevaFecha.setMinutes(nuevaFecha.getMinutes() + minutos);
     nuevaFecha.setSeconds(nuevaFecha.getSeconds() + segundos);
-  
+
     return nuevaFecha;
   }
 
@@ -125,7 +127,7 @@ export const useReservas = () => {
 
         if (token !== null) {
           const api = new Api<any, boolean>(token);
-          const evento = await api.post('/Reserva/PartidoDisponible?p_oid=' + idreserva,null);
+          const evento = await api.post('/Reserva/PartidoDisponible?p_oid=' + idreserva, null);
           if (!evento.error && typeof evento.data !== 'undefined') {
             return evento.data;
           } else {
@@ -153,13 +155,13 @@ export const useReservas = () => {
 
         if (token !== null) {
           const api = new Api<any, boolean>(token);
-          var disponible:boolean = false;
-          if(reserva.tipo == TipoReservaEnum.Reserva && reserva.evento_oid == -1){
+          var disponible: boolean = false;
+          if (reserva.tipo == TipoReservaEnum.Reserva && reserva.evento_oid == -1) {
             disponible = await existeReserva(reserva.pista_oid, fecha);
             disponible = !disponible;
-          }else if(reserva.tipo == TipoReservaEnum.Inscripcion && reserva.evento_oid > -1){
+          } else if (reserva.tipo == TipoReservaEnum.Inscripcion && reserva.evento_oid > -1) {
             disponible = await eventoDisponible(reserva.evento_oid);
-          }else if(reserva.tipo == TipoReservaEnum.Inscripcion){
+          } else if (reserva.tipo == TipoReservaEnum.Inscripcion) {
             disponible = await partidoDisponible(reserva.partido_oid);
             console.log(disponible);
           }
@@ -211,5 +213,88 @@ export const useReservas = () => {
       return false;
     }
   };
-  return { obtenerReservas, crearReserva, eliminarReserva, existeReserva, partidoDisponible };
+
+  const obtenerReservasPistaUsuario = async (): Promise<Reserva[]> => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+
+      if (token !== null) {
+        const api = new Api<number, Reserva[]>(token);
+        const reservas = await api.get('/Reserva/Listarreservaspistausuario');
+        if (!reservas.error) {
+          if (reservas.data)
+            return reservas.data;
+          else
+            return [];
+        } else {
+          const errormessage = t("ERROR");
+          const erroraplicacion = t("ERROR_APLICACION");
+          Alert.alert(errormessage, erroraplicacion);
+          return [];
+        }
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.error('Error al obtener las reservas:', error);
+      return [];
+    }
+  };
+
+  const obtenerReservasEventoUsuario = async (): Promise<Reserva[]> => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+
+      if (token !== null) {
+        const api = new Api<number, Reserva[]>(token);
+        const reservas = await api.get('/Reserva/Listarreservaseventousuario');
+        if (!reservas.error) {
+          if (reservas.data)
+            return reservas.data;
+          else
+            return [];
+        } else {
+          const errormessage = t("ERROR");
+          const erroraplicacion = t("ERROR_APLICACION");
+          Alert.alert(errormessage, erroraplicacion);
+          return [];
+        }
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.error('Error al obtener las reservas:', error);
+      return [];
+    }
+  };
+
+  const obtenerReservasPartidoUsuario = async (): Promise<Reserva[]> => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+
+      if (token !== null) {
+        const api = new Api<number, Reserva[]>(token);
+        const reservas = await api.get('/Reserva/Listarreservaspartidousuario');
+        if (!reservas.error) {
+          if (reservas.data)
+            return reservas.data;
+          else
+            return [];
+        } else {
+          const errormessage = t("ERROR");
+          const erroraplicacion = t("ERROR_APLICACION");
+          Alert.alert(errormessage, erroraplicacion);
+          return [];
+        }
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.error('Error al obtener las reservas:', error);
+      return [];
+    }
+  };
+
+
+  return { obtenerReservas, crearReserva, eliminarReserva, existeReserva, partidoDisponible, obtenerReservasPistaUsuario, obtenerReservasEventoUsuario, obtenerReservasPartidoUsuario };
 };
