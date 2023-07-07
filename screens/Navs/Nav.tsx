@@ -23,6 +23,8 @@ import EventoPage from "../Home/EventoScreen";
 import PartidoPage from "../Home/PartidoScreen";
 import ReviewsPage from "../Home/ReviewsScreen";
 import ReservasPage from "../Reservas/ReservasScreen";
+import EventosPage from "../Eventos/EventosScreen";
+import PartidosPage from "../Partidos/PartidosScreen";
 import { useTranslation } from 'react-i18next';
 
 const Stack = createStackNavigator();
@@ -163,13 +165,13 @@ const Nav: React.FC = () => {
                 ),
                 drawerLabel: reservasLabel
             }} />
-            <Drawer.Screen name="Partidos" component={HomePage} options={{
+            <Drawer.Screen name="Partidos" component={PartidosPage} options={{
                 drawerIcon: ({ color }) => (
                     <UserGroupIcon size={22} color={color} />
                 ),
                 drawerLabel: partidosLabel
             }} />
-            <Drawer.Screen name="Eventos" component={HomePage} options={{
+            <Drawer.Screen name="Eventos" component={EventosPage} options={{
                 drawerIcon: ({ color }) => (
                     <ClockIcon size={22} color={color} />
                 ),

@@ -28,7 +28,6 @@ type ParamList = {
     instalacion?: Instalacion;
     evento?: Evento;
     partido?: Reserva;
-    deporte?: Deporte;
     previousPage: string;
   };
 };
@@ -65,7 +64,7 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
 
   const onSubmit = () => {
     var tipoReserva = route.params.instalacion || route.params.evento ? TipoReservaEnum.Reserva : TipoReservaEnum.Inscripcion;
-    var reservaDTO: ReservaDTO = { nombre: user?.nombre, apellidos: user?.apellidos, email: user?.email, telefono: user?.telefono, cancelada: false, pista_oid: pista?pista.idpista:-1, maxparticipantes: 1, horario_oid: horario?.idhorario, fecha: fecha, tipo: tipoReserva, usuario_oid: user?.idusuario, deporte_oid: route.params.deporte?route.params.deporte.iddeporte:-1, evento_oid: route.params.evento?route.params.evento.idevento:-1 };
+    var reservaDTO: ReservaDTO = { nombre: user?.nombre, apellidos: user?.apellidos, email: user?.email, telefono: user?.telefono, cancelada: false, pista_oid: pista?pista.idpista:-1, maxparticipantes: 1, horario_oid: horario?.idhorario, fecha: fecha, tipo: tipoReserva, usuario_oid: user?.idusuario, deporte_oid: filter.deporte?filter.deporte:-1, evento_oid: route.params.evento?route.params.evento.idevento:-1 };
     var date = createDateTime();
     crearReserva(reservaDTO, date).then((reserva) => {
       if (reserva) {

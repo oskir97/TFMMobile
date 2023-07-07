@@ -26,7 +26,7 @@ export const useEventos = () => {
 
             const reservas = await obtenerReservasEventos(evento.idevento);
             if (reservas) {
-              evento.obtenerInscripciones = reservas.filter(i=>i.getPagoOfReserva != null);
+              evento.obtenerInscripciones = reservas.filter(i=>i.getPagoOfReserva != null && !i.cancelada);
             }
             const instalacion = await obtenerInstalacion(evento.obtenerInstalacion.idinstalacion);
             if (instalacion) {

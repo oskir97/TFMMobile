@@ -57,18 +57,24 @@ const InstalacionItem: React.FC<InstalacionItemProps> = ({ item, navigation }) =
     }
 
     function obtainMinorPistaPrice(pistas: Pista[]): Pista | undefined {
-        return pistas.reduce((menorPrecio, pista) => {
-            if (pista.precio < menorPrecio.precio) {
-                return pista;
-            } else {
-                return menorPrecio;
-            }
-        });
+        if(pistas){
+            return pistas.reduce((menorPrecio, pista) => {
+                if (pista.precio < menorPrecio.precio) {
+                    return pista;
+                } else {
+                    return menorPrecio;
+                }
+            });
+        }
     }
 
     function obtainAvailablePistas(): string {
-        var npistas = item.pistasDisponibles.length;
-        return item.pistasDisponibles ? (npistas > 1 ? `${npistas.toString()} ${t("PISTAS_DISPONIBLES")}` : `${npistas.toString()} ${t("PISTA_DISPONIBLE")}`) : `0 ${t("PISTAS_DISPONIBLES")}` 
+        if(item.pistasDisponibles){
+            var npistas = item.pistasDisponibles.length;
+            return item.pistasDisponibles ? (npistas > 1 ? `${npistas.toString()} ${t("PISTAS_DISPONIBLES")}` : `${npistas.toString()} ${t("PISTA_DISPONIBLE")}`) : `0 ${t("PISTAS_DISPONIBLES")}`;
+        }else{
+            return `0 ${t("PISTAS_DISPONIBLES")}`;
+        }
     }
 
     useEffect(() => {

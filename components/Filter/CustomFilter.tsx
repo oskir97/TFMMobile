@@ -33,8 +33,12 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
     };
 
     const onSubmit = () => {
+        if(selectedType != "Pista" && selectedSort == "Favoritos"){
+            setSort('Distancia');
+            filter.sort = 'Distancia'
+        }
         if (selectedSort)
-            filter.sort = selectedSort != "Favoritos"? (selectedSort?.replace(" desc", "") + (desc ? " desc" : "")) : "Favoritos";
+            filter.sort = selectedSort != "Favoritos" ? (selectedSort?.replace(" desc", "") + (desc ? " desc" : "")) : "Favoritos";
         else
             filter.sort = false;
 
@@ -76,7 +80,7 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
                             </ScrollView>
                         </View>
                         <Text className="font-semibold mt-2 mb-4" style={{ fontSize: 18, marginBottom: 20 }}>{t('POR_QUE_ORDENAR')}</Text>
-                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{marginBottom:10}}>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 10 }}>
                             <TouchableOpacity
                                 style={{
                                     marginHorizontal: 5,
@@ -88,7 +92,7 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
                                     borderRadius: 20,
                                     width: 120,
                                     justifyContent: "center",
-                                    backgroundColor: selectedSort?.replace(" desc", "") == "Distancia" ? '#04D6C8' : 'white',
+                                    backgroundColor: (selectedSort?.replace(" desc", "") == "Distancia") ? '#04D6C8' : 'white',
                                 }}
                                 onPress={() => { setSort("Distancia"); setDesc(false); }}
                             >
@@ -134,23 +138,23 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
                             {
                                 selectedType == "Pista" &&
                                 <TouchableOpacity
-                                style={{
-                                    marginHorizontal: 5,
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    borderWidth: 1,
-                                    borderColor: "#D0D0D0",
-                                    padding: 10,
-                                    borderRadius: 20,
-                                    width: 120,
-                                    justifyContent: "center",
-                                    backgroundColor: selectedSort == "Favoritos" ? '#04D6C8' : 'white',
-                                }}
-                                onPress={() => { setSort("Favoritos"); setDesc(true); }}
-                            >
-                                <Text style={{ marginRight: 6, color: selectedSort == "Favoritos" ? 'white' : 'black' }}>{t('FAVORITOS')}</Text>
-                                <Ionicons name="cash" style={{ marginRight: 6, color: selectedSort == "Favoritos" ? 'white' : 'black' }} size={20} />
-                            </TouchableOpacity>
+                                    style={{
+                                        marginHorizontal: 5,
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                        borderWidth: 1,
+                                        borderColor: "#D0D0D0",
+                                        padding: 10,
+                                        borderRadius: 20,
+                                        width: 120,
+                                        justifyContent: "center",
+                                        backgroundColor: selectedSort == "Favoritos" ? '#04D6C8' : 'white',
+                                    }}
+                                    onPress={() => { setSort("Favoritos"); setDesc(true); }}
+                                >
+                                    <Text style={{ marginRight: 6, color: selectedSort == "Favoritos" ? 'white' : 'black' }}>{t('FAVORITOS')}</Text>
+                                    <Ionicons name="ios-heart" style={{ marginRight: 6, color: selectedSort == "Favoritos" ? 'white' : 'black' }} size={20} />
+                                </TouchableOpacity>
                             }
 
                         </ScrollView>

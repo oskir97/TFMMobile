@@ -27,8 +27,7 @@ export const useReservas = () => {
           for (const reserva of reservas.data) {
             const reservas = await ObtenerInscripciones(reserva.idreserva);
             if (reservas) {
-              console.log(reservas);
-              reserva.obtenerInscripciones = reservas.filter(i => i.getPagoOfReserva != null);
+              reserva.obtenerInscripciones = reservas.filter(i => i.getPagoOfReserva != null && !i.cancelada);
             }
             const instalacion = await obtenerInstalacion(reserva.obtenerPista.obtenerInstalaciones.idinstalacion);
             if (instalacion) {
@@ -214,6 +213,31 @@ export const useReservas = () => {
     }
   };
 
+  const cancelarReserva = async (reserva: Reserva): Promise<boolean> => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+
+      if (token !== null) {
+        const api = new Api<any, boolean>(token);
+        const reservas = await api.post('/Reserva/Cancelar?p_oid=' + reserva.idreserva, null);
+        if (!reservas.error && reservas.data && reservas.data == true) {
+          return true;
+        } else {
+          var tipo: string = reserva.obtenerEventoReserva != null ? "EVENTO" : (reserva.obtenerPartidoReserva != null ? "PARTIDO" : "RESERVA");
+          const errormessage = t("ERROR");
+          const erroraplicacion = t("NO_SE_PUEDE_CANCELAR_" + tipo);
+          Alert.alert(errormessage, erroraplicacion);
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.error('Error al obtener las reservas:', error);
+      return false;
+    }
+  };
+
   const obtenerReservasPistaUsuario = async (): Promise<Reserva[]> => {
     try {
       const token = await AsyncStorage.getItem('token');
@@ -296,5 +320,5 @@ export const useReservas = () => {
   };
 
 
-  return { obtenerReservas, crearReserva, eliminarReserva, existeReserva, partidoDisponible, obtenerReservasPistaUsuario, obtenerReservasEventoUsuario, obtenerReservasPartidoUsuario };
+  return { obtenerReservas, crearReserva, eliminarReserva, existeReserva, partidoDisponible, obtenerReservasPistaUsuario, obtenerReservasEventoUsuario, obtenerReservasPartidoUsuario, cancelarReserva };
 };

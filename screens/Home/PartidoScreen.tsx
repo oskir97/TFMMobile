@@ -259,10 +259,10 @@ const PartidoScreen: React.FC<PartidoScreenProps> = ({ navigation }) => {
               >
                 <MaterialIcons name="stars" size={24} color="orange" />
                 <Text style={{ marginLeft: 3, fontSize: 17, fontWeight: "400" }}>
-                  {average(partido?.obtenerUsuarioCreador.obtenerValoracionesAlUsuario)}
+                  {average(partido?.obtenerUsuarioCreador.obtenerValoracionesAUsuarioPartido)}
                 </Text>
                 <Text style={{ marginLeft: 3, fontSize: 17, fontWeight: "400", marginRight: 10 }}>{t("SOBRE")} 5</Text>
-                {partido?.obtenerUsuarioCreador.obtenerValoracionesAlUsuario && partido?.obtenerUsuarioCreador.obtenerValoracionesAlUsuario.length > 0 && (
+                {partido?.obtenerUsuarioCreador.obtenerValoracionesAUsuarioPartido && partido?.obtenerUsuarioCreador.obtenerValoracionesAUsuarioPartido.length > 0 && (
                   <Button buttonColor="transparent" style={{ marginLeft: 'auto', borderColor: 'green', borderWidth: 2 }} mode="text" textColor="green" icon={() => <Icon name="hand-o-down" size={15} color="green" />} contentStyle={{ flexDirection: 'row-reverse' }} onPress={seeReviews}>
                     <Text style={{ fontSize: 12 }}>
                       {t("VER_RESENAS")}

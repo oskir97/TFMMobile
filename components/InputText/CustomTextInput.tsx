@@ -3,7 +3,7 @@ import { TextInput } from "react-native-paper";
 import React, { useState } from "react";
 import { InputProps } from "../../tfmmobile";
 import { useForm, Controller } from 'react-hook-form';
-const CustomTextInput: React.FC<InputProps> = ({ label, icon, IsSecureText, keyboardType, placeholder, control, onSubmit, nameController, defaultValue, rules, errors, editable, maxLength, valueAssign, onFocus,onPressIn, onSelectIcon, ref,autoCapitalize
+const CustomTextInput: React.FC<InputProps> = ({ label, icon, IsSecureText, keyboardType, placeholder, control, onSubmit, nameController, defaultValue, rules, errors, editable, maxLength, valueAssign, onFocus,onPressIn, onSelectIcon, ref,autoCapitalize, numberLines, style
 }) => {
   const [secureTextEntry, setSecureTextEntry] = useState(IsSecureText);
   return (
@@ -15,6 +15,8 @@ const CustomTextInput: React.FC<InputProps> = ({ label, icon, IsSecureText, keyb
         rules={rules}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
+            numberOfLines={numberLines}
+            style={style}
             ref={ref}
             mode="outlined"
             theme={{

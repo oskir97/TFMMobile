@@ -87,7 +87,7 @@ const PartidoItem: React.FC<PartidoItemProps> = ({ item, navigation }) => {
                     <View style={{ flexDirection: "row", alignItems: "center", marginTop: 3 }}>
                         <MaterialIcons name="stars" size={24} color="orange" />
                         <Text style={{ marginLeft: 3, fontSize: 15, fontWeight: "400" }}>
-                            {average(item?.obtenerUsuarioCreador.obtenerValoracionesAlUsuario)}
+                            {average(item?.obtenerUsuarioCreador.obtenerValoracionesAUsuarioPartido)}
                         </Text>
                         <Text style={{ marginLeft: 3 }}>•</Text>
                         <Text style={{ marginLeft: 3, fontSize: 15, fontWeight: "400" }}>

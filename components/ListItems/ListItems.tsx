@@ -49,7 +49,7 @@ function sumarTiempo(fecha1: Date, fecha2: Date): Date {
 
 function fechaComprendida(fecha: Date, fechaInicio: Date, fechaFin: Date): boolean {
     return fecha >= fechaInicio && fecha <= fechaFin;
-  }
+}
 
 const ListItems: React.FC<ListItemsProps> = ({ type, navigation }) => {
     const { t } = useTranslation();
@@ -57,23 +57,24 @@ const ListItems: React.FC<ListItemsProps> = ({ type, navigation }) => {
     const [activas, setActivas] = useState<Reserva[] | undefined>(undefined);
     const [finalizadas, setFinalizadas] = useState<Reserva[] | undefined>(undefined);
     const [canceladas, setCanceladas] = useState<Reserva[] | undefined>(undefined);
+    const [reload, setReload] = useState<boolean>(true);
     const { obtenerReservasPistaUsuario, obtenerReservasEventoUsuario, obtenerReservasPartidoUsuario } = useReservas();
 
     const ActivasScreen = () => (
         <ScrollView style={{ paddingLeft: 20, paddingRight: 20, marginTop: 20 }}>
-            <ReservaList reservas={activas}/>
+            <ReservaList reservas={activas} estado='Activa' setReload={setReload} navigation={navigation} type={type} />
         </ScrollView>
     );
-    
+
     const FinalizadasScreen = () => (
         <ScrollView style={{ paddingLeft: 20, paddingRight: 20, marginTop: 20 }}>
-            <ReservaList reservas={finalizadas}/>
+            <ReservaList reservas={finalizadas} estado='Finalizada' setReload={setReload} navigation={navigation} type={type} />
         </ScrollView>
     );
-    
+
     const CanceladasScreen = () => (
         <ScrollView style={{ paddingLeft: 20, paddingRight: 20, marginTop: 20 }}>
-            <ReservaList reservas={canceladas}/>
+            <ReservaList reservas={canceladas} estado='Cancelada' setReload={setReload} navigation={navigation} type={type} />
         </ScrollView>
     );
 
@@ -102,34 +103,55 @@ const ListItems: React.FC<ListItemsProps> = ({ type, navigation }) => {
     useEffect(() => {
 
         const unsubscribe = navigation.addListener('focus', () => {
-            switch (type) {
-                case 'Pista':
-                    obtenerReservasPistaUsuario().then((reservas) => {
-                        console.log(reservas);
-                        setActivas(reservas.filter(r => !r.cancelada && sumarTiempo(new Date(r.fecha), new Date(r.obtenerHorarioReserva.fin)) >= new Date()));
-                        setFinalizadas(reservas.filter(r => !r.cancelada && sumarTiempo(new Date(r.fecha), new Date(r.obtenerHorarioReserva.fin)) < new Date()));
-                        setCanceladas(reservas.filter(r => r.cancelada));
-                        setCargando(false);
-                    });
-                    break;
-                case 'Evento':
-                    obtenerReservasEventoUsuario().then((reservas) => {
-                        setActivas(reservas.filter(r => !r.cancelada && fechaComprendida(new Date(), new Date(r.ObtenerEventoReserva.inicio), new Date(r.ObtenerEventoReserva.fin))));
-                        setFinalizadas(reservas.filter(r => !r.cancelada && !fechaComprendida(new Date(), new Date(r.ObtenerEventoReserva.inicio), new Date(r.ObtenerEventoReserva.fin))));
-                        setCanceladas(reservas.filter(r => r.cancelada));
-                    });
-                    break;
-                case 'Partido':
-                    obtenerReservasPartidoUsuario().then((reservas) => {
-                        setActivas(reservas.filter(r => !r.cancelada && sumarTiempo(new Date(r.obtenerPartidoReserva.fecha), new Date(r.obtenerPartidoReserva.obtenerHorarioReserva.fin)) >= new Date()));
-                        setFinalizadas(reservas.filter(r => !r.cancelada && sumarTiempo(new Date(r.obtenerPartidoReserva.fecha), new Date(r.obtenerPartidoReserva.obtenerHorarioReserva.fin)) < new Date()));
-                        setCanceladas(reservas.filter(r => r.cancelada));
-                    });
-                    break;
-            }
+            if(!reload)
+                obtainBooks();
         });
-        return unsubscribe;
-    }, [navigation]);
+
+        obtainBooks();
+
+    }, [reload]);
+
+    // useEffect(() => {
+
+    //     const unsubscribe = navigation.addListener('focus', () => {
+    //         obtainBooks();
+    //     });
+
+    // });
+
+    function obtainBooks() {
+        setCargando(true);
+
+        switch (type) {
+            case 'Pista':
+                obtenerReservasPistaUsuario().then((reservas) => {
+                    setActivas(reservas.filter(r => !r.cancelada && sumarTiempo(new Date(r.fecha), new Date(r.obtenerHorarioReserva.fin)) >= new Date()));
+                    setFinalizadas(reservas.filter(r => !r.cancelada && sumarTiempo(new Date(r.fecha), new Date(r.obtenerHorarioReserva.fin)) < new Date()));
+                    setCanceladas(reservas.filter(r => r.cancelada));
+                    setCargando(false);
+                    setReload(false);
+                });
+                break;
+            case 'Evento':
+                obtenerReservasEventoUsuario().then((reservas) => {
+                    setActivas(reservas.filter(r => !r.cancelada && fechaComprendida(new Date(), new Date(r.obtenerEventoReserva.inicio), new Date(r.obtenerEventoReserva.fin))));
+                    setFinalizadas(reservas.filter(r => !r.cancelada && !fechaComprendida(new Date(), new Date(r.obtenerEventoReserva.inicio), new Date(r.obtenerEventoReserva.fin))));
+                    setCanceladas(reservas.filter(r => r.cancelada));
+                    setCargando(false);
+                    setReload(false);
+                });
+                break;
+            case 'Partido':
+                obtenerReservasPartidoUsuario().then((reservas) => {
+                    setActivas(reservas.filter(r => !r.cancelada && sumarTiempo(new Date(r.obtenerPartidoReserva.fecha), new Date(r.obtenerPartidoReserva.obtenerHorarioReserva.fin)) >= new Date()));
+                    setFinalizadas(reservas.filter(r => !r.cancelada && sumarTiempo(new Date(r.obtenerPartidoReserva.fecha), new Date(r.obtenerPartidoReserva.obtenerHorarioReserva.fin)) < new Date()));
+                    setCanceladas(reservas.filter(r => r.cancelada));
+                    setCargando(false);
+                    setReload(false);
+                });
+                break;
+        }
+    }
 
     return (
         <>{

@@ -8,7 +8,7 @@ export interface ApiResponse<TResponse> {
 export class Api<TRequest, TResponse> {
   private axiosInstance: AxiosInstance;
 
-  constructor(token:string = "", private baseURL: string = "https://944f-2a0c-5a86-d203-b800-5d8-3bb6-4713-9546.ngrok-free.app/api") {
+  constructor(token:string = "", private baseURL: string = "https://c1fd-2a0c-5a86-d203-b800-9d3f-75a4-f562-2ba4.ngrok-free.app/api") {
     this.axiosInstance = axios.create({
       baseURL: this.baseURL,
     });

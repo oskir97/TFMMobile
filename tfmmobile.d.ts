@@ -25,6 +25,8 @@ export interface IProps {
     onSelectIcon?:any;
     ref?:any;
     autoCapitalize?:any;
+    numberLines?:number;
+    style?:any;
   }
 
   export interface InputCardProps {

@@ -27,5 +27,5 @@ export interface Reserva {
     obtenerInscripciones: Reserva[];
     nivelpartido?: NivelPartido;
     obtenerPartidoReserva?:Reserva;
-    ObtenerEventoReserva?:Evento;
+    obtenerEventoReserva?:Evento;
   }

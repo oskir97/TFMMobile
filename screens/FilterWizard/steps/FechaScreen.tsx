@@ -52,7 +52,7 @@ const FechaScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
     if (filter.localidad && filter.deporte && filter.fecha) {
       await AsyncStorage.setItem('localidad', filter.localidad);
       await AsyncStorage.setItem('iddeporte', filter.deporte.toString());
-      await AsyncStorage.setItem('fecha', filter.fecha.toDateString());
+      await AsyncStorage.setItem('fecha', filter.fecha.toLocaleDateString());
 
       if (filter.sort)
         await AsyncStorage.setItem('sort', filter.sort.toString());
@@ -84,9 +84,9 @@ const FechaScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
     if (selectedDate != null) {
       var filterFecha = filter;
       if (filterFecha == null)
-        filterFecha = { localidad: undefined, fecha: selectedDate, deporte: undefined };
+        filterFecha = { localidad: undefined, fecha: ajustarFechaConZonaHoraria(selectedDate), deporte: undefined };
       else
-        filterFecha.fecha = selectedDate;
+        filterFecha.fecha = ajustarFechaConZonaHoraria(selectedDate);
 
       if (!filterFecha.sort)
         filterFecha.sort = "Distancia";
@@ -113,6 +113,11 @@ const FechaScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
     //   setError(true);
     // }
   };
+
+  function ajustarFechaConZonaHoraria(fecha: Date): Date {
+    fecha.setDate(fecha.getDate() + 1);
+    return fecha;
+  }
 
   const toDeporte = () => {
     navigation.navigate("Deporte");

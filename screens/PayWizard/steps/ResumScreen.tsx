@@ -247,25 +247,24 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
             crearPago(pago).then((pago) => {
               if (pago) {
                 if (route.params.reserva && ((route.params.instalacion && route.params.pista) || route.params.evento || route.params.partido)) {
-                  crearNotificacion(t, route.params.reserva.obtenerUsuarioCreador, route.params.reserva, getName(), route.params.instalacion, route.params.pista, route.params.evento, route.params.partido, route.params.partido? route.params.partido.fecha : route.params.reserva.fecha, (route.params.instalacion && (formatTime(route.params.horario.inicio) + " - " + formatTime(route.params.horario.fin))) || (route.params.partido && (formatTime(route.params.partido.obtenerHorarioReserva.inicio) + " - " + formatTime(route.params.partido.obtenerHorarioReserva.fin))), TipoNotificacion.confirmacion).then((notif) => {
+                  crearNotificacion(t, route.params.reserva.obtenerUsuarioCreador, route.params.reserva, getName(), route.params.instalacion, route.params.pista, route.params.evento, route.params.partido, route.params.partido ? route.params.partido.fecha : route.params.reserva.fecha, (route.params.instalacion && (formatTime(route.params.horario.inicio) + " - " + formatTime(route.params.horario.fin))) || (route.params.partido && (formatTime(route.params.partido.obtenerHorarioReserva.inicio) + " - " + formatTime(route.params.partido.obtenerHorarioReserva.fin))), TipoNotificacion.confirmacion).then((notif) => {
                     console.log(notif);
                     if (notif)
                       showNotification({ title: notif.asunto, body: notif.descripcion, url: "Notificaciones", navigation: navigation });
                   })
                 }
 
-                // enviarCorreo(route.params.reserva.email, t("RESERVA_REALIZADA"),
-                //   `${t("RESERVA_REALIZADA_EXITO")}<br><br>
-                //           ${route.params.evento || route.params.partido ? ((route.params.evento && t("EVENTO")) || (route.params.partido && t("PARTIDO"))) + ": " + getName() + "<br>" : ""}
-                //           ${t("INSTALACION") + ": " + getInstalacion() + "<br>"}
-                //           ${t("PISTA") + ": " + route.params.pista.nombre + "<br>"}
-                //           ${t("FECHA") + ": " + new Date(route.params.reserva.fecha ? route.params.reserva.fecha : new Date()).toLocaleDateString() + "<br>"}
-                //           ${t("HORARIO") + ": " + formatTime(route.params.horario.inicio) + " - " + formatTime(route.params.horario.fin) + "<br>"}
-                //           ${t("PISTA") + ": " + route.params.pista.nombre + "<br>"}
-                //           ${t("PRECIO") + ": " + route.params.pista.precio + "<br>"}
-                //           `
+                enviarCorreo(route.params.reserva.email, t("RESERVA_REALIZADA"),
+                  `${t("RESERVA_REALIZADA_EXITO")}<br><br>
+                          ${route.params.evento || route.params.partido ? ((route.params.evento && t("EVENTO")) || (route.params.partido && t("PARTIDO"))) + ": " + getName() + "<br>" : ""}
+                          ${t("INSTALACION") + ": " + getInstalacion() + "<br>"}
+                          ${t("PISTA") + ": " + pista + "<br>"}
+                          ${t("FECHA") + ": " + new Date(route.params.reserva.fecha ? route.params.reserva.fecha : new Date()).toLocaleDateString() + "<br>"}
+                          ${contruirHorario()}
+                          ${t("PRECIO") + ": " + getPrecio() + "<br>"}
+                          `
 
-                // );
+                );
                 finishPayment(true);
                 setPagando(false);
               } else {
@@ -301,6 +300,15 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
         setPagando(false);
       }
     });
+  }
+  const contruirHorario = () => {
+    if (route.params.instalacion) {
+      return `${t("HORARIO") + ": " + formatTime(route.params.horario.inicio) + " - " + formatTime(route.params.horario.fin) + "<br>"}`
+    } else if (route.params.partido) {
+      return `${t("HORARIO") + ": " + formatTime(route.params.partido.obtenerHorarioReserva.inicio) + " - " + formatTime(route.params.partido.obtenerHorarioReserva.fin) + "<br>"}`
+    } else if (route.params.evento) {
+      return `${t("HORARIO") + ": " + formatHorarios(route.params.evento?.obtenerHorariosEvento) + "<br>"}`
+    }
   }
 
   const finishPayment = (payok: boolean) => {
@@ -464,7 +472,7 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
         const inicio = horario.inicio ? new Date(horario.inicio).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
         const fin = horario.fin ? new Date(horario.fin).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
 
-        const diasSemanaElement = <Text style={{ fontWeight: 'bold', marginBottom: 4, fontSize:16 }} numberOfLines={3} ellipsizeMode="tail">{diasSemana}</Text>;
+        const diasSemanaElement = <Text style={{ fontWeight: 'bold', marginBottom: 4, fontSize: 16 }} numberOfLines={3} ellipsizeMode="tail">{diasSemana}</Text>;
         const horasElement = <Text style={{ fontWeight: 'bold' }} numberOfLines={1} ellipsizeMode="tail">{t('DE2')} {inicio} {t('A2')} {fin}</Text>;
         formattedHorarios.push(
           <View key={horario.idhorario}>
@@ -541,7 +549,7 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
                   </View>
                 </>
               )}
-              {(route.params.instalacion ) && (
+              {(route.params.instalacion) && (
                 <>
                   <View style={{ flexDirection: 'row', marginBottom: 10 }}>
                     <Text style={{ fontSize: 16 }} >{t("HORARIO")}: </Text>

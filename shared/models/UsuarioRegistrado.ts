@@ -18,5 +18,5 @@ export interface UsuarioRegistrado {
     idusuario: number;
     baja: Date | null;
     obtenerRol: Rol;
-    obtenerValoracionesAlUsuario: Valoracion[];
+    obtenerValoracionesAUsuarioPartido: Valoracion[];
   }
