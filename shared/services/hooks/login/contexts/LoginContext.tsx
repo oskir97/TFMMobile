@@ -156,7 +156,7 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
       typeReservationType = convertirStringAType<TypeReservation>(type)
 
     if (localidad && iddeporte && fecha) {
-      filter = { localidad: localidad, deporte: Number(iddeporte), fecha: new Date(fecha), sort: sortType, type: typeReservationType}
+      filter = { localidad: localidad, deporte: Number(iddeporte), fecha: new Date(fecha), sort: sortType, type: typeReservationType }
     }
 
     return filter;
@@ -171,7 +171,7 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
   async function logUser() {
     await AsyncStorage.getItem('token').then((value) => {
       if (value !== null) {
-        const api = new Api<any,UsuarioRegistrado>(value);
+        const api = new Api<any, UsuarioRegistrado>(value);
         const token: string = value;
         api.get('/UsuarioRegistrado').then((value) => {
           if (!value.error) {
@@ -213,7 +213,7 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
     logUser();
   }, []);
 
-  const api = new Api<any,any>();
+  const api = new Api<any, any>();
 
   async function loginFunction(email: string, password: string) {
     const response: ApiResponse<string> = await api.post('/Usuario/Login', { email, password });

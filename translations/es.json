@@ -244,5 +244,12 @@
   "SE_HA_CREADO_TU_VALORACION": "Se hacreado tu valoración, !Muchas gracias!",
   "NO_HAY_EVENTOS": "No hay eventos",
   "NO_HAY_PARTIDOS": "No hay partidos",
-  "CREAR_PARTIDO": "Crear partido"
+  "CREAR_PARTIDO": "Crear partido",
+  "DESCRIPCION": "Descripción",
+  "INTRODUCE_DESCRIPCION": "Introduce una descripción",
+  "SELECCIONAR_NIVEL_DIFICULTAD": "Selecciona el nivel de dificultad",
+  "MAX_PARTIPANTES": "Máximo de participantes",
+  "SELECCIONAR_MAX_PARTIPANTES": "Selecciona el número de participantes",
+  "DEPORTE": "Deporte",
+  "SELECCIONA_DEPORTE": "Selecciona el deporte"
 }

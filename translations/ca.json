@@ -243,5 +243,12 @@
   "SE_HA_CREADO_TU_VALORACION": "S'ha creat la teva valoració, Moltes gràcies!: \"Your rating has been created, Moltes gràcies!",
   "NO_HAY_EVENTOS": "No hi ha esdeveniments",
   "NO_HAY_PARTIDOS": "No hi ha partits",
-  "CREAR_PARTIDO": "Crear partit"
+  "CREAR_PARTIDO": "Crear partit",
+  "DESCRIPCION": "Descripció",
+  "INTRODUCE_DESCRIPCION": "Introduïx una descripció",
+  "SELECCIONAR_NIVEL_DIFICULTAD": "Selecciona el nivell de dificultat",
+  "MAX_PARTIPANTES": "Màxim de participants",
+  "SELECCIONAR_MAX_PARTIPANTES": "Selecciona el número de participants",
+  "DEPORTE": "Esport",
+  "SELECCIONA_DEPORTE": "Selecciona l'esport"
 }

@@ -21,7 +21,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [sort, setSort] = useState<Sort | undefined>(filter?.sort?filter?.sort : "Distancia");
   const [filterText, setFilterText] = useState('');
   const [textAssign, setTextAssign] = useState<string | undefined>(filter?.localidad);
-  const [filterReserva, setFilterReserva] = useState<FilterReserva>({filtro:filterText, localidad:filter?.localidad,latitud: location?.coords.latitude.toString(), longitud: location?.coords.longitude.toString(), fecha:filter?.fecha, deporte:filter?.deporte, orden: filter?.sort  });
+  const [filterReserva, setFilterReserva] = useState<FilterReserva>({filtro:filterText, localidad:filter?.localidad,latitud: location?.coords.latitude.toString(), longitud: location?.coords.longitude.toString(), fecha:filter && filter.fecha? sumarundia(filter.fecha) : new Date(), deporte:filter?.deporte, orden: filter?.sort  });
   const [loadingFilters, setLoadingFilters] = useState<boolean>(false);
   const { t } = useTranslation();
 
@@ -34,6 +34,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       setFilterOpen(false);
       setFilterReserva({filtro:filterText, localidad:filter?.localidad,latitud: location?.coords.latitude.toString(), longitud: location?.coords.longitude.toString(), fecha:filter?.fecha, deporte:filter?.deporte, orden: filter?.sort  });
     });
+  }
+
+  function sumarundia(fecha: Date) : Date {
+    var date = new Date(fecha);
+    date.setDate(date.getDate() + 1);
+
+    return date;
   }
 
   async function storageFilter(filter: Filter) {

@@ -16,6 +16,7 @@ import Deporte from "../FilterWizard/steps/DeporteScreen";
 import Fecha from "../FilterWizard/steps/FechaScreen";
 import Horario from "../PayWizard/steps/HorarioScreen";
 import Resumen from "../PayWizard/steps/ResumScreen";
+import CreatePartido from "../PayWizard/steps/CreatePartidoScreen";
 import PagandoPage from "../PayWizard/steps/ProcessingPagoScreen";
 import CompletedPago from "../PayWizard/steps/CompletedPagoScreen";
 import InstalacionPage from "../Home/InstalacionScreen";
@@ -118,6 +119,12 @@ const Nav: React.FC = () => {
                 },
             }} />
             <Drawer.Screen name="Resumen" component={Resumen} options={{
+                swipeEnabled: false,
+                drawerLabel: () => null, drawerItemStyle: {
+                    display: 'none',
+                },
+            }} />
+            <Drawer.Screen name="CreatePartido" component={CreatePartido} options={{
                 swipeEnabled: false,
                 drawerLabel: () => null, drawerItemStyle: {
                     display: 'none',

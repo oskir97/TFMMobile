@@ -35,7 +35,7 @@ type ParamList = {
 const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
   const route = useRoute<RouteProp<ParamList, 'Item'>>();
   const { filter, user } = useContext(LoginContext);
-  const [fecha, setFecha] = useState<Date | undefined>(filter?.fecha);
+  const [fecha, setFecha] = useState<Date | undefined>(filter && filter.fecha? sumarundia(filter.fecha) : new Date());
   const [horario, setHorario] = useState<Horario | undefined>();
   const { obtenerpistasinstalacion } = useHorarios();
   const { crearReserva } = useReservas();
@@ -50,6 +50,13 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
   const toggleDatepicker = () => {
     setShowPicker(!showPicker);
   };
+
+  function sumarundia(fecha: Date) : Date {
+    var date = new Date(fecha);
+    date.setDate(date.getDate() + 1);
+
+    return date;
+  }
 
   const addTime = (value: Horario) => {
     if (value == horario) {
@@ -101,7 +108,7 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
     } else if (route.params.evento) {
       navigation.navigate("EventoScreen" as never, { item: route.params.evento } as never)
     } else if (route.params.partido) {
-      navigation.navigate("PartidosScreen" as never, { item: route.params.partido } as never)
+      navigation.navigate("PartidoScreen" as never, { item: route.params.partido } as never)
     }
   };
 

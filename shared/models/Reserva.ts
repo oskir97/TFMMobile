@@ -28,4 +28,5 @@ export interface Reserva {
     nivelpartido?: NivelPartido;
     obtenerPartidoReserva?:Reserva;
     obtenerEventoReserva?:Evento;
+    descripcionpartido?:string;
   }

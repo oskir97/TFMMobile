@@ -116,7 +116,7 @@ const ReviewsScreen: React.FC<ReviewsScreenProps> = ({ navigation }) => {
             >
               <Text style={{ marginLeft: 3, fontSize: 14, color: 'grey' }}>{(instalacion && instalacion.nombre) || (evento && evento.nombre) || (partido && `${partido.obtenerUsuarioCreador.nombre} ${partido.obtenerUsuarioCreador.apellidos}`)}</Text>
             </View>
-            <ReviewsList items={(instalacion && instalacion.obtenerValoracionesInstalacion) || (evento && evento.obtenerValoracionesEvento) || (partido && partido.obtenerUsuarioCreador.obtenerValoracionesAlUsuario)} />
+            <ReviewsList items={(instalacion && instalacion.obtenerValoracionesInstalacion) || (evento && evento.obtenerValoracionesEvento) || (partido && partido.obtenerUsuarioCreador.obtenerValoracionesAUsuarioPartido)} />
           </View>
         </ScrollView>
       </SafeAreaView>

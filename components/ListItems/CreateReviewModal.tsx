@@ -6,6 +6,8 @@ import { useTranslation } from 'react-i18next';
 import { XCircleIcon } from 'react-native-heroicons/solid';
 import CustomButton from '../Buttons/CustomButton';
 import CustomTextInput from '../InputText/CustomTextInput';
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from 'yup';
 
 interface ReviewData {
   comentario: string;
@@ -13,17 +15,27 @@ interface ReviewData {
 }
 
 const CreateReviewModal = ({ visible, onConfirm, onCancel, title, animationType, }) => {
+
+  const [modalHeight, setModalHeight] = useState(0);
+
+  const { t } = useTranslation();
+
+  const INTRODUCE_COMENTARIO = t("INTRODUCE_COMENTARIO");
+  const SELECCIONA_ESTRELLAS = t("SELECCIONA_ESTRELLAS");
+
+  const schema = yup.object().shape({
+    comentario: yup.string().required(INTRODUCE_COMENTARIO),
+    estrellas: yup.string().required(SELECCIONA_ESTRELLAS),
+  });
+
   const { control, register, reset, handleSubmit, formState: { errors } } = useForm<ReviewData>({
+    resolver: yupResolver(schema),
     mode: "onChange",
     defaultValues: {
       comentario: '',
       estrellas: 3,
     },
   });
-
-  const [modalHeight, setModalHeight] = useState(0);
-
-  const { t } = useTranslation();
 
   useEffect(() => {
     const windowHeight = Dimensions.get('window').height;
@@ -49,7 +61,7 @@ const CreateReviewModal = ({ visible, onConfirm, onCancel, title, animationType,
     title: {
       fontWeight: 'bold',
       fontSize: 18,
-      marginTop:20,
+      marginTop: 20,
       marginBottom: 20,
       textAlign: 'left'
     },
@@ -103,25 +115,25 @@ const CreateReviewModal = ({ visible, onConfirm, onCancel, title, animationType,
           <View style={{ padding: 20, height: modalHeight }}>
             <Text style={styles.title}>{title}</Text>
             <CustomTextInput
-            nameController="comentario"
-            control={control}
-            label={t("COMENTARIO")}
-            placeholder={t("INTRODUCE_COMENTARIO")}
-            editable={true}
-            maxLength={4000}
-            numberLines={4}
-            autoCapitalize={'sentences'}
-            rules={{
-              required: { value: true },
-              pattern: {
-                value: true
-              }
-            }}
-            errors={errors.comentario && (
-              <Text className="text-error">{errors.comentario.message}</Text>
-            )}
-            onSubmit={handleSubmit(onConfirm)}
-          />
+              nameController="comentario"
+              control={control}
+              label={t("COMENTARIO")}
+              placeholder={t("INTRODUCE_COMENTARIO")}
+              editable={true}
+              maxLength={4000}
+              numberLines={4}
+              autoCapitalize={'sentences'}
+              rules={{
+                required: { value: true },
+                pattern: {
+                  value: true
+                }
+              }}
+              errors={errors.comentario && (
+                <Text className="text-error">{errors.comentario.message}</Text>
+              )}
+              onSubmit={handleSubmit(onConfirm)}
+            />
             <View style={styles.rating}>
               <Controller
                 control={control}
@@ -146,7 +158,7 @@ const CreateReviewModal = ({ visible, onConfirm, onCancel, title, animationType,
               {errors.estrellas && <Text style={styles.errorMessage}>{errors.estrellas.message}</Text>}
             </View>
             <CustomButton
-            animated={true}
+              animated={true}
               visible={!errors.comentario}
               onPress={handleSubmit(onConfirm)}
               buttonText={t("ACEPTAR")}

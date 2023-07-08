@@ -243,5 +243,12 @@
   "SE_HA_CREADO_TU_VALORACION": "Your rating has been created, Thank you very much!",
   "NO_HAY_EVENTOS": "No events available",
   "NO_HAY_PARTIDOS": "No matches available",
-  "CREAR_PARTIDO": "Create match"
+  "CREAR_PARTIDO": "Create match",
+  "DESCRIPCION": "Description",
+  "INTRODUCE_DESCRIPCION": "Enter a description",
+  "SELECCIONAR_NIVEL_DIFICULTAD": "Select the difficulty level",
+  "MAX_PARTIPANTES": "Maximum participants",
+  "SELECCIONAR_MAX_PARTIPANTES": "Select the number of participants",
+  "DEPORTE": "Sport",
+  "SELECCIONA_DEPORTE": "Select the sport"
 }

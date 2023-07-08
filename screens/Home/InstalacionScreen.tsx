@@ -125,6 +125,7 @@ const InstalacionScreen: React.FC<InstalacionScreenProps> = ({ navigation }) => 
   }
 
   function obtainMinorPistaPrice(pistas: Pista[]): Pista | undefined {
+    if(pistas){
     return pistas.reduce((menorPrecio, pista) => {
       if (pista.precio < menorPrecio.precio) {
         return pista;
@@ -132,6 +133,7 @@ const InstalacionScreen: React.FC<InstalacionScreenProps> = ({ navigation }) => 
         return menorPrecio;
       }
     });
+  }
   }
 
   function booking() {

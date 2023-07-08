@@ -52,12 +52,12 @@ const FechaScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
     if (filter.localidad && filter.deporte && filter.fecha) {
       await AsyncStorage.setItem('localidad', filter.localidad);
       await AsyncStorage.setItem('iddeporte', filter.deporte.toString());
-      await AsyncStorage.setItem('fecha', filter.fecha.toLocaleDateString());
+      await AsyncStorage.setItem('fecha', filter.fecha.toString());
 
       if (filter.sort)
         await AsyncStorage.setItem('sort', filter.sort.toString());
       else
-      await AsyncStorage.setItem('sort', 'Distancia');
+        await AsyncStorage.setItem('sort', 'Distancia');
       if (filter.type)
         await AsyncStorage.setItem('type', filter.type.toString());
       else
@@ -108,15 +108,24 @@ const FechaScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
             navigation.navigate("Fecha");
         }
       });
-    } 
+    }
     // else {
     //   setError(true);
     // }
   };
 
   function ajustarFechaConZonaHoraria(fecha: Date): Date {
-    fecha.setDate(fecha.getDate() + 1);
-    return fecha;
+    const [day, month, year] = fecha.toLocaleDateString().split("/");
+
+    // Convert the string values to numbers
+    const numericMonth = parseInt(month, 10);
+    const numericDay = parseInt(day, 10);
+    const numericYear = parseInt(year, 10);
+
+    // Create the Date object with the numeric year, month (zero-based), and day
+    const dateObject = new Date(numericYear, numericMonth - 1, numericDay);
+    console.log(dateObject);
+    return dateObject;
   }
 
   const toDeporte = () => {
@@ -184,6 +193,21 @@ const FechaScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
     };
   }, [i18n]);
 
+  const markedDates = {
+    [today.toISOString().slice(0, 10)]: { selected: false, marked: true, selectedColor: '#04D6C8' },
+    [selectedDate ? convertDateFormat(new Date(selectedDate).toLocaleDateString()) : '']: { selected: true, marked: true, selectedColor: '#04D6C8' }
+  };
+
+  function convertDateFormat(originalDate: string): string {
+    const [day, month, year] = originalDate.split('/');
+    const formattedDate = `${year}-${padNumber(month)}-${padNumber(day)}`;
+    return formattedDate;
+  }
+
+  function padNumber(num: string): string {
+    return num.padStart(2, '0');
+  }
+
   return (
     <>
       <Menu showReturnWizard={false} showLang={true} showusuario={true} userMenu={() => navigation.openDrawer()} />
@@ -203,10 +227,9 @@ const FechaScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
                 key={calendarKey}
                 firstDay={1}
                 onDayPress={(day) => handleDateSelect(day.dateString)}
-                markedDates={{
-                  [today.toISOString().slice(0, 10)]: { selected: false, marked: true, selectedColor: '#04D6C8' },
-                  [selectedDate ? selectedDate.toISOString().slice(0, 10) : '']: { selected: true, marked: true, selectedColor: '#04D6C8' },
-                }}
+                markedDates={
+                  markedDates
+                }
                 style={{ width: Dimensions.get('window').width - 40 }}
                 theme={{
                   todayTextColor: "#04D6C8",
@@ -244,7 +267,7 @@ const FechaScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
               colorTextHover="white"
               iconRight="search"
               animated={true}
-              visible={selectedDate?true : false}
+              visible={selectedDate ? true : false}
             />
             <CustomButton
               onPress={toDeporte}

@@ -22,6 +22,7 @@ export interface ReservaDTO {
     deporte_oid: number;
     evento_oid?: number;
     nivelpartido?: NivelPartido;
+    descripcionpartido?:string;
 }
 
 export enum TipoReservaEnum {

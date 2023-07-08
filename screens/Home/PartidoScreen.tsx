@@ -278,10 +278,14 @@ const PartidoScreen: React.FC<PartidoScreenProps> = ({ navigation }) => {
                 <Text style={{ marginLeft: 10, fontSize: 14, fontWeight: 'bold' }}>{`${partido?.maxparticipantes - partido?.obtenerInscripciones.length} ${partido?.maxparticipantes - partido?.obtenerInscripciones.length > 1?t("PLAZAS") : t("PLAZA")}`}</Text>
               </View>
               <View style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}>
-                <Text style={{ marginLeft: 6, fontSize: 15 }}>{partido?.obtenerPista.obtenerInstalaciones.nombre}</Text>
+                <Text style={{ marginLeft: 6, fontSize: 16 }}>{partido?.obtenerPista.obtenerInstalaciones.nombre}</Text>
               </View>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Text style={{ marginLeft: 6, fontSize: 14 }}>{partido?.obtenerPista.nombre}</Text>
+              </View>
+
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text style={{ marginTop:10, marginLeft: 6, fontSize: 16, fontWeight:'bold' }}>{partido?.descripcionpartido}</Text>
               </View>
 
               <View
