@@ -155,7 +155,7 @@ export const useReservas = () => {
         if (token !== null) {
           const api = new Api<any, boolean>(token);
           var disponible: boolean = false;
-          if (reserva.tipo == TipoReservaEnum.Reserva && reserva.evento_oid == -1) {
+          if ((reserva.tipo == TipoReservaEnum.Reserva || reserva.tipo == TipoReservaEnum.Partido) && reserva.evento_oid == -1) {
             disponible = await existeReserva(reserva.pista_oid, fecha);
             disponible = !disponible;
           } else if (reserva.tipo == TipoReservaEnum.Inscripcion && reserva.evento_oid > -1) {
@@ -320,5 +320,5 @@ export const useReservas = () => {
   };
 
 
-  return { obtenerReservas, crearReserva, eliminarReserva, existeReserva, partidoDisponible, obtenerReservasPistaUsuario, obtenerReservasEventoUsuario, obtenerReservasPartidoUsuario, cancelarReserva };
+  return { obtenerReservas, crearReserva, eliminarReserva, existeReserva, partidoDisponible, obtenerReservasPistaUsuario, obtenerReservasEventoUsuario, obtenerReservasPartidoUsuario, cancelarReserva, ObtenerInscripciones };
 };

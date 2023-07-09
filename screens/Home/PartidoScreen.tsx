@@ -173,7 +173,6 @@ const PartidoScreen: React.FC<PartidoScreenProps> = ({ navigation }) => {
 
   function obtenerNivelPartido() {
     var nivelPartido: string;
-    console.log(route.params.item);
     switch (route.params.item?.nivelpartido) {
       case NivelPartido.basico:
         nivelPartido = t("BASICO");

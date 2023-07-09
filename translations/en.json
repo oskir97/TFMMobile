@@ -250,5 +250,12 @@
   "MAX_PARTIPANTES": "Maximum participants",
   "SELECCIONAR_MAX_PARTIPANTES": "Select the number of participants",
   "DEPORTE": "Sport",
-  "SELECCIONA_DEPORTE": "Select the sport"
+  "SELECCIONA_DEPORTE": "Select the sport",
+  "SELECCIONAR_INSTALACION": "Select the sport facility",
+  "NUMERO_PARTICIPANTES": "Number of participants",
+  "SELECCIONA_NUMERO_PARTICIPANTES": "Select the number of participants",
+  "PARTIDO_CREADO": "Match created",
+  "SE_HA_CREADO_PARTIDO": "The match has been created",
+  "NIVEL_PARTIDO": "Match level",
+  "VALORAR": "Rate it"
 }

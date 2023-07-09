@@ -23,11 +23,14 @@ export const crearNotificacion = async (t: TFunction<"translation", undefined>, 
                 var notificacion: NotificacionDTO | undefined = undefined;
                 switch (tipoNotificacion) {
                     case TipoNotificacion.confirmacion:
-                        if (reserva && instalacion && pista && fecha && horario) {
+                        if (reserva && instalacion && pista && fecha && horario && reserva.tipo != TipoReserva.partido) {
                             notificacion = { entidad_oid: instalacion.obtenerEntidadInstalacion.identidad, reserva_oid: reserva.idreserva, receptor_oid: usuario?.idusuario, asunto: t("PISTA_RESERVADA"), descripcion: t("RESERVADO_LA_PISTA") + " " + pista.nombre + " " + t("PARA_EL_DIA") + " " + new Date(reserva.fecha).toLocaleDateString() + " " + t("DE") + " " + horario, leida: false, tipo: TipoNotificacion.confirmacion };
                         } else if (reserva && evento) {
                             notificacion = { entidad_oid: evento.obtenerInstalacion.obtenerEntidadInstalacion.identidad, evento_oid: evento.idevento, receptor_oid: usuario?.idusuario, asunto: t("EVENTO_INSCRITO"), descripcion: t("SE_HA_INSCRITO_EVENTO") + " " + evento.nombre, leida: false, tipo: TipoNotificacion.confirmacion };
-                        } else if (reserva && partido && nombrePartido) {
+                        } else if (reserva && partido && nombrePartido && reserva.tipo == TipoReserva.partido) {
+                            notificacion = { entidad_oid: partido.obtenerPista.obtenerEntidadPista.identidad, reserva_oid: reserva.idreserva, receptor_oid: usuario?.idusuario, asunto: t("PARTIDO_CREADO"), descripcion: t("SE_HA_CREADO_PARTIDO") + " " + nombrePartido + " " + t("PARA_EL_DIA") + " " + new Date(reserva.fecha).toLocaleDateString() + " " + t("DE") + " " + horario, leida: false, tipo: TipoNotificacion.confirmacion };
+                        }
+                        else if (reserva && partido && nombrePartido) {
                             notificacion = { entidad_oid: partido.obtenerPista.obtenerEntidadPista.identidad, reserva_oid: reserva.idreserva, receptor_oid: usuario?.idusuario, asunto: t("PARTIDO_INSCRITO"), descripcion: t("SE_HA_INSCRITO_PARTIDO") + " " + nombrePartido + " " + t("PARA_EL_DIA") + " " + new Date(reserva.fecha).toLocaleDateString() + " " + t("DE") + " " + horario, leida: false, tipo: TipoNotificacion.confirmacion };
                         }
                         break;

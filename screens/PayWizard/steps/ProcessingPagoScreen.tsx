@@ -43,7 +43,7 @@ const ProcessingPagoScreen: React.FC<CompletedPagoScreenProps> = ({ navigation }
             <View style={{ flex: 1, backgroundColor: '#fff' }}>
                 <ProgressBar
                     style={styles.progressBar}
-                    progress={0.65}
+                    progress={0.75}
                     color={MD3Colors.primary60}
                 />
                 <View style={{ paddingHorizontal: 16 }}>

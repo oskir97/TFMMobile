@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Text, StyleSheet, View, Modal, Button, TouchableOpacity, Pressable, ScrollView } from "react-native";
 import { FilterProps } from "../../tfmmobile";
-import { XCircleIcon } from "react-native-heroicons/solid";
+import { CalendarDaysIcon, ClockIcon, UserGroupIcon, XCircleIcon } from "react-native-heroicons/solid";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import SportTypes from "../SportTypes/SportTypes";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -57,24 +57,24 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
                         <View style={{ flexDirection: 'row' }}>
                             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
                                 <TouchableOpacity
-                                    style={{ margin: 10, alignItems: 'center', justifyContent: 'center' }}
+                                    style={{ marginRight: 10,marginTop: 10,marginBottom: 10, alignItems: 'center', justifyContent: 'center' }}
                                     onPress={() => setSelectedType("Pista")}
                                 >
-                                    <MaterialIcons name="sports" color={selectedType && selectedType == 'Pista' ? '#04D6C8' : "#333"} size={60} />
+                                    <CalendarDaysIcon color={selectedType && selectedType == 'Pista' ? '#04D6C8' : "#333"} size={60} />
                                     <Text style={{ marginTop: 6, textAlign: 'center' }}>{t('PISTA')}</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     style={{ margin: 10, alignItems: 'center', justifyContent: 'center' }}
                                     onPress={() => setSelectedType("Partido")}
                                 >
-                                    <MaterialIcons name="sports" color={selectedType && selectedType == 'Partido' ? '#04D6C8' : "#333"} size={60} />
+                                    <UserGroupIcon color={selectedType && selectedType == 'Partido' ? '#04D6C8' : "#333"} size={60} />
                                     <Text style={{ marginTop: 6, textAlign: 'center' }}>{t('PARTIDO')}</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     style={{ margin: 10, alignItems: 'center', justifyContent: 'center' }}
                                     onPress={() => setSelectedType("Evento")}
                                 >
-                                    <MaterialIcons name="sports" color={selectedType && selectedType == 'Evento' ? '#04D6C8' : "#333"} size={60} />
+                                    <ClockIcon color={selectedType && selectedType == 'Evento' ? '#04D6C8' : "#333"} size={60} />
                                     <Text style={{ marginTop: 6, textAlign: 'center' }}>{t('EVENTO')}</Text>
                                 </TouchableOpacity>
                             </ScrollView>

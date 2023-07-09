@@ -32,7 +32,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       setType(filter.type);
       setSort(filter.sort);
       setFilterOpen(false);
-      setFilterReserva({filtro:filterText, localidad:filter?.localidad,latitud: location?.coords.latitude.toString(), longitud: location?.coords.longitude.toString(), fecha:filter?.fecha, deporte:filter?.deporte, orden: filter?.sort  });
+      setFilterReserva({filtro:filterText, localidad:filter?.localidad,latitud: location?.coords.latitude.toString(), longitud: location?.coords.longitude.toString(), fecha:filter && filter.fecha? sumarundia(filter.fecha) : new Date(), deporte:filter?.deporte, orden: filter?.sort  });
     });
   }
 
@@ -61,7 +61,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         AsyncStorage.getItem("localidad").then((value: any) => { filter.localidad = value });
       }
       setLoadingFilters(false);
-      setFilterReserva({filtro:filterText, localidad:filter?.localidad,latitud: location?.coords.latitude.toString(), longitud: location?.coords.longitude.toString(), fecha:filter?.fecha, deporte:filter?.deporte, orden: filter?.sort  });
+      setFilterReserva({filtro:filterText, localidad:filter?.localidad,latitud: location?.coords.latitude.toString(), longitud: location?.coords.longitude.toString(), fecha:filter && filter.fecha? sumarundia(filter.fecha) : new Date(), deporte:filter?.deporte, orden: filter?.sort  });
     });
     return unsubscribe;
   }, [navigation, filter?.localidad, location]);
@@ -69,7 +69,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const handleFilterChange = (text:string) => {
     setLoadingFilters(true);
     setFilterText(text);
-    setFilterReserva({filtro:text, localidad:filter?.localidad,latitud: location?.coords.latitude.toString(), longitud: location?.coords.longitude.toString(), fecha:filter?.fecha, deporte:filter?.deporte, orden: filter?.sort  });
+    setFilterReserva({filtro:text, localidad:filter?.localidad,latitud: location?.coords.latitude.toString(), longitud: location?.coords.longitude.toString(), fecha:filter && filter.fecha? sumarundia(filter.fecha) : new Date(), deporte:filter?.deporte, orden: filter?.sort  });
   };
 
   const buscarText = t('BUSCAR') as string;

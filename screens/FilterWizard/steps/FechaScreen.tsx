@@ -124,7 +124,6 @@ const FechaScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
 
     // Create the Date object with the numeric year, month (zero-based), and day
     const dateObject = new Date(numericYear, numericMonth - 1, numericDay);
-    console.log(dateObject);
     return dateObject;
   }
 

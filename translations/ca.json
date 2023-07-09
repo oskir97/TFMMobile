@@ -250,5 +250,11 @@
   "MAX_PARTIPANTES": "Màxim de participants",
   "SELECCIONAR_MAX_PARTIPANTES": "Selecciona el número de participants",
   "DEPORTE": "Esport",
-  "SELECCIONA_DEPORTE": "Selecciona l'esport"
+  "SELECCIONA_DEPORTE": "Selecciona l'esport",
+  "SELECCIONAR_INSTALACION": "Selecciona la instal·lació",
+  "NUMERO_PARTICIPANTES": "Número de participants",
+  "SELECCIONA_NUMERO_PARTICIPANTES": "Selecciona el número de participants",
+  "PARTIDO_CREADO": "Partit creat",
+  "SE_HA_CREADO_PARTIDO": "S'ha creat el partit",
+  "NIVEL_PARTIDO": "Nivell del partit"
 }

@@ -47,7 +47,7 @@ const ReviewsScreen: React.FC<ReviewsScreenProps> = ({ navigation }) => {
     } else if (route.params.evento) {
       navigation.navigate("EventoScreen" as never, { item: route.params.evento } as never)
     } else if (route.params.partido) {
-      navigation.navigate("PartidosScreen" as never, { item: route.params.partido } as never)
+      navigation.navigate("PartidoScreen" as never, { item: route.params.partido } as never)
     }
   };
 

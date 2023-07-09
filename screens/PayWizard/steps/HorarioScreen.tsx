@@ -35,7 +35,7 @@ type ParamList = {
 const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
   const route = useRoute<RouteProp<ParamList, 'Item'>>();
   const { filter, user } = useContext(LoginContext);
-  const [fecha, setFecha] = useState<Date | undefined>(filter && filter.fecha? sumarundia(filter.fecha) : new Date());
+  const [fecha, setFecha] = useState<Date | undefined>(filter && filter.fecha ? sumarundia(filter.fecha) : new Date());
   const [horario, setHorario] = useState<Horario | undefined>();
   const { obtenerpistasinstalacion } = useHorarios();
   const { crearReserva } = useReservas();
@@ -51,7 +51,7 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
     setShowPicker(!showPicker);
   };
 
-  function sumarundia(fecha: Date) : Date {
+  function sumarundia(fecha: Date): Date {
     var date = new Date(fecha);
     date.setDate(date.getDate() + 1);
 
@@ -71,27 +71,33 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
 
   const onSubmit = () => {
     var tipoReserva = route.params.instalacion || route.params.evento ? TipoReservaEnum.Reserva : TipoReservaEnum.Inscripcion;
-    var reservaDTO: ReservaDTO = { nombre: user?.nombre, apellidos: user?.apellidos, email: user?.email, telefono: user?.telefono, cancelada: false, pista_oid: pista?pista.idpista:-1, maxparticipantes: 1, horario_oid: horario?.idhorario, fecha: fecha, tipo: tipoReserva, usuario_oid: user?.idusuario, deporte_oid: filter.deporte?filter.deporte:-1, evento_oid: route.params.evento?route.params.evento.idevento:-1 };
+    var reservaDTO: ReservaDTO;
+    if (route.params.partido) {
+      var p = route.params.partido;
+      reservaDTO = { nombre: p.nombre, apellidos: p.apellidos, email: p.email, telefono: p.telefono, cancelada: false, pista_oid: pista ? pista.idpista : -1, maxparticipantes: p.maxparticipantes, horario_oid: horario?.idhorario, fecha: fecha, tipo: TipoReservaEnum.Partido, usuario_oid: user?.idusuario, deporte_oid: p.obtenerDeporteReserva.iddeporte, evento_oid: -1, partido_oid: -1, descripcionpartido:p.descripcionpartido, nivelpartido:p.nivelpartido };
+    } else {
+      reservaDTO = { nombre: user?.nombre, apellidos: user?.apellidos, email: user?.email, telefono: user?.telefono, cancelada: false, pista_oid: pista ? pista.idpista : -1, maxparticipantes: 1, horario_oid: horario?.idhorario, fecha: fecha, tipo: tipoReserva, usuario_oid: user?.idusuario, deporte_oid: filter.deporte ? filter.deporte : -1, evento_oid: route.params.evento ? route.params.evento.idevento : -1, partido_oid: -1 };
+    }
     var date = createDateTime();
     crearReserva(reservaDTO, date).then((reserva) => {
       if (reserva) {
-        if (route.params.instalacion) {
-          navigation.navigate("Resumen" as never, { instalacion: route.params.instalacion, pista: pista, horario: horario, reserva: reserva, fecha:date?.toString() } as never)
+        if (route.params.instalacion && !route.params.partido) {
+          navigation.navigate("Resumen" as never, { instalacion: route.params.instalacion, pista: pista, horario: horario, reserva: reserva, fecha: date?.toString() } as never)
         } else if (route.params.evento) {
-          navigation.navigate("Resumen" as never, { evento: route.params.evento, pista: pista, horario: horario, reserva: reserva, fecha:date?.toString() } as never)
+          navigation.navigate("Resumen" as never, { evento: route.params.evento, pista: pista, horario: horario, reserva: reserva, fecha: date?.toString() } as never)
         } else if (route.params.partido) {
-          navigation.navigate("Resumen" as never, { partido: route.params.partido, pista: pista, horario: horario, reserva: reserva, fecha:date?.toString() } as never)
+          navigation.navigate("Resumen" as never, { partido:reserva, pista: pista, horario: horario, reserva: reserva, fecha: date?.toString(),instalacion: route.params.instalacion } as never)
         }
-      }else{
+      } else {
         const errormessage = t("NO_SE_PUEDE_RESERVAR");
-        const erroraplicacion = t("RESERVA_NO_DISPONIBLE");
+        const erroraplicacion = t("ERROR_RESERVA_EXISTENTE");
         Alert.alert(errormessage, erroraplicacion);
       }
     });
   };
 
-  const createDateTime = () =>{
-    if(fecha){
+  const createDateTime = () => {
+    if (fecha) {
       const anio = fecha.getFullYear();
       const mes = fecha.getMonth() + 1;
       const dia = fecha.getDate();
@@ -103,12 +109,12 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
   }
 
   const goBack = () => {
-    if (route.params.instalacion) {
+    if (route.params.instalacion && !route.params.partido) {
       navigation.navigate("InstalacionScreen" as never, { item: route.params.instalacion } as never)
     } else if (route.params.evento) {
       navigation.navigate("EventoScreen" as never, { item: route.params.evento } as never)
     } else if (route.params.partido) {
-      navigation.navigate("PartidoScreen" as never, { item: route.params.partido } as never)
+      navigation.navigate("CreatePartido" as never, { prevPage: "Horario" } as never)
     }
   };
 
@@ -195,11 +201,11 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
 
   return (
     <>
-      <Menu showReturnWizard={true} showLang={true} text={(instalacion && instalacion.nombre) || (evento && evento.nombre) || (partido && `${t("PARTIDO")} ${t("DE")} ${translatesport(partido.obtenerDeporteReserva)}`)} showusuario={true} userMenu={() => navigation.openDrawer()} functionGoBack={goBack} />
+      <Menu showReturnWizard={true} showLang={true} text={(instalacion && !route.params.partido && instalacion.nombre) || (evento && evento.nombre) || (partido && t("CREAR_PARTIDO"))} showusuario={true} userMenu={() => navigation.openDrawer()} functionGoBack={goBack} />
       <View style={styles.container}>
         <ProgressBar
           style={styles.progressBar}
-          progress={0}
+          progress={partido ? 0.25 : 0}
           color={MD3Colors.primary60}
         />
         <View style={{ flex: 1, justifyContent: 'space-between', margin: 20 }}>
@@ -230,7 +236,7 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
                   setPista(pistas?.find((pista) => pista.idpista.toString() == value.selectedList[0]._id));
                 }
               }}
-              arrayList={pistas ? pistas.map((pista) => ({ value: `${pista.nombre}${pista.ubicacion ? " - " + pista.ubicacion : ""}`, _id: pista.idpista.toString() })) : []}
+              arrayList={pistas ? pistas.filter(p => p.obtenerDeporte.find(d => d.iddeporte == (partido ? partido.obtenerDeporteReserva.iddeporte : filter.deporte))).map((pista) => ({ value: `${pista.nombre}${pista.ubicacion ? " - " + pista.ubicacion : ""}`, _id: pista.idpista.toString() })) : []}
               multiEnable={false}
               theme={{
                 colors: {

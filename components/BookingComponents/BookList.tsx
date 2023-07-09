@@ -58,8 +58,7 @@ const BookList: React.FC<BookListProps> = ({ type, filter, navigation, loading }
                         break;
                     case 'Partido':
                         setCargando(true);
-                        obtenerDeporte(filter.deporte).then((d: Deporte |undefined) => {setDeporte( d?.traduccionesDeporte.find((tr) => tr.getIdiomaDeporte.cultura === i18n.language)?.nombre); });
-                        obtenerReservas(filter).then((reservas: Reserva[]) => { setPartidos(reservas); setCargando(false); });
+                        obtenerReservas(filter).then((reservas: Reserva[]) => { setPartidos(reservas); obtenerDeporte(filter.deporte).then((d: Deporte |undefined) => {setDeporte( d?.traduccionesDeporte.find((tr) => tr.getIdiomaDeporte.cultura === i18n.language)?.nombre); setCargando(false);});});
                         break;
                 }
             }
@@ -107,7 +106,7 @@ const BookList: React.FC<BookListProps> = ({ type, filter, navigation, loading }
                 ) || (type == 'Partido' &&
                     <>
                         <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                            <Text style={{ fontSize: 20 }} className="text-base font-semibold mt-1">{`${t("PARTIDOS_DISPONIBLES")} ${t("DE")} ${deporte}`}</Text>
+                            <Text style={{ fontSize: 20 }} className="text-base font-semibold mt-1">{!cargando?`${t("PARTIDOS_DISPONIBLES")} ${t("DE")} ${deporte}` : t("PARTIDOS_DISPONIBLES")}</Text>
                         </View>
                         {
                             (!cargando && partidos && partidos.length > 0 && partidos?.map((item, index) => (

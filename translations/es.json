@@ -251,5 +251,12 @@
   "MAX_PARTIPANTES": "Máximo de participantes",
   "SELECCIONAR_MAX_PARTIPANTES": "Selecciona el número de participantes",
   "DEPORTE": "Deporte",
-  "SELECCIONA_DEPORTE": "Selecciona el deporte"
+  "SELECCIONA_DEPORTE": "Selecciona el deporte",
+  "SELECCIONAR_INSTALACION": "Selecciona la instalación",
+  "NUMERO_PARTICIPANTES": "Número de participantes",
+  "SELECCIONA_NUMERO_PARTICIPANTES": "Selecciona el número de participantes",
+  "PARTIDO_CREADO": "Partido creado",
+  "SE_HA_CREADO_PARTIDO": "Se ha creado el partido",
+  "NIVEL_PARTIDO": "Nivel del partido",
+  "VALORAR": "Valorar"
 }

@@ -19,6 +19,9 @@ import { crearNotificacion } from "../../shared/services/hooks/notifications/use
 import { TipoNotificacion } from '../../shared/models/TiposNotificacion';
 import { Horario } from '../../shared/models/Horario';
 import { enviarCorreo } from '../../shared/services/hooks/emails/useEmail';
+import { MagnifyingGlassIcon, CalendarDaysIcon, AdjustmentsHorizontalIcon, ChatBubbleLeftEllipsisIcon, UserGroupIcon, ClockIcon } from "react-native-heroicons/solid";
+import { Button } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const ReservaList = ({ reservas, estado, setReload, navigation, type }: { reservas: Reserva[] | undefined, estado: EstadosReserva, setReload: any, navigation: any, type: TypeReservation }) => {
     const { t } = useTranslation();
@@ -196,13 +199,27 @@ const ReservaList = ({ reservas, estado, setReload, navigation, type }: { reserv
     }
 
     function obtenerNombreValoracion(reserva) {
-        var tipo: string = reserva.obtenerEventoReserva != null ? "EVENTO" : (reserva.obtenerPartidoReserva != null ? "PARTIDO" : "INSTALACION");
+        var tipo: string = reserva.obtenerEventoReserva != null ? "EVENTO" : (reserva.obtenerPartidoReserva != null ? "USUARIO" : "INSTALACION");
         var nombre = (reserva.obtenerPartidoReserva ? `${reserva.obtenerUsuarioCreador.nombre} ${reserva.obtenerUsuarioCreador.apellidos}` : (reserva.obtenerEventoReserva ? reserva.obtenerEventoReserva.nombre : reserva.obtenerPista.obtenerInstalaciones.nombre));
         return `${t("VALORA_" + tipo)} ${nombre}`
     }
 
+    function obtainicontype(){
+        switch (type) {
+            case 'Evento':
+                return <ClockIcon size={100} color="#04D6C8" />
+                break;
+            case 'Partido':
+                return <UserGroupIcon size={100} color="#04D6C8" />
+                break;
+            case 'Pista':
+                return  <CalendarDaysIcon size={100} color="#04D6C8" />
+                break;
+        }
+    }
+
     const deporteIcon = (item: Deporte | undefined) => (
-        <View style={{ flexDirection: 'row', marginBottom: 0 }}>
+        <View style={{ flexDirection: 'row', marginBottom: 0, marginTop:4 }}>
             {
                 (item && item.icono.endsWith("&ionic") &&
                     <Ionicons
@@ -227,7 +244,16 @@ const ReservaList = ({ reservas, estado, setReload, navigation, type }: { reserv
                         size={25}
                     />)
             }
-            <Text style={{ marginLeft: 6, textAlign: 'center', fontSize: 16, fontWeight: 'bold', color: '#04D6C8' }}>{translatesport(item)}</Text>
+            <Text style={{ marginLeft: 6, marginTop:4, textAlign: 'center', fontSize: 16, fontWeight: 'bold', color: '#04D6C8' }}>{translatesport(item)}</Text>
+            {type == 'Evento' && (
+                        <Button buttonColor="transparent" style={{ marginLeft: 'auto', borderColor: 'green', borderWidth: 2, marginTop:-5 }} mode="text" textColor="green" icon={() => <Icon name="star" size={15} color="green" />} contentStyle={{ flexDirection: 'row-reverse' }} onPress={()=>{setReserva(reserva); setModalvisible(true);}}>
+                        <Text style={{ fontSize: 12 }}>
+                          {t("VALORAR")}
+                        </Text>
+                      </Button>
+                    )
+
+                    }
         </View>
     );
 
@@ -239,8 +265,8 @@ const ReservaList = ({ reservas, estado, setReload, navigation, type }: { reserv
                         <FontAwesome name="remove" size={20} color="red" />
                     </TouchableOpacity>
                 }
-                {estado == 'Finalizada' &&
-                    <TouchableOpacity style={styles.button} onPress={() => { setReserva(reserva); setModalvisible(true) }}>
+                {estado == 'Finalizada' && (!reserva.obtenerPartidoReserva || reserva.obtenerPartidoReserva.obtenerUsuarioCreador.idusuario != user.idusuario) && !reserva.obtenerEventoReserva &&
+                    <TouchableOpacity style={styles.button} onPress={() => { setReserva(reserva); setModalvisible(true); }}>
                         <FontAwesome name="star" size={20} color="orange" />
                     </TouchableOpacity>
                 }
@@ -326,7 +352,7 @@ const ReservaList = ({ reservas, estado, setReload, navigation, type }: { reserv
                 ))}
                 {!reservas || reservas.length == 0 &&
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 100 }}>
-                        <FontAwesome5 name="calendar" size={100} color="#04D6C8" />
+                        {obtainicontype()}
                         <Text style={{ fontSize: 24, fontWeight: 'bold', marginTop: 20, alignContent: 'center' }}>
                             {type == 'Pista' ? t("NO_HAY_RESERVAS") : (type == 'Evento' ? t("NO_HAY_EVENTOS") : t("NO_HAY_PARTIDOS"))}
                         </Text>
