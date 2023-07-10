@@ -63,9 +63,9 @@ const NotificacionScreen: React.FC<NotificacionScreenProps> = ({ navigation }) =
             <Menu showReturnWizard={true} showLang={true} text={t("NOTIFICACIONES")} showusuario={true} userMenu={() => navigation.openDrawer()} functionGoBack={goBack} />
             <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
                 <View style={{ margin: 20 }}>
-                    <View style={{ padding: 10, borderBottomWidth: 1, borderColor: "#106F69", backgroundColor: route.params.notificacion.leida ? "white" : "#04D6C850" }}>
-                        <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{route.params.notificacion.asunto}</Text>
-                        <Text style={{ fontSize: 16, marginBottom: 10 }}>{route.params.notificacion.descripcion}</Text>
+                    <View style={{ padding: 10, borderBottomWidth: 1, borderColor: "#106F69" }}>
+                        <Text style={{ fontWeight: 'bold', fontSize: 20, marginBottom:10 }}>{route.params.notificacion.asunto}</Text>
+                        <Text style={{ fontSize: 18, marginBottom: 20 }}>{route.params.notificacion.descripcion}</Text>
                         <Text>{`${new Date(route.params.notificacion.fecha).toLocaleDateString(i18n.language == "en" ? 'en-US' : 'es')} ${obtenerHorasYMinutos(new Date(route.params.notificacion.fecha))}`}</Text>
                     </View>
                 </View>

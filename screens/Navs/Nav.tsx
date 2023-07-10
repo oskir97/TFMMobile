@@ -30,6 +30,7 @@ import EventosPage from "../Eventos/EventosScreen";
 import NotificacionesPage from "../Notificaciones/NotificacionesScreen";
 import NotificacionPage from "../Notificaciones/NotificacionScreen";
 import PartidosPage from "../Partidos/PartidosScreen";
+import AjustesPage from "../Ajustes/AjustesScreen";
 import { useTranslation } from 'react-i18next';
 import { NotificacionesContext } from '../../shared/services/hooks/notifications/contexts/NotificationContext';
 
@@ -202,7 +203,7 @@ const Nav: React.FC = () => {
                     display: 'none',
                 },
             }} />
-            <Drawer.Screen name="Ajustes" component={HomePage} options={{
+            <Drawer.Screen name="Ajustes" component={AjustesPage} options={{
                 drawerIcon: ({ color }) => (
                     <AdjustmentsHorizontalIcon size={22} color={color} />
                 ),

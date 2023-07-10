@@ -258,5 +258,7 @@
   "SE_HA_CREADO_PARTIDO": "S'ha creat el partit",
   "NIVEL_PARTIDO": "Nivell del partit",
   "VALORAR": "Valorar",
-  "VER_NOTIFICACION": "Veure notificació"
+  "VER_NOTIFICACION": "Veure notificació",
+  "MODIFICAR": "Modificar",
+  "MODIFICAR_USUARIO": "Modificar l'usuari"
 }

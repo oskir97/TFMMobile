@@ -85,7 +85,7 @@ const NotificacionesScreen: React.FC<NotificacionesScreenProps> = ({ navigation 
         <>
             <Menu showReturnWizard={true} showLang={true} text={t("RESERVAR")} showusuario={true} userMenu={() => navigation.openDrawer()} functionGoBack={goBack} />
             <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-                <View style={{ flexDirection: 'row', marginBottom: 20, marginLeft: 10 }}>
+                <View style={{ flexDirection: 'row', marginBottom: 20, marginLeft: 20 }}>
                     <Text style={{ fontSize: 20 }} className="font-semibold mt-1">{t("NOTIFICACIONES")}</Text>
                 </View>
                 <View>
