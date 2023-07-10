@@ -2,6 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import { TailwindProvider } from "tailwindcss-react-native";
 import Nav from "./screens/Navs/Nav";
 import { LoginProvider } from './shared/services/hooks/login/contexts/LoginContext'
+import { NotificacionesProvider } from './shared/services/hooks/notifications/contexts/NotificationContext'
 import "./i18n.config";
 import { useTranslation } from "react-i18next";
 import { PaperProvider } from "react-native-paper";
@@ -17,9 +18,11 @@ const App: React.FC = () => {
           {/* TailwindProvider */}
           <StatusBar style="light" />
           <I18nextProvider i18n={i18n}>
-            <LoginProvider>
-              <Nav />
-            </LoginProvider>
+            <NotificacionesProvider>
+              <LoginProvider>
+                <Nav />
+              </LoginProvider>
+            </NotificacionesProvider>
           </I18nextProvider>
         </TailwindProvider>
       </PaperProvider>

@@ -24,7 +24,7 @@ import cardValidator from 'card-validator';
 import { useReservas } from "../../../shared/services/hooks/reservas/useReservas";
 import { LoginContext } from "../../../shared/services/hooks/login/contexts/LoginContext";
 import { usePagos } from "../../../shared/services/hooks/pagos/usePagos";
-import { crearNotificacion } from "../../../shared/services/hooks/notifications/useNotifications"
+import { useNotifications } from "../../../shared/services/hooks/notifications/useNotifications"
 import showNotification from "../../../shared/services/hooks/notifications/useNotificationsPush"
 import { PagoDTO } from "../../../shared/models/dtos/PagoDTO";
 import shortid from 'shortid';
@@ -77,6 +77,7 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
   const [pista, setPista] = useState<string | undefined>();
   const { eliminarReserva, ObtenerInscripciones } = useReservas();
   const { crearPago, sePuedePagar, obtenerTiposPagos } = usePagos();
+  const { crearNotificacion } = useNotifications();
   const { obtenerPistaHorario } = useHorarios();
 
   const NUM_CARD_REQUERIDO = t("NUM_CARD_REQUERIDO");

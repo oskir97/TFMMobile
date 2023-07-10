@@ -15,7 +15,7 @@ import { ValoracionDTO } from '../../shared/models/dtos/ValoracionDTO';
 import { LoginContext } from '../../shared/services/hooks/login/contexts/LoginContext';
 import { TipoReserva } from '../../shared/models/TipoReserva';
 import showNotification from "../../shared/services/hooks/notifications/useNotificationsPush"
-import { crearNotificacion } from "../../shared/services/hooks/notifications/useNotifications"
+import { useNotifications } from "../../shared/services/hooks/notifications/useNotifications"
 import { TipoNotificacion } from '../../shared/models/TiposNotificacion';
 import { Horario } from '../../shared/models/Horario';
 import { enviarCorreo } from '../../shared/services/hooks/emails/useEmail';
@@ -31,6 +31,7 @@ const ReservaList = ({ reservas, estado, setReload, navigation, type }: { reserv
     const { crearValoracion } = useValoraciones();
     const [modalvisible, setModalvisible] = useState<boolean>(false);
     const [reserva, setReserva] = useState<Reserva | undefined>(undefined);
+    const { crearNotificacion } = useNotifications();
 
     function obtenerHorario(reserva: Reserva): string {
         if (reserva.obtenerPartidoReserva != null) {

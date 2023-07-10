@@ -1,4 +1,4 @@
-import React, { useState, createContext, useEffect } from "react";
+import React, { useState, createContext, useEffect, useContext } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LoginContextType } from "./LoginContextType";
 import { Api, ApiResponse } from "../../../api";
@@ -8,6 +8,9 @@ import { Alert, PermissionsAndroid } from "react-native";
 import { Filter, Sort, TypeReservation } from "../../../../models/Filter";
 import { useTranslation } from "react-i18next";
 import { useDeportes } from "../../deportes/useDeportes";
+import { Notificacion } from "../../../../models/Notificacion";
+import { useNotifications } from "../../notifications/useNotifications";
+import { NotificacionesContext } from "../../notifications/contexts/NotificationContext";
 interface LoginProviderProps {
   children: React.ReactNode
 }
@@ -41,6 +44,8 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
   const [location, setLocation] = useState<Location.LocationObject>();
   const [localidad, setLocalidad] = useState<string | undefined>();
   const [filter, setFilter] = useState<Filter | undefined>();
+  const { setNotificaciones } = useContext(NotificacionesContext);
+  const { obtenerNotificaciones } = useNotifications();
 
   const { t } = useTranslation();
 
@@ -175,15 +180,18 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
         const token: string = value;
         api.get('/UsuarioRegistrado').then((value) => {
           if (!value.error) {
-            getLocation().then(() => {
-              console.log("Ubicación obtenida");
-              getStorageFilter().then((result: Filter | undefined) => {
-                setFilter(result);
-                setUser(value.data);
-                setLogin(token != null);
-                setLoading(false);
+            obtenerNotificaciones(value.data.idusuario).then((notificaciones) => {
+              setNotificaciones(notificaciones);
+              getLocation().then(() => {
+                console.log("Ubicación obtenida");
+                getStorageFilter().then((result: Filter | undefined) => {
+                  setFilter(result);
+                  setUser(value.data);
+                  setLogin(token != null);
+                  setLoading(false);
+                });
               });
-            })
+            });
           } else {
             if (value.error == "Request failed with status code 403") {
               const ERROR = t("ERROR");

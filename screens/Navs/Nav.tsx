@@ -9,6 +9,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { LoginContext, LoginProvider } from '../../shared/services/hooks/login/contexts/LoginContext';
 import { MagnifyingGlassIcon, CalendarDaysIcon, AdjustmentsHorizontalIcon, ChatBubbleLeftEllipsisIcon, UserGroupIcon, ClockIcon } from "react-native-heroicons/solid";
+import IonicIcon from 'react-native-vector-icons/Ionicons';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import CustomDrawer from '../../components/Drawer/CustomDrawer';
 import Ubicacion from "../FilterWizard/steps/UbicacionScreen";
@@ -25,21 +27,25 @@ import PartidoPage from "../Home/PartidoScreen";
 import ReviewsPage from "../Home/ReviewsScreen";
 import ReservasPage from "../Reservas/ReservasScreen";
 import EventosPage from "../Eventos/EventosScreen";
+import NotificacionesPage from "../Notificaciones/NotificacionesScreen";
+import NotificacionPage from "../Notificaciones/NotificacionScreen";
 import PartidosPage from "../Partidos/PartidosScreen";
 import { useTranslation } from 'react-i18next';
+import { NotificacionesContext } from '../../shared/services/hooks/notifications/contexts/NotificationContext';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 const Nav: React.FC = () => {
     const { login, loading, pagando } = useContext(LoginContext);
+    const { notificaciones } = useContext(NotificacionesContext);
     const { t } = useTranslation();
 
     const inicioLabel = t('RESERVAR');
     const reservasLabel = t('MIS_RESERVAS');
     const partidosLabel = t('MIS_PARTIDOS');
     const eventosLabel = t('MIS_EVENTOS');
-    const notificacionesLabel = t('NOTIFICACIONES');
+    const notificacionesLabel = t('NOTIFICACIONES') + (notificaciones.filter(n=>!n.leida).length > 0 ? " " + `(${notificaciones.filter(n=>!n.leida).length})` : "");
     const ajustesLabel = t('AJUSTES');
 
     const authNavigator = (
@@ -184,11 +190,17 @@ const Nav: React.FC = () => {
                 ),
                 drawerLabel: eventosLabel
             }} />
-            <Drawer.Screen name="Notificaciones" component={HomePage} options={{
+            <Drawer.Screen name="Notificaciones" component={NotificacionesPage} options={{
                 drawerIcon: ({ color }) => (
-                    <ChatBubbleLeftEllipsisIcon size={22} color={color} />
+                    notificaciones.filter(n => !n.leida).length > 0 ?<MaterialIcon name="notifications-active" size={22} color="red" /> : <IonicIcon name="notifications" size={22} color={color} />
+
                 ),
                 drawerLabel: notificacionesLabel
+            }} />
+            <Drawer.Screen name="Notificacion" component={NotificacionPage} options={{
+                drawerLabel: () => null, drawerItemStyle: {
+                    display: 'none',
+                },
             }} />
             <Drawer.Screen name="Ajustes" component={HomePage} options={{
                 drawerIcon: ({ color }) => (

@@ -256,5 +256,7 @@
   "SELECCIONA_NUMERO_PARTICIPANTES": "Selecciona el número de participants",
   "PARTIDO_CREADO": "Partit creat",
   "SE_HA_CREADO_PARTIDO": "S'ha creat el partit",
-  "NIVEL_PARTIDO": "Nivell del partit"
+  "NIVEL_PARTIDO": "Nivell del partit",
+  "VALORAR": "Valorar",
+  "VER_NOTIFICACION": "Veure notificació"
 }
