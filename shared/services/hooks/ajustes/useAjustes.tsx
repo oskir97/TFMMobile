@@ -3,6 +3,8 @@ import * as yup from 'yup';
 import { Api } from '../../api';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useTranslation } from 'react-i18next';
+import { LoginContext } from "../../hooks/login/contexts/LoginContext";
+import { useContext } from 'react';
 
 export type ajustesData = {
     nombre: string;
@@ -23,6 +25,7 @@ export type ajustesData = {
 
 export const useAjustes = () => {
     const { t } = useTranslation();
+    const { user } = useContext(LoginContext);
 
     const NOMBRE_REQUERIDO = t("NOMBRE_REQUERIDO");
     const NOMBRE_50_CARACTERES = t("NOMBRE_50_CARACTERES");
@@ -66,7 +69,14 @@ export const useAjustes = () => {
     const { control, setValue, handleSubmit, formState, register, formState: { errors }, reset } = useForm<ajustesData>({
         resolver: yupResolver(schema),
         defaultValues: {
-            fechaNacimiento: new Date(Date.now() - 18 * 365 * 24 * 60 * 60 * 1000),
+            nombre:user.nombre,
+            apellidos:user.apellidos,
+            email:user.email,
+            domicilio:user.domicilio,
+            numero:user.numero,
+            telefono:user.telefono,
+            telefonoAlternartivo: user.telefonoalternativo,
+            fechaNacimiento: user.fechanacimiento,
         }
     });
 

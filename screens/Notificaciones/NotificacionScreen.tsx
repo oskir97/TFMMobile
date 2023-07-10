@@ -1,4 +1,4 @@
-import { View, Text, BackHandler, FlatList } from "react-native";
+import { View, Text, BackHandler, FlatList, ScrollView } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { LoginContext } from "../../shared/services/hooks/login/contexts/LoginContext";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -61,7 +61,7 @@ const NotificacionScreen: React.FC<NotificacionScreenProps> = ({ navigation }) =
     return (
         <>
             <Menu showReturnWizard={true} showLang={true} text={t("NOTIFICACIONES")} showusuario={true} userMenu={() => navigation.openDrawer()} functionGoBack={goBack} />
-            <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+            <ScrollView style={{flex: 1, backgroundColor: '#fff'}} showsVerticalScrollIndicator={false}>
                 <View style={{ margin: 20 }}>
                     <View style={{ padding: 10, borderBottomWidth: 1, borderColor: "#106F69" }}>
                         <Text style={{ fontWeight: 'bold', fontSize: 20, marginBottom:10 }}>{route.params.notificacion.asunto}</Text>
@@ -69,7 +69,7 @@ const NotificacionScreen: React.FC<NotificacionScreenProps> = ({ navigation }) =
                         <Text>{`${new Date(route.params.notificacion.fecha).toLocaleDateString(i18n.language == "en" ? 'en-US' : 'es')} ${obtenerHorasYMinutos(new Date(route.params.notificacion.fecha))}`}</Text>
                     </View>
                 </View>
-            </SafeAreaView>
+            </ScrollView>
         </>
     );
 };
