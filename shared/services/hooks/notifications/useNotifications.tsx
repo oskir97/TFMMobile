@@ -12,9 +12,13 @@ import { Notificacion } from '../../../models/Notificacion';
 import { UsuarioRegistrado } from '../../../models/UsuarioRegistrado';
 import { TipoReserva } from '../../../models/TipoReserva';
 import { TFunction } from 'i18next';
+import { NotificacionesContext } from './contexts/NotificationContext';
+import { useContext } from 'react';
+import showNotification from "../../hooks/notifications/useNotificationsPush"
 
 export const useNotifications = () => {
     const { t } = useTranslation();
+    const { setNotificaciones } = useContext(NotificacionesContext);
 
     const obtenerNotificaciones = async (iduser: number): Promise<Notificacion[]> => {
         try {
@@ -67,7 +71,7 @@ export const useNotifications = () => {
         }
     };
 
-    const crearNotificacion = async (t: TFunction<"translation", undefined>, usuario: UsuarioRegistrado | undefined, reserva: Reserva | undefined, nombrePartido: string | undefined, instalacion: Instalacion | undefined, pista: Pista | undefined, evento: Evento | undefined, partido: Reserva | undefined, fecha: Date | null, horario: string | undefined, tipoNotificacion: TipoNotificacion): Promise<Notificacion | undefined> => {
+    const crearNotificacion = async (t: TFunction<"translation", undefined>, usuario: UsuarioRegistrado | undefined, reserva: Reserva | undefined, nombrePartido: string | undefined, instalacion: Instalacion | undefined, pista: Pista | undefined, evento: Evento | undefined, partido: Reserva | undefined, fecha: Date | null, horario: string | undefined, tipoNotificacion: TipoNotificacion, navigation): Promise<Notificacion | undefined> => {
 
         if (fecha || evento || partido) {
             try {
@@ -112,8 +116,10 @@ export const useNotifications = () => {
                         const api = new Api<NotificacionDTO, Notificacion>(token);
                         const notifapi = await api.post(`/Notificacion/${route}`, notificacion);
                         if (!notifapi.error && notifapi.data) {
-                            console.log(notifapi);
-                            return notifapi.data;
+                            obtenerNotificaciones(notificacion.receptor_oid).then((notificaciones) => { 
+                                setNotificaciones(notificaciones); 
+                                showNotification({ title: notifapi.data.asunto, body: notifapi.data.descripcion, url: "Notificaciones", navigation: navigation });
+                                return notifapi.data; });
                         } else {
                             return undefined;
                         }

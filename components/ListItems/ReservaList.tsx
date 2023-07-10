@@ -181,9 +181,9 @@ const ReservaList = ({ reservas, estado, setReload, navigation, type }: { reserv
     function cancel(reserva: Reserva) {
         cancelarReserva(reserva).then((cancelada: boolean) => {
             if (cancelada) {
-                crearNotificacion(t, user, reserva, getName(reserva), reserva.obtenerPista ? reserva.obtenerPista.obtenerInstalaciones : undefined, reserva.obtenerPista ? reserva.obtenerPista : undefined, reserva.obtenerEventoReserva ? reserva.obtenerEventoReserva : undefined, reserva.obtenerPartidoReserva ? reserva.obtenerPartidoReserva : undefined, reserva.obtenerPartidoReserva ? reserva.obtenerPartidoReserva.fecha : reserva.fecha, (type == 'Pista' && (formatTime(reserva.obtenerHorarioReserva.inicio) + " - " + formatTime(reserva.obtenerHorarioReserva.fin))) || (type == 'Partido' && (formatTime(reserva.obtenerPartidoReserva.obtenerHorarioReserva.inicio) + " - " + formatTime(reserva.obtenerPartidoReserva.obtenerHorarioReserva.fin))), TipoNotificacion.cancelacion).then((notif) => {
-                    if (notif)
-                        showNotification({ title: notif.asunto, body: notif.descripcion, url: "Notificaciones", navigation: navigation });
+                crearNotificacion(t, user, reserva, getName(reserva), reserva.obtenerPista ? reserva.obtenerPista.obtenerInstalaciones : undefined, reserva.obtenerPista ? reserva.obtenerPista : undefined, reserva.obtenerEventoReserva ? reserva.obtenerEventoReserva : undefined, reserva.obtenerPartidoReserva ? reserva.obtenerPartidoReserva : undefined, reserva.obtenerPartidoReserva ? reserva.obtenerPartidoReserva.fecha : reserva.fecha, (type == 'Pista' && (formatTime(reserva.obtenerHorarioReserva.inicio) + " - " + formatTime(reserva.obtenerHorarioReserva.fin))) || (type == 'Partido' && (formatTime(reserva.obtenerPartidoReserva.obtenerHorarioReserva.inicio) + " - " + formatTime(reserva.obtenerPartidoReserva.obtenerHorarioReserva.fin))), TipoNotificacion.cancelacion, navigation).then((notif) => {
+                    // if (notif)
+                    //     showNotification({ title: notif.asunto, body: notif.descripcion, url: "Notificaciones", navigation: navigation });
                 });
                 enviarCorreo(reserva.email, contruirAsunto(),
                     `${construirCuerpo()}<br><br>
