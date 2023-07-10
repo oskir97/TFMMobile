@@ -200,6 +200,7 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
             } else {
               const ERROR = t("ERROR");
               const ERROR_APLICACION = t("ERROR_APLICACION");
+              console.log("error en en el logincontext");
               Alert.alert(ERROR, ERROR_APLICACION);
             }
 
@@ -238,6 +239,7 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
       } else {
         const ERROR = t("ERROR");
         const ERROR_APLICACION = t("ERROR_APLICACION");
+        console.log("error en el login context2");
         Alert.alert(ERROR, ERROR_APLICACION);
       }
 

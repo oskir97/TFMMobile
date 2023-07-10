@@ -446,11 +446,11 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
   }
 
   const getPista = async () => {
+    console.log(route.params.evento.obtenerPistaEvento);
     if (route.params.pista) {
       setPista(route.params.pista.nombre);
-    } else if (route.params.evento && route.params.evento.obtenerHorariosEvento) {
-      const pista = await obtenerPistaHorario(route.params.evento.obtenerHorariosEvento[0].idhorario).then((pista) => { if (pista) return pista.nombre });
-      setPista(pista);
+    } else if (route.params.evento && route.params.evento.obtenerPistaEvento) {
+      setPista(route.params.evento.obtenerPistaEvento.nombre);
     } else if (route.params.partido) {
       setPista(route.params.partido.obtenerPista.nombre);
     } else {
@@ -550,7 +550,7 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
                 <Text style={{ fontSize: 16 }} >{t("INSTALACION")}: </Text>
                 <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{getInstalacion()}</Text>
               </View>
-              {(route.params.pista) && (
+              {(pista) && (
                 <>
                   <View style={{ flexDirection: 'row', marginBottom: 10 }}>
                     <Text style={{ fontSize: 16 }} >{t("PISTA")}: </Text>
@@ -558,7 +558,7 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
                   </View>
                 </>
               )}
-              {(!route.params.pista && route.params.partido) && (
+              {(!pista && !route.params.pista && route.params.partido) && (
                 <>
                   <View style={{ flexDirection: 'row', marginBottom: 10 }}>
                     <Text style={{ fontSize: 16 }} >{t("PISTA")}: </Text>

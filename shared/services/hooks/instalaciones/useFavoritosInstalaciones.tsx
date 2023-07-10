@@ -21,6 +21,7 @@ export const useFavoritosInstalaciones = () => {
         } else {
           const errormessage = t("ERROR");
           const erroraplicacion = t("ERROR_APLICACION");
+          console.log("error al obtener los favoritos");
           Alert.alert(errormessage, erroraplicacion);
           return false;
         }
@@ -46,6 +47,7 @@ export const useFavoritosInstalaciones = () => {
         } else {
           const errormessage = t("ERROR");
           const erroraplicacion = t("ERROR_APLICACION");
+          console.log("error al obtener los favoritos");
           Alert.alert(errormessage, erroraplicacion);
           return false;
         }

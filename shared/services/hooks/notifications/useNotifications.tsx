@@ -28,12 +28,17 @@ export const useNotifications = () => {
                 const api = new Api<any, Notificacion[]>(token);
                 const notificaciones = await api.get('/Notificacion/Listar?p_idusuario=' + iduser);
 
-                if (!notificaciones.error && notificaciones.data) {
+                console.log(notificaciones.data);
 
-                    return notificaciones.data;
+                if (!notificaciones.error) {
+                    if(!notificaciones.data)
+                        return []
+                    else
+                        return notificaciones.data;
                 } else {
                     const errormessage = t("ERROR");
                     const erroraplicacion = t("ERROR_APLICACION");
+                    console.log("error al obtener las notificaciones");
                     Alert.alert(errormessage, erroraplicacion);
                     return [];
                 }

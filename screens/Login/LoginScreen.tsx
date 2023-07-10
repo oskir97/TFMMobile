@@ -34,6 +34,7 @@ const LoginScreen = (props: LoginProps) => {
     } catch (error: any) {
       const errormessage = t("ERROR");
       const erroraplicacion = t("ERROR_APLICACION");
+      console.log("error en login screen");
       Alert.alert(errormessage, erroraplicacion);
     }
   };

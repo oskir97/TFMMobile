@@ -66,6 +66,7 @@ const AjusteScreen = (props: AjusteProps) => {
             console.log(error.message);
             const errormessage = t("ERROR");
             const erroraplicacion = t("ERROR_APLICACION");
+            console.log("error en ajustes");
             Alert.alert(errormessage, erroraplicacion);
         }
     };

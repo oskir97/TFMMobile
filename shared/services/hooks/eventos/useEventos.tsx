@@ -38,6 +38,7 @@ export const useEventos = () => {
         } else {
           const errormessage = t("ERROR");
           const erroraplicacion = t("ERROR_APLICACION");
+          console.log("error en al obtener los eventos");
           Alert.alert(errormessage, erroraplicacion);
           return [];
         }
@@ -104,6 +105,7 @@ export const useEventos = () => {
           } else {
             const errormessage = t("ERROR");
             const erroraplicacion = t("ERROR_APLICACION");
+            console.log("error al obtener los eventos 2");
             Alert.alert(errormessage, erroraplicacion);
             return [];
           }

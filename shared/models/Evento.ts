@@ -1,6 +1,7 @@
 import { Deporte } from "./Deporte";
 import { Horario } from "./Horario";
 import { Instalacion } from "./Instalacion";
+import { Pista } from "./Pista";
 import { Reserva } from "./Reserva";
 import { UsuarioRegistrado } from "./UsuarioRegistrado";
 import { Valoracion } from "./Valoracion";
@@ -20,4 +21,5 @@ export interface Evento {
     obtenerValoracionesEvento: Valoracion[];
     obtenerInstalacion: Instalacion;
     obtenerInscripciones: Reserva[];
+    obtenerPistaEvento: Pista;
   }

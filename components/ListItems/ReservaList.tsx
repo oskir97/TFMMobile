@@ -118,7 +118,7 @@ const ReservaList = ({ reservas, estado, setReload, navigation, type }: { reserv
         if (reserva.obtenerPista) {
             return reserva.obtenerPista.nombre;
         } else if (reserva.obtenerEventoReserva && reserva.obtenerEventoReserva.obtenerHorariosEvento) {
-            return reserva.obtenerPista.nombre;
+            return reserva.obtenerEventoReserva.obtenerPistaEvento.nombre;
         } else if (reserva.obtenerPartidoReserva) {
             return reserva.obtenerPartidoReserva.obtenerPista.nombre;
         } else {

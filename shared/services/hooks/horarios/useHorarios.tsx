@@ -32,6 +32,7 @@ export const useHorarios = () => {
                     } else {
                         const errormessage = t("ERROR");
                         const erroraplicacion = t("ERROR_APLICACION");
+                        console.log("error al obtener los horarios");
                         Alert.alert(errormessage, erroraplicacion);
                         return [];
                     }
@@ -60,6 +61,7 @@ export const useHorarios = () => {
                 } else {
                     const errormessage = t("ERROR");
                     const erroraplicacion = t("ERROR_APLICACION");
+                    console.log("error al listar los horarios");
                     Alert.alert(errormessage, erroraplicacion);
                     return [];
                 }
@@ -85,6 +87,7 @@ export const useHorarios = () => {
                 } else {
                     const errormessage = t("ERROR");
                     const erroraplicacion = t("ERROR_APLICACION");
+                    console.log("error al obtener los horarios");
                     Alert.alert(errormessage, erroraplicacion);
                     return undefined;
                 }

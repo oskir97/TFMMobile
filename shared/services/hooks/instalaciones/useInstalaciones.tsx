@@ -69,6 +69,7 @@ export const useInstalaciones = () => {
         } else {
           const errormessage = t("ERROR");
           const erroraplicacion = t("ERROR_APLICACION");
+          console.log("error al obtener las instalaciones");
           Alert.alert(errormessage, erroraplicacion);
           return [];
         }
@@ -102,6 +103,7 @@ export const useInstalaciones = () => {
             console.log("Error al obtener la instalacion");
             const errormessage = t("ERROR");
             const erroraplicacion = t("ERROR_APLICACION");
+            console.log("error al obtener las instalaciones");
             Alert.alert(errormessage, erroraplicacion);
             return undefined;
           }

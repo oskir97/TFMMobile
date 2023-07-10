@@ -23,6 +23,7 @@ export const useDeportes = () => {
         } else {
           const errormessage = t("ERROR");
           const erroraplicacion = t("ERROR_APLICACION");
+          console.log("error al obtener los deportes");
           Alert.alert(errormessage, erroraplicacion);
           return undefined;
         }
@@ -51,6 +52,7 @@ export const useDeportes = () => {
           } else {
             const errormessage = t("ERROR");
             const erroraplicacion = t("ERROR_APLICACION");
+            console.log("error al obtener los deportes 2");
             Alert.alert(errormessage, erroraplicacion);
             setDeportes([]);
             alert(deportes.error);

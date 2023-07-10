@@ -61,6 +61,7 @@ const RegisterScreen = (props: RegisterProps) => {
       console.log(error.message);
       const errormessage = t("ERROR");
       const erroraplicacion = t("ERROR_APLICACION");
+      console.log("error en el registro");
       Alert.alert(errormessage, erroraplicacion);
     }
   };
