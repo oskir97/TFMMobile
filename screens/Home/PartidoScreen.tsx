@@ -103,7 +103,7 @@ const PartidoScreen: React.FC<PartidoScreenProps> = ({ navigation }) => {
   }
 
   function booking() {
-    if (user.idusuario != partido.obtenerUsuarioCreador.idusuario && !partido.obtenerInscripciones.find(i=>i.obtenerUsuarioCreador.idusuario = user.idusuario)) {
+    if (user.idusuario != partido.obtenerUsuarioCreador.idusuario && !partido.obtenerInscripciones.find(i=>i.obtenerUsuarioCreador.idusuario == user.idusuario)) {
       var reservaDTO: ReservaDTO = { nombre: user?.nombre, horario_oid: -1, pista_oid: -1, evento_oid: -1, apellidos: user?.apellidos, email: user?.email, telefono: user?.telefono, cancelada: false, maxparticipantes: 1, tipo: TipoReservaEnum.Inscripcion, usuario_oid: user?.idusuario, deporte_oid: partido.obtenerDeporteReserva.iddeporte, partido_oid: partido.idreserva, fecha:partido.fecha };
       crearReserva(reservaDTO, reservaDTO.fecha).then((reserva) => {
         if (reserva) {

@@ -317,7 +317,7 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
 
   const finishPayment = (payok: boolean) => {
     if (payok) {
-      navigation.navigate("CompletedPago" as never);
+      navigation.navigate("CompletedPago" as never, { instalacion: route.params.instalacion != undefined && !route.params.partido, evento: route.params.evento != undefined, partido: route.params.partido != undefined } as never)
     } else {
       if (route.params.reserva)
         eliminarReserva(route.params.reserva.idreserva);
@@ -549,7 +549,7 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
                 <Text style={{ fontSize: 16 }} >{t("INSTALACION")}: </Text>
                 <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{getInstalacion()}</Text>
               </View>
-              {(route.params.evento && route.params.evento.obtenerHorariosEvento != null) && (
+              {(route.params.pista) && (
                 <>
                   <View style={{ flexDirection: 'row', marginBottom: 10 }}>
                     <Text style={{ fontSize: 16 }} >{t("PISTA")}: </Text>
@@ -557,7 +557,7 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
                   </View>
                 </>
               )}
-              {(route.params.partido) && (
+              {(!route.params.pista && route.params.partido) && (
                 <>
                   <View style={{ flexDirection: 'row', marginBottom: 10 }}>
                     <Text style={{ fontSize: 16 }} >{t("PISTA")}: </Text>
@@ -565,6 +565,14 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
                   </View>
                 </>
               )}
+              {/* {(route.params.evento) && (
+                <>
+                  <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+                    <Text style={{ fontSize: 16 }} >{t("PISTA")}: </Text>
+                    <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{route.params.evento.pis.nombre}</Text>
+                  </View>
+                </>
+              )} */}
               {(route.params.instalacion || route.params.partido) && (
                 <>
                   <View style={{ flexDirection: 'row', marginBottom: 10 }}>

@@ -102,7 +102,7 @@ const EventoScreen: React.FC<EventoScreenProps> = ({ navigation }) => {
   }
 
   function booking() {
-    if (!evento.obtenerInscripciones.find(i=>i.obtenerUsuarioCreador.idusuario = user.idusuario)) {
+    if (!evento.obtenerInscripciones.find(i=>i.obtenerUsuarioCreador.idusuario == user.idusuario)) {
       var reservaDTO: ReservaDTO = { nombre: user?.nombre, horario_oid: -1, pista_oid: -1, partido_oid: -1, apellidos: user?.apellidos, email: user?.email, telefono: user?.telefono, cancelada: false, maxparticipantes: 1, tipo: TipoReservaEnum.Inscripcion, usuario_oid: user?.idusuario, deporte_oid: evento.obtenerDeporteEvento.iddeporte, evento_oid: evento.idevento };
     crearReserva(reservaDTO, null).then((reserva) => {
       if (reserva) {

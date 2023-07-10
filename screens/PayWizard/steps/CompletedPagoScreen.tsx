@@ -4,10 +4,19 @@ import { MD3Colors, ProgressBar } from "react-native-paper";
 import { useTranslation } from "react-i18next";
 import CustomButton from "../../../components/Buttons/CustomButton";
 import Menu from "../../../components/Menu/Menu";
+import { RouteProp, useRoute } from "@react-navigation/native";
 
 interface CompletedPagoScreenProps {
   navigation: any;
 }
+
+type ParamList = {
+  Item: {
+    instalacion?: boolean;
+    evento?: boolean;
+    partido?: boolean;
+  };
+};
 
 const CompletedPagoScreen: React.FC<CompletedPagoScreenProps> = ({ navigation }) => {
   React.useLayoutEffect(() => {
@@ -19,8 +28,24 @@ const CompletedPagoScreen: React.FC<CompletedPagoScreenProps> = ({ navigation })
   const { t } = useTranslation();
 
   const onSubmit = () => {
-    navigation.navigate("Inicio" as never);
+    if (route.params.instalacion) {
+      navigation.navigate("Reservas" as never);
+    } else if (route.params.evento) {
+      navigation.navigate("Eventos" as never);
+    } else if (route.params.partido) {
+      navigation.navigate("Partidos" as never);
+    }
   };
+  const botonTraduccion = () => {
+    if (route.params.instalacion) {
+      return t("MIS_RESERVAS");
+    } else if (route.params.evento) {
+      return t("MIS_EVENTOS");
+    } else if (route.params.partido) {
+      return t("MIS_PARTIDOS");
+    }
+  };
+  const route = useRoute<RouteProp<ParamList, 'Item'>>();
   return (
     <>
       <Menu showReturnWizard={false} showLang={true} showusuario={true} userMenu={() => navigation.openDrawer()} />
@@ -43,7 +68,7 @@ const CompletedPagoScreen: React.FC<CompletedPagoScreenProps> = ({ navigation })
           <View style={{ justifyContent: 'flex-end' }}>
             <CustomButton
               onPress={() => onSubmit()}
-              buttonText={t("VOLVER_INICIO")}
+              buttonText={botonTraduccion()}
               colorButtom='#04D6C8'
               colorText='white'
               colorButtomHover="#04D6C8"
