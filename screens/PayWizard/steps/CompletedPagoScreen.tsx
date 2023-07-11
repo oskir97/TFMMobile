@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import CustomButton from "../../../components/Buttons/CustomButton";
 import Menu from "../../../components/Menu/Menu";
 import { RouteProp, useRoute } from "@react-navigation/native";
+import { TipoReserva } from "../../../shared/models/TipoReserva";
 
 interface CompletedPagoScreenProps {
   navigation: any;
@@ -15,6 +16,7 @@ type ParamList = {
     instalacion?: boolean;
     evento?: boolean;
     partido?: boolean;
+    inscripcionPartido?:boolean
   };
 };
 
@@ -32,7 +34,7 @@ const CompletedPagoScreen: React.FC<CompletedPagoScreenProps> = ({ navigation })
       navigation.navigate("Reservas" as never);
     } else if (route.params.evento) {
       navigation.navigate("Eventos" as never);
-    } else if (route.params.partido) {
+    } else if (route.params.partido || route.params.inscripcionPartido) {
       navigation.navigate("Partidos" as never);
     }
   };
@@ -41,11 +43,14 @@ const CompletedPagoScreen: React.FC<CompletedPagoScreenProps> = ({ navigation })
       return t("MIS_RESERVAS");
     } else if (route.params.evento) {
       return t("MIS_EVENTOS");
-    } else if (route.params.partido) {
+    } else if (route.params.partido || route.params.inscripcionPartido) {
       return t("MIS_PARTIDOS");
     }
   };
   const route = useRoute<RouteProp<ParamList, 'Item'>>();
+
+  const titulo = route.params.inscripcionPartido?t("INSCRIPCION_REALIZADA") : t("PAGO_REALIZADO");
+  const subtitulo = route.params.inscripcionPartido?t("INSCRIPCION_COMPLETADA") : t("PAGO_COMPLETADO");;
   return (
     <>
       <Menu showReturnWizard={false} showLang={true} showusuario={true} userMenu={() => navigation.openDrawer()} />
@@ -58,10 +63,10 @@ const CompletedPagoScreen: React.FC<CompletedPagoScreenProps> = ({ navigation })
         <View style={{ flex: 1, justifyContent: 'space-between', margin: 20 }}>
           <View style={{ justifyContent: 'flex-start' }}>
             <View style={{ flexDirection: 'row', marginBottom: 20 }}>
-              <Text style={{ fontSize: 24 }} className="font-semibold">{t("PAGO_REALIZADO")}</Text>
+              <Text style={{ fontSize: 24 }} className="font-semibold">{titulo}</Text>
             </View>
             <View style={{ flexDirection: 'row', marginBottom: 10 }}>
-              <Text style={{ fontSize: 16 }} >{t("PAGO_COMPLETADO")}</Text>
+              <Text style={{ fontSize: 16 }} >{subtitulo}</Text>
             </View>
           </View>
 

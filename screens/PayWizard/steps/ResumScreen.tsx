@@ -100,12 +100,16 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
   });
 
   const onSubmit = () => {
-    if (methodType == 'Paypal') {
-      setToPaypal(true);
+    if ((route.params.partido && route.params.reserva.tipo == TipoReserva.inscripcion)) {
+      payFree(route.params.fecha);
     } else {
-      setPagando(true);
+      if (methodType == 'Paypal') {
+        setToPaypal(true);
+      } else {
+        setPagando(true);
+      }
+      canPay();
     }
-    canPay();
   };
 
   let orderDetail = {
@@ -243,12 +247,12 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
             precio = route.params.evento.precio;
             subtotal = calcularPrecioSinIVA(precio, 21);
           } else if (route.params.partido) {
-            precio = route.params.partido.obtenerPista.precio / route.params.partido.maxparticipantes;
+            precio = route.params.partido.obtenerPista.precio;
             subtotal = calcularPrecioSinIVA(precio, 21);
           }
 
           if (precio > -1 && subtotal > -1) {
-            var pago: PagoDTO = { subtotal: subtotal, total: precio, iva: 0.21, tipo_oid: tipopago?.idtipo, fecha: new Date(fecha), reserva_oid: route.params.reserva.tipo == TipoReserva.partido?inscripciones[0].idreserva : route.params.reserva.idreserva, token: guid }
+            var pago: PagoDTO = { subtotal: subtotal, total: precio, iva: 0.21, tipo_oid: tipopago?.idtipo, fecha: new Date(fecha), reserva_oid: route.params.reserva.tipo == TipoReserva.partido ? inscripciones[0].idreserva : route.params.reserva.idreserva, token: guid }
             crearPago(pago).then((pago) => {
               if (pago) {
                 if (route.params.reserva && ((route.params.instalacion && route.params.pista) || route.params.evento || route.params.partido)) {
@@ -306,6 +310,67 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
       }
     });
   }
+
+  function payFree(fecha: string) {
+    obtenerTiposPagos().then((tipospagos) => {
+      if (tipospagos.length > 0) {
+        setPagando(true);
+        var tipopago = tipospagos.find(t => t.nombre.includes("contado"));
+        if (tipopago) {
+          const guid = shortid.generate();
+          var precio: number = 0;
+          var subtotal: number = 0;
+
+          var pago: PagoDTO = { subtotal: subtotal, total: precio, iva: 0.21, tipo_oid: tipopago?.idtipo, fecha: new Date(fecha), reserva_oid: route.params.reserva.tipo == TipoReserva.partido ? inscripciones[0].idreserva : route.params.reserva.idreserva, token: guid }
+          crearPago(pago).then((pago) => {
+            if (pago) {
+              if (route.params.reserva && ((route.params.instalacion && route.params.pista) || route.params.evento || route.params.partido)) {
+                crearNotificacion(t, route.params.reserva.obtenerUsuarioCreador, route.params.reserva, getName(), route.params.instalacion, route.params.pista, route.params.evento, route.params.partido, route.params.partido ? route.params.partido.fecha : route.params.reserva.fecha, (route.params.instalacion && (formatTime(route.params.horario.inicio) + " - " + formatTime(route.params.horario.fin))) || (route.params.partido && (formatTime(route.params.partido.obtenerHorarioReserva.inicio) + " - " + formatTime(route.params.partido.obtenerHorarioReserva.fin))), TipoNotificacion.confirmacion, navigation).then((notif) => {
+                  console.log(notif);
+                  if (notif)
+                    showNotification({ title: notif.asunto, body: notif.descripcion, url: "Notificaciones", navigation: navigation });
+                })
+              }
+
+              enviarCorreo(route.params.reserva.email, route.params.reserva.tipo == TipoReserva.partido ? t("Partido PARTIDO_CREADO") : t("RESERVA_REALIZADA"),
+                `${route.params.reserva.tipo == TipoReserva.partido ? t("SE_HA_CREADO_PARTIDO") : t("RESERVA_REALIZADA_EXITO")}<br><br>
+                          ${route.params.evento || route.params.partido ? ((route.params.evento && t("EVENTO")) || (route.params.partido && t("PARTIDO"))) + ": " + getName() + "<br>" : ""}
+                          ${t("INSTALACION") + ": " + getInstalacion() + "<br>"}
+                          ${t("PISTA") + ": " + pista + "<br>"}
+                          ${t("FECHA") + ": " + new Date(route.params.reserva.fecha ? route.params.reserva.fecha : new Date()).toLocaleDateString() + "<br>"}
+                          ${contruirHorario()}
+                          ${t("PRECIO") + ": " + getPrecio() + "<br>"}
+                          `
+
+              );
+              finishPayment(true);
+              setPagando(false);
+            } else {
+              const errormessage = t("PAGO_NO_REALIZADO");
+              const erroraplicacion = t("PAGO_NO_PROCESADO");
+              Alert.alert(errormessage, erroraplicacion);
+              finishPayment(false);
+              setPagando(false);
+            }
+          });
+
+        } else {
+          const errormessage = t("PAGO_NO_REALIZADO");
+          const erroraplicacion = t("PAGO_NO_PROCESADO");
+          Alert.alert(errormessage, erroraplicacion);
+          finishPayment(false);
+          setPagando(false);
+        }
+      } else {
+        const errormessage = t("PAGO_NO_REALIZADO");
+        const erroraplicacion = t("PAGO_NO_PROCESADO");
+        Alert.alert(errormessage, erroraplicacion);
+        finishPayment(false);
+        setPagando(false);
+      }
+    });
+  }
+
   const contruirHorario = () => {
     if (route.params.instalacion) {
       return `${t("HORARIO") + ": " + formatTime(route.params.horario.inicio) + " - " + formatTime(route.params.horario.fin) + "<br>"}`
@@ -318,7 +383,7 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
 
   const finishPayment = (payok: boolean) => {
     if (payok) {
-      navigation.navigate("CompletedPago" as never, { instalacion: route.params.instalacion != undefined && !route.params.partido, evento: route.params.evento != undefined, partido: route.params.partido != undefined } as never)
+      navigation.navigate("CompletedPago" as never, { instalacion: route.params.instalacion != undefined && !route.params.partido, evento: route.params.evento != undefined, partido: route.params.partido != undefined && route.params.reserva.tipo == TipoReserva.partido, inscripcionPartido: route.params.partido != undefined && route.params.reserva.tipo == TipoReserva.inscripcion } as never)
     } else {
       if (route.params.reserva)
         eliminarReserva(route.params.reserva.idreserva);
@@ -348,7 +413,7 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
     else if (route.params.evento)
       return route.params.evento.precio;
     else if (route.params.partido)
-      return obtenerDosPrimerosDecimales(route.params.partido.obtenerPista.precio / route.params.partido.maxparticipantes);
+      return obtenerDosPrimerosDecimales(route.params.partido.obtenerPista.precio);
     else
       return 0;
   }
@@ -430,8 +495,8 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
     const unsubscribe = navigation.addListener('focus', () => {
       getPista();
 
-      if(route.params.reserva.tipo == TipoReserva.partido){
-        ObtenerInscripciones(route.params.reserva.idreserva).then((reservas)=>{console.log(reservas);setInscripciones(reservas)});
+      if (route.params.reserva.tipo == TipoReserva.partido) {
+        ObtenerInscripciones(route.params.reserva.idreserva).then((reservas) => { console.log(reservas); setInscripciones(reservas) });
       }
     });
     return unsubscribe;
@@ -446,7 +511,6 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
   }
 
   const getPista = async () => {
-    console.log(route.params.evento.obtenerPistaEvento);
     if (route.params.pista) {
       setPista(route.params.pista.nombre);
     } else if (route.params.evento && route.params.evento.obtenerPistaEvento) {
@@ -615,13 +679,15 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
                   </View>
                 </>
               )}
-              <View style={{ flexDirection: 'row', marginBottom: 10 }}>
-                <Text style={{ fontSize: 16 }} >{t("PRECIO")}: </Text>
-                <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{getPrecio()}€</Text>
-              </View>
+              {(!route.params.partido || route.params.reserva.tipo != TipoReserva.inscripcion) &&
+                <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+                  <Text style={{ fontSize: 16 }} >{t("PRECIO")}: </Text>
+                  <Text style={{ fontSize: 16 }} className="font-semibold" numberOfLines={3} ellipsizeMode="tail">{getPrecio()}€</Text>
+                </View>
+              }
             </ScrollView>
             <View style={{ marginVertical: 48 }}>
-              {!methodType &&
+              {(!route.params.partido || route.params.reserva.tipo != TipoReserva.inscripcion) && !methodType &&
                 <>
                   <Text style={{
                     marginBottom: 20,
@@ -693,14 +759,14 @@ const ResumScreen: React.FC<PagoScreenProps> = ({ navigation }) => {
             <View style={{ justifyContent: 'flex-end' }}>
               <CustomButton
                 onPress={() => onSubmit()}
-                buttonText={t("PAGAR")}
+                buttonText={(route.params.partido && route.params.reserva.tipo == TipoReserva.inscripcion) ? t("INSCRIBIRSE") : t("PAGAR")}
                 colorButtom='#04D6C8'
                 colorText='white'
                 colorButtomHover="#04D6C8"
                 colorTextHover="white"
                 iconRight="chevron-right"
                 animated={true}
-                visible={methodType ? true : false}
+                visible={(route.params.partido && route.params.reserva.tipo == TipoReserva.inscripcion) || (methodType) ? true : false}
               />
               <CustomButton
                 onPress={goBack}

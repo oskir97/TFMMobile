@@ -260,5 +260,7 @@
   "VALORAR": "Rate it",
   "VER_NOTIFICACION": "View notification",
   "MODIFICAR": "Modificar",
-  "MODIFICAR_USUARIO": "Modify user"
+  "MODIFICAR_USUARIO": "Modify user",
+  "INSCRIPCION_REALIZADA": "Registration completed",
+  "INSCRIPCION_COMPLETADA": "Successfully registered for game"
 }

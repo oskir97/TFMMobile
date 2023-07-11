@@ -261,5 +261,7 @@
   "VALORAR": "Valorar",
   "VER_NOTIFICACION": "Ver notificación",
   "MODIFICAR": "Modificar",
-  "MODIFICAR_USUARIO": "Modificar el usuario"
+  "MODIFICAR_USUARIO": "Modificar el usuario",
+  "INSCRIPCION_REALIZADA": "Inscripción realizada",
+  "INSCRIPCION_COMPLETADA": "Se ha compleado correctamente la inscripción al partido, en breves recibirás un mensaje de confirmación"
 }

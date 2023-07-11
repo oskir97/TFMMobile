@@ -104,7 +104,7 @@ const PartidoItem: React.FC<PartidoItemProps> = ({ item, navigation }) => {
                         <MaterialIcons name="payments" size={24} color="#00CC99" style={{ marginLeft: 10 }} />
 
                         <Text style={{ marginLeft: 4, fontSize: 12, fontWeight: "500" }}>
-                            {`${t("PRECIO")} ${obtenerDosPrimerosDecimales(item.obtenerPista.precio / item.maxparticipantes)}€`}
+                            {`${t("PRECIO")} ${obtenerDosPrimerosDecimales(item.obtenerPista.precio)}€`}
                         </Text>
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}>

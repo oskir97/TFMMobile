@@ -126,13 +126,11 @@ const Nav: React.FC = () => {
                 },
             }} />
             <Drawer.Screen name="Resumen" component={Resumen} options={{
-                swipeEnabled: false,
                 drawerLabel: () => null, drawerItemStyle: {
                     display: 'none',
                 },
             }} />
             <Drawer.Screen name="CreatePartido" component={CreatePartido} options={{
-                swipeEnabled: false,
                 drawerLabel: () => null, drawerItemStyle: {
                     display: 'none',
                 },

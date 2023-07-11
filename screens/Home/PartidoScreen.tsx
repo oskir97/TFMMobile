@@ -366,7 +366,7 @@ const PartidoScreen: React.FC<PartidoScreenProps> = ({ navigation }) => {
       }}>
         <CustomButton
           onPress={() => booking()}
-          buttonText={`${t("INSCRIBIRSE")} (${obtenerDosPrimerosDecimales(partido.obtenerPista.precio / partido.maxparticipantes)}€)`}
+          buttonText={`${t("INSCRIBIRSE")}`}
           colorButtom='#04D6C8'
           colorText='white'
           colorButtomHover="#04D6C8"
