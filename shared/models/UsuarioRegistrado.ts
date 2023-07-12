@@ -2,6 +2,7 @@ import { Rol } from "./Rol";
 import { Valoracion } from "./Valoracion";
 
 export interface UsuarioRegistrado {
+  
     nombre: string;
     email: string;
     apellidos: string;

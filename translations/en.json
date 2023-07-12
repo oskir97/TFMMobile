@@ -262,5 +262,7 @@
   "MODIFICAR": "Modificar",
   "MODIFICAR_USUARIO": "Modify user",
   "INSCRIPCION_REALIZADA": "Registration completed",
-  "INSCRIPCION_COMPLETADA": "Successfully registered for game"
+  "INSCRIPCION_COMPLETADA": "Successfully registered for game",
+  "DATOS_MODIFICADOS": "Data modified successfully",
+  "DATOS_MODIFICADOS_CORRECTAMENTE": "Changes saved successfully"
 }

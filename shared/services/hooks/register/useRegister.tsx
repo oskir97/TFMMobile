@@ -58,9 +58,9 @@ export const useRegister = () => {
             .oneOf([yup.ref('password')], PASSWORD_COINCIDIR)
             .required(PASSWORD_CONFIRMACION_REQUERIDA).max(255, PASSWORD_255_CARACTERES),
         domicilio: yup.string().required(DOMICILIO_REQUERIDO).max(128, DOMICILIO_128_CARACTERES),
-        numero: yup.string().max(50, NUMERO_50_CARACTERES),
+        numero: yup.string().nullable().max(50, NUMERO_50_CARACTERES),
         telefono: yup.string().required(TELEFONO_REQUERIDO).matches(/^\d{9}$/, TELEFONO_9_DIGITOS).max(9, TELEFONO_9_CARACTERES),
-        telefonoAlternartivo: yup.string().matches(/^\d{9}$/, TELEFONO_ALTERNATIVO_9_DIGITOS).max(9, TELEFONO_ALTERNATIVO_9_CARACTERES),
+        telefonoAlternartivo: yup.string().nullable().matches(/^\d{9}$/, TELEFONO_ALTERNATIVO_9_DIGITOS).max(9, TELEFONO_ALTERNATIVO_9_CARACTERES),
         fechaNacimiento: yup.date().required(FECHA_NACIMIENTO_REQUERIDA).typeError(FORMATO_FECHA_INVALIDO),
     });
     const { control, setValue, handleSubmit, formState, register, formState: { errors }, reset } = useForm<RegisterData>({

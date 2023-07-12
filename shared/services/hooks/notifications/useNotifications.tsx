@@ -31,7 +31,7 @@ export const useNotifications = () => {
                 console.log(notificaciones.data);
 
                 if (!notificaciones.error) {
-                    if(!notificaciones.data)
+                    if (!notificaciones.data)
                         return []
                     else
                         return notificaciones.data;
@@ -121,10 +121,11 @@ export const useNotifications = () => {
                         const api = new Api<NotificacionDTO, Notificacion>(token);
                         const notifapi = await api.post(`/Notificacion/${route}`, notificacion);
                         if (!notifapi.error && notifapi.data) {
-                            obtenerNotificaciones(notificacion.receptor_oid).then((notificaciones) => { 
-                                setNotificaciones(notificaciones); 
+                            obtenerNotificaciones(notificacion.receptor_oid).then((notificaciones) => {
+                                setNotificaciones(notificaciones);
                                 showNotification({ title: notifapi.data.asunto, body: notifapi.data.descripcion, url: "Notificaciones", navigation: navigation });
-                                return notifapi.data; });
+                                return notifapi.data;
+                            });
                         } else {
                             return undefined;
                         }

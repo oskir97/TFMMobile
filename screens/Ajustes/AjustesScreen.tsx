@@ -11,6 +11,8 @@ import CustomInputModalMaps from "../../components/Modals/CustomInputModalMaps";
 import { I18nContext, useTranslation } from "react-i18next";
 import Menu from "../../components/Menu/Menu";
 import { useFocusEffect } from "@react-navigation/native";
+import { UsuarioDTO } from "../../shared/models/dtos/UsuarioDTO";
+import { LoginContext } from "../../shared/services/hooks/login/contexts/LoginContext";
 
 interface AjusteProps {
     navigation: any;
@@ -18,12 +20,14 @@ interface AjusteProps {
 
 const AjusteScreen = (props: AjusteProps) => {
 
-    const { control, handleSubmit, formState, handleRegistro, setValue, errors, register, reset } = useAjustes();
+    const { control, handleSubmit, formState, handleModificar, setValue, errors, register, reset } = useAjustes();
     const [locationOpen, setLocationOpen] = useState(false);
-    const [location, setLocation] = useState<Ubication>({ codigoPostal: "", localidad: "", provincia: "", domicilio: "" });
 
     const { t } = useTranslation();
     const { i18n } = useContext(I18nContext);
+    const { user, setUser } = useContext(LoginContext);
+
+    const [location, setLocation] = useState<Ubication>({ codigoPostal: user.codigopostal, localidad: user.localidad, provincia: user.provincia, domicilio: user.domicilio });
 
     useEffect(() => {
         register('fieldName', { required: false });
@@ -36,27 +40,34 @@ const AjusteScreen = (props: AjusteProps) => {
         setLocationOpen(false);
     }
 
-    const login = () => props.navigation.navigate("Login");
+    function sumarundia(fecha: Date) : Date {
+        var date = new Date(fecha);
+        date.setDate(date.getDate() + 1);
+    
+        return date;
+      }
 
     const onSubmit = async (data: ajustesData) => {
         try {
+            console.log(data);
             data.codigoPostal = location.codigoPostal;
             data.provincia = location.provincia;
             data.localidad = location.localidad;
+            var user:UsuarioDTO = {nombre:data.nombre, email:data.email, domicilio:data.domicilio, telefono:data.telefono, fechanacimiento:sumarundia(data.fechaNacimiento), apellidos: data.apellidos, password: data.password, codigopostal:data.codigoPostal, localidad: data.localidad, provincia:data.provincia, entidad_oid:-1, numero: data.numero, imagen: null,telefonoalternativo:data.telefonoAlternartivo }
 
-            const result = await handleRegistro(data);
+            const result = await handleModificar(user);
 
-            const registroExitoso = t("REGISTRO_EXITOSO");
-            const bienvenidoIniciaSesion = t("BIENVENIDO_INICIA_SESION");
+            const registroExitoso = t("DATOS_MODIFICADOS");
+            const bienvenidoIniciaSesion = t("DATOS_MODIFICADOS_CORRECTAMENTE");
 
             if (result) {
                 if (registroExitoso && bienvenidoIniciaSesion) {
+                    setUser(result);
                     Alert.alert(registroExitoso, bienvenidoIniciaSesion);
                 }
 
-                login();
             } else {
-                const ERROR_REGISTRO = t("ERROR_REGISTRO");
+                const ERROR_REGISTRO = t("ERROR");
                 const SE_PRODUCIDO_ERROR = t("SE_PRODUCIDO_ERROR");
                 if (ERROR_REGISTRO && SE_PRODUCIDO_ERROR) {
                     Alert.alert(ERROR_REGISTRO, SE_PRODUCIDO_ERROR);
@@ -250,12 +261,7 @@ const AjusteScreen = (props: AjusteProps) => {
                             placeholder={t("INTRODUCE_TELEFONO_ALTERNATIVO")}
                             editable={true}
                             maxLength={9}
-                            rules={{
-                                required: { value: true },
-                                pattern: {
-                                    value: true
-                                }
-                            }}
+                            rules={{ required: { value: false } }}
                             errors={formState.errors.telefonoAlternartivo && (
                                 <Text className="text-error">{formState.errors.telefonoAlternartivo.message}</Text>
                             )}

@@ -1,0 +1,31 @@
+export interface UsuarioDTO {
+    idusuario?: number;
+    nombre?: string;
+    email?: string;
+    domicilio?: string;
+    telefono?: string;
+    telefonoalternativo?: string;
+    fechanacimiento?: Date | null;
+    alta?: Date | null;
+    baja?: Date | null;
+    ubicacionactual?: string;
+    apellidos?: string;
+    password?: string;
+    reservas_oid?: number[];
+    notificacionesRecibidas_oid?: number[];
+    rol_oid?: number;
+    notificacionesEnviadas_oid?: number[];
+    valoracionesUsuario_oid?: number[];
+    valoracionesAInstructores_oid?: number[];
+    codigopostal?: string;
+    localidad?: string;
+    provincia?: string;
+    eventos_oid?: number[];
+    eventosImpartidos_oid?: number[];
+    incidencia_oid?: number[];
+    entidad_oid?: number;
+    numero?: string;
+    instalacion_oid?: number[];
+    imagen?: string;
+    valoracionesAUsuarioPartido_oid?: number[];
+  }

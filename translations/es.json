@@ -263,5 +263,7 @@
   "MODIFICAR": "Modificar",
   "MODIFICAR_USUARIO": "Modificar el usuario",
   "INSCRIPCION_REALIZADA": "Inscripción realizada",
-  "INSCRIPCION_COMPLETADA": "Se ha compleado correctamente la inscripción al partido, en breves recibirás un mensaje de confirmación"
+  "INSCRIPCION_COMPLETADA": "Se ha compleado correctamente la inscripción al partido, en breves recibirás un mensaje de confirmación",
+  "DATOS_MODIFICADOS": "Datos modificados",
+  "DATOS_MODIFICADOS_CORRECTAMENTE": "Se han modificado los datos correctamente"
 }

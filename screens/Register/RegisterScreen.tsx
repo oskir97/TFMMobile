@@ -33,11 +33,19 @@ const RegisterScreen = (props: RegisterProps) => {
 
   const login = () => props.navigation.navigate("Login");
 
+  function sumarundia(fecha: Date) : Date {
+    var date = new Date(fecha);
+    date.setDate(date.getDate() + 1);
+
+    return date;
+  }
+
   const onSubmit = async (data: RegisterData) => {
     try {
       data.codigoPostal = location.codigoPostal;
       data.provincia = location.provincia;
       data.localidad = location.localidad;
+      data.fechaNacimiento = sumarundia(data.fechaNacimiento);
 
       const result = await handleRegistro(data);
       
