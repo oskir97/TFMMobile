@@ -129,7 +129,7 @@ const LoginScreen = (props: LoginProps) => {
           colorTextHover="white"
         // onPress={() => console.log(password)}
         />
-        <View style={{ marginRight: 8 }}>
+        {/* <View style={{ marginRight: 8 }}>
           <View className="flex w-full justify-end items-end pt-4">
             <Pressable onPress={handleSubmit(onSubmit)}>
               <Text style={{ color: '#106F69' }} className="text-center text-gray-500 text-sm">
@@ -137,7 +137,7 @@ const LoginScreen = (props: LoginProps) => {
               </Text>
             </Pressable>
           </View>
-        </View>
+        </View> */}
       </View>
     </View>
     </>

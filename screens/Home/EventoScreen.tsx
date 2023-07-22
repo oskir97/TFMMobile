@@ -202,7 +202,7 @@ const EventoScreen: React.FC<EventoScreenProps> = ({ navigation }) => {
                 <Text style={{ width: width * 0.7, fontSize: 19, fontWeight: "bold" }}>
                   {evento?.nombre}
                 </Text>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                {/* <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <AntDesign
                     style={{ marginHorizontal: 7 }}
                     name="sharealt"
@@ -210,7 +210,7 @@ const EventoScreen: React.FC<EventoScreenProps> = ({ navigation }) => {
                     color="black"
                   />
 
-                </View>
+                </View> */}
               </View>
 
               <View

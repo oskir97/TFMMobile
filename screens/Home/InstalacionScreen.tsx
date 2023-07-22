@@ -8,7 +8,8 @@ import {
   Linking,
   TouchableOpacity,
   SafeAreaView,
-  BackHandler
+  BackHandler,
+  Share
 } from "react-native";
 import { Button } from "react-native-paper";
 import React, { useState, useEffect, useRef, useContext } from "react";
@@ -26,6 +27,7 @@ import { useFavoritosInstalaciones } from "../../shared/services/hooks/instalaci
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Pista } from "../../shared/models/Pista";
 import { LoginContext } from "../../shared/services/hooks/login/contexts/LoginContext";
+import * as expoLinking from 'expo-linking';
 
 type ParamList = {
   Item: {
@@ -61,7 +63,7 @@ const InstalacionScreen: React.FC<InstalacionScreenProps> = ({ navigation }) => 
   };
 
   const emailInstalacion = () => {
-    const mailtoUrl = `mailto:${route.params.item?.email && route.params.item?.email != ""?route.params.item?.email : route.params.item?.obtenerEntidadInstalacion.email}?subject=${""}&body=${encodeURIComponent("")}`;
+    const mailtoUrl = `mailto:${route.params.item?.email && route.params.item?.email != "" ? route.params.item?.email : route.params.item?.obtenerEntidadInstalacion.email}?subject=${""}&body=${encodeURIComponent("")}`;
     Linking.openURL(mailtoUrl);
   };
   const { width } = Dimensions.get('window');
@@ -71,7 +73,7 @@ const InstalacionScreen: React.FC<InstalacionScreenProps> = ({ navigation }) => 
   };
 
   const goBack = () => {
-    navigation.navigate("Inicio" as never, { loadingItems: true, instalacion:instalacion } as never)
+    navigation.navigate("Inicio" as never, { loadingItems: true, instalacion: instalacion } as never)
   };
 
   useFocusEffect(
@@ -110,7 +112,7 @@ const InstalacionScreen: React.FC<InstalacionScreenProps> = ({ navigation }) => 
 
   function addFav() {
     var result: boolean = !favorita;
-    if(instalacion){
+    if (instalacion) {
       instalacion.favorita = result;
       setInstalacion(instalacion);
     }
@@ -125,19 +127,19 @@ const InstalacionScreen: React.FC<InstalacionScreenProps> = ({ navigation }) => 
   }
 
   function obtainMinorPistaPrice(pistas: Pista[]): Pista | undefined {
-    if(pistas){
-    return pistas.reduce((menorPrecio, pista) => {
-      if (pista.precio < menorPrecio.precio) {
-        return pista;
-      } else {
-        return menorPrecio;
-      }
-    });
-  }
+    if (pistas) {
+      return pistas.reduce((menorPrecio, pista) => {
+        if (pista.precio < menorPrecio.precio) {
+          return pista;
+        } else {
+          return menorPrecio;
+        }
+      });
+    }
   }
 
   function booking() {
-    navigation.navigate("Horario" as never, { instalacion: instalacion, previousPage: "Horario"} as never)
+    navigation.navigate("Horario" as never, { instalacion: instalacion, previousPage: "Horario" } as never)
   }
 
   useEffect(() => {
@@ -159,8 +161,24 @@ const InstalacionScreen: React.FC<InstalacionScreenProps> = ({ navigation }) => 
       mapRef.current?.fitToSuppliedMarkers(["marker"]);
     });
     fetchMenu();
-    
+
   }, [route.params.item]);
+
+  const compartirURL = async () => {
+    const deepLink = generateDeepLink();
+    const url = `whatsapp://send?text=${encodeURIComponent(deepLink)}`;
+
+    try {
+      await Linking.openURL(url);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const generateDeepLink = () => {
+    const deepLink = expoLinking.createURL('/instalacion?id=' + instalacion.idinstalacion);
+    return deepLink;
+  };
 
   return (
     <>
@@ -192,12 +210,18 @@ const InstalacionScreen: React.FC<InstalacionScreenProps> = ({ navigation }) => 
                   {instalacion?.nombre}
                 </Text>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <AntDesign
-                    style={{ marginHorizontal: 7 }}
-                    name="sharealt"
-                    size={24}
-                    color="black"
-                  />
+                  {/* <Pressable
+                    onPress={() =>
+                      compartirURL()
+                    }
+                  >
+                    <AntDesign
+                      style={{ marginHorizontal: 7 }}
+                      name="sharealt"
+                      size={24}
+                      color="black"
+                    />
+                  </Pressable> */}
                   <Pressable
                     onPress={() =>
                       addFav()
@@ -229,7 +253,7 @@ const InstalacionScreen: React.FC<InstalacionScreenProps> = ({ navigation }) => 
                   flexDirection: "row",
                   alignItems: "center",
                   marginTop: 7,
-                  minHeight:30
+                  minHeight: 30
                 }}
               >
                 <MaterialIcons name="stars" size={24} color="orange" />
@@ -239,10 +263,10 @@ const InstalacionScreen: React.FC<InstalacionScreenProps> = ({ navigation }) => 
                 <Text style={{ marginLeft: 3, fontSize: 17, fontWeight: "400", marginRight: 10 }}>{t("SOBRE")} 5</Text>
                 {instalacion?.obtenerValoracionesInstalacion && instalacion?.obtenerValoracionesInstalacion.length > 0 && (
                   <Button buttonColor="transparent" style={{ marginLeft: 'auto', borderColor: 'green', borderWidth: 2 }} mode="text" textColor="green" icon={() => <Icon name="hand-o-down" size={15} color="green" />} contentStyle={{ flexDirection: 'row-reverse' }} onPress={seeReviews}>
-                  <Text style={{ fontSize: 12 }}>
-                    {t("VER_RESENAS")}
-                  </Text>
-                </Button>
+                    <Text style={{ fontSize: 12 }}>
+                      {t("VER_RESENAS")}
+                    </Text>
+                  </Button>
                 )}
               </View>
 
@@ -272,7 +296,7 @@ const InstalacionScreen: React.FC<InstalacionScreenProps> = ({ navigation }) => 
                 <TouchableOpacity onPress={emailInstalacion} style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <MaterialIcons name="email" size={24} color="red" />
                   <Text style={{ marginLeft: 3, fontSize: 14, fontWeight: "400" }} numberOfLines={1} ellipsizeMode="tail">
-                    {instalacion?.email && instalacion?.email != ""?instalacion?.email : instalacion?.obtenerEntidadInstalacion.email}
+                    {instalacion?.email && instalacion?.email != "" ? instalacion?.email : instalacion?.obtenerEntidadInstalacion.email}
                   </Text>
                 </TouchableOpacity>
               </View>

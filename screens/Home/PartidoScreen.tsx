@@ -237,7 +237,7 @@ const PartidoScreen: React.FC<PartidoScreenProps> = ({ navigation }) => {
                 <Text style={{ width: width * 0.7, fontSize: 19, fontWeight: "bold" }}>
                   {`${partido?.nombre} ${partido?.apellidos}`}
                 </Text>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                {/* <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <AntDesign
                     style={{ marginHorizontal: 7 }}
                     name="sharealt"
@@ -245,7 +245,7 @@ const PartidoScreen: React.FC<PartidoScreenProps> = ({ navigation }) => {
                     color="black"
                   />
 
-                </View>
+                </View> */}
               </View>
 
               <View

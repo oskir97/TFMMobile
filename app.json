@@ -1,5 +1,6 @@
 {
   "expo": {
+    "scheme": "TFMMobile",
     "name": "TFMMobile",
     "slug": "TFMMobile",
     "version": "1.0.0",

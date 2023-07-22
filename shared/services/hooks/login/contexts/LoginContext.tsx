@@ -11,6 +11,8 @@ import { useDeportes } from "../../deportes/useDeportes";
 import { Notificacion } from "../../../../models/Notificacion";
 import { useNotifications } from "../../notifications/useNotifications";
 import { NotificacionesContext } from "../../notifications/contexts/NotificationContext";
+import * as Linking from 'expo-linking';
+
 interface LoginProviderProps {
   children: React.ReactNode
 }
@@ -44,8 +46,11 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
   const [location, setLocation] = useState<Location.LocationObject>();
   const [localidad, setLocalidad] = useState<string | undefined>();
   const [filter, setFilter] = useState<Filter | undefined>();
+  const [url, setUrl] = useState<string | undefined>();
   const { setNotificaciones } = useContext(NotificacionesContext);
   const { obtenerNotificaciones } = useNotifications();
+
+  const prefix = Linking.makeUrl('/');
 
   const { t } = useTranslation();
 
@@ -173,6 +178,16 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
     return valorString as unknown as T;
   }
 
+  Linking.addEventListener('url', handleUrl);
+
+  function handleUrl(event) {
+    const prefix = Linking.makeUrl('/');
+    // Obtener la URL
+    const { url } = event;
+    
+    setUrl(url);
+  }
+
   async function logUser() {
     await AsyncStorage.getItem('token').then((value) => {
       if (value !== null) {
@@ -189,6 +204,14 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
                   setUser(value.data);
                   setLogin(token != null);
                   setLoading(false);
+                  if(url){
+                    const urllink = Linking.parse(url);
+                    console.log(urllink.path);
+                    switch(urllink.path){
+                      case "/":
+                      break;
+                    }
+                  }
                 });
               });
             });
