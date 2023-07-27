@@ -18,6 +18,7 @@ import { RouteProp, useFocusEffect, useRoute } from "@react-navigation/native";
 import { Pista } from "../../../shared/models/Pista";
 import { ReservaDTO, TipoReservaEnum } from "../../../shared/models/dtos/ReservaDTO";
 import { useReservas } from "../../../shared/services/hooks/reservas/useReservas";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
 interface UbicationScreenProps {
   navigation: any;
@@ -74,7 +75,7 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
     var reservaDTO: ReservaDTO;
     if (route.params.partido) {
       var p = route.params.partido;
-      reservaDTO = { nombre: p.nombre, apellidos: p.apellidos, email: p.email, telefono: p.telefono, cancelada: false, pista_oid: pista ? pista.idpista : -1, maxparticipantes: p.maxparticipantes, horario_oid: horario?.idhorario, fecha: fecha, tipo: TipoReservaEnum.Partido, usuario_oid: user?.idusuario, deporte_oid: p.obtenerDeporteReserva.iddeporte, evento_oid: -1, partido_oid: -1, descripcionpartido:p.descripcionpartido, nivelpartido:p.nivelpartido };
+      reservaDTO = { nombre: p.nombre, apellidos: p.apellidos, email: p.email, telefono: p.telefono, cancelada: false, pista_oid: pista ? pista.idpista : -1, maxparticipantes: p.maxparticipantes, horario_oid: horario?.idhorario, fecha: fecha, tipo: TipoReservaEnum.Partido, usuario_oid: user?.idusuario, deporte_oid: p.obtenerDeporteReserva.iddeporte, evento_oid: -1, partido_oid: -1, descripcionpartido: p.descripcionpartido, nivelpartido: p.nivelpartido };
     } else {
       reservaDTO = { nombre: user?.nombre, apellidos: user?.apellidos, email: user?.email, telefono: user?.telefono, cancelada: false, pista_oid: pista ? pista.idpista : -1, maxparticipantes: 1, horario_oid: horario?.idhorario, fecha: fecha, tipo: tipoReserva, usuario_oid: user?.idusuario, deporte_oid: filter.deporte ? filter.deporte : -1, evento_oid: route.params.evento ? route.params.evento.idevento : -1, partido_oid: -1 };
     }
@@ -86,7 +87,7 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
         } else if (route.params.evento) {
           navigation.navigate("Resumen" as never, { evento: route.params.evento, pista: pista, horario: horario, reserva: reserva, fecha: date?.toString() } as never)
         } else if (route.params.partido) {
-          navigation.navigate("Resumen" as never, { partido:reserva, pista: pista, horario: horario, reserva: reserva, fecha: date?.toString(),instalacion: route.params.instalacion } as never)
+          navigation.navigate("Resumen" as never, { partido: reserva, pista: pista, horario: horario, reserva: reserva, fecha: date?.toString(), instalacion: route.params.instalacion } as never)
         }
       } else {
         const errormessage = t("NO_SE_PUEDE_RESERVAR");
@@ -199,6 +200,30 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
     }
   };
 
+  function isDateWithinFiveDays(date: Date | undefined) {
+
+    if (date) {
+      // Obtener la fecha actual
+      const today = new Date();
+
+      // Clonar la fecha actual para evitar modificarla
+      const endDate = new Date(today);
+
+      // Calcular la fecha que está 5 días después de hoy
+      endDate.setDate(endDate.getDate() + 5);
+
+      // Convertir las fechas a timestamps para poder compararlas
+      const timestampDate = date.getTime();
+      const timestampToday = today.getTime();
+      const timestampEndDate = endDate.getTime();
+
+      // Comprobar si la fecha dada está dentro del intervalo
+      return timestampDate >= timestampToday && timestampDate <= timestampEndDate;
+    } else {
+      return false;
+    }
+  }
+
   return (
     <>
       <Menu showReturnWizard={true} showLang={true} text={(instalacion && !route.params.partido && instalacion.nombre) || (evento && evento.nombre) || (partido && t("CREAR_PARTIDO"))} showusuario={true} userMenu={() => navigation.openDrawer()} functionGoBack={goBack} />
@@ -213,12 +238,20 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
               <Text style={{ fontSize: 24 }} className="font-semibold mt-1">{t("SELECCIONA_HORARIO")}</Text>
             </View>
-            <View style={{ height: 70, marginTop: 20, marginBottom: 0 }}>
+            <View style={{ height: 65, marginTop: 20, marginBottom: 0 }}>
               <TouchableOpacity style={styles.buttonCalendar} onPress={toggleDatepicker}>
                 <Text style={styles.textDate}>{fecha?.toLocaleDateString(i18n.language == "en" ? 'en-US' : 'es')}</Text>
                 <Text style={styles.textDate}>{horario && horario.inicio && `${formatTime(horario.inicio)} - ${formatTime(horario.fin)}`}</Text>
               </TouchableOpacity>
             </View>
+            {isDateWithinFiveDays(fecha) &&
+              <View style={{ marginBottom: 5, marginLeft:5, flexDirection:'row' }}>
+                <Text style={{color:'#FF0000', fontWeight:'bold'}}>
+                  Es posible que hagan chuvascos
+                </Text>
+                <FontAwesome5 name="cloud-rain" size={21} color="#007DFF" style={{ marginLeft: 5, color:'#0047AB' }} />
+              </View>
+            }
             <PaperSelect
               label={t("SELECCIONAR_PISTA")}
               dialogCloseButtonText={translations.cancelLabel}

@@ -1,13 +1,15 @@
 import { useLinkTo, useNavigation, useNavigationState } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Modal, View, Text, Pressable, StyleSheet, Image, useWindowDimensions, TouchableOpacity, ImageBackground } from "react-native";
 import { Appbar, Avatar, Divider, IconButton, Menu } from "react-native-paper";
 import { MenuProps } from "../../tfmmobile";
+import { LoginContext } from "../../shared/services/hooks/login/contexts/LoginContext";
 
 const CustomLanguagePicker: React.FC<MenuProps> = ({ showReturnWizard, text, showusuario, userMenu, goBack, functionGoBack, showLang }) => {
   const { i18n, t } = useTranslation();
   const linkTo = useLinkTo();
+  const { user } = useContext(LoginContext);
 
   const languages = [
     { name: 'es', label: 'Español', flag: require('../../assets/images/es_flag.png') },
@@ -40,6 +42,24 @@ const CustomLanguagePicker: React.FC<MenuProps> = ({ showReturnWizard, text, sho
 
   const windowWidth = useWindowDimensions().width;
   const maxWidth = windowWidth * 0.62;
+
+  const renderImage = () => {
+    if (user.imagen) {
+      return (
+        <Image
+          source={{ uri: user.imagen }}
+          style={{ height: 35, width: 35, marginRight: 10, borderRadius: 25 }}
+          resizeMode="cover"
+        />
+      );
+    } else {
+      return (
+        <ImageBackground
+          source={require('../../assets/images/user.png')}
+          style={{ height: 35, width: 35, marginRight: 10 }} imageStyle={{ borderRadius: 25 }}></ImageBackground>
+      );
+    }
+  };
 
   return (
     <View>
@@ -82,7 +102,7 @@ const CustomLanguagePicker: React.FC<MenuProps> = ({ showReturnWizard, text, sho
         </Menu>
         {showusuario && (
           <TouchableOpacity onPress={userMenu}>
-            <ImageBackground source={require('../../assets/images/user.png')} style={{ height: 35, width: 35, marginRight: 10 }} imageStyle={{ borderRadius: 25 }}></ImageBackground>
+            {renderImage()}
           </TouchableOpacity>
         )}
       </Appbar.Header>

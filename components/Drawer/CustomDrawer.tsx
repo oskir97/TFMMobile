@@ -23,12 +23,28 @@ const CustomDrawer = (props: any) => {
     setShowModal(false);
     logout();
   }
+
+  const renderImage = () => {
+    if (user.imagen) {
+      return (
+        <Image
+          source={{ uri: user.imagen }}
+          style={{ height: 80, width: 80, borderRadius: 40, marginBottom: 10 }}
+          resizeMode="cover"
+        />
+      );
+    } else {
+      return (
+        <Image source={require('../../assets/images/user.png')} style={{ height: 80, width: 80, borderRadius: 40, marginBottom: 10 }} />
+      );
+    }
+  };
   
   return (
     <View style={{ flex: 1 }}>
       <DrawerContentScrollView {...props} contentContainerStyle={{ backgroundColor: '#026B64' }}>
         <ImageBackground source={require('../../assets/images/menu-bg2.jpeg')} style={{ padding: 20 }}>
-          <Image source={require('../../assets/images/user.png')} style={{ height: 80, width: 80, borderRadius: 40, marginBottom: 10 }} />
+          {renderImage()}
           <Text className="font-semibold" style={{ color: '#fff', fontSize: 18 }}>{`${user?.nombre} ${user?.apellidos}`}</Text>
         </ImageBackground>
         <View style={{ flex: 1, backgroundColor: '#fff', paddingTop: 10 }}>

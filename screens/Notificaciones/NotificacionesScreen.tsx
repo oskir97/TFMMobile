@@ -11,6 +11,7 @@ import { Notificacion } from "../../shared/models/Notificacion";
 import { Button } from "react-native-paper";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { NotificacionesContext } from "../../shared/services/hooks/notifications/contexts/NotificationContext";
+import IonicIcon from 'react-native-vector-icons/Ionicons';
 
 interface NotificacionesScreenProps {
     navigation: any;
@@ -90,12 +91,22 @@ const NotificacionesScreen: React.FC<NotificacionesScreenProps> = ({ navigation 
                 </View>
                 <View>
                     <View>
-                        <FlatList
-                            style={{ height: Dimensions.get('window').height * 0.80 }}
-                            data={notificaciones?.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())}
-                            renderItem={renderNotificacion}
-                            keyExtractor={(item) => item.idnotificacion.toString()}
-                        />
+                        {notificaciones && notificaciones.length > 0 &&
+                            <FlatList
+                                style={{ height: Dimensions.get('window').height * 0.80 }}
+                                data={notificaciones?.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())}
+                                renderItem={renderNotificacion}
+                                keyExtractor={(item) => item.idnotificacion.toString()}
+                            />
+                        }
+                        {!notificaciones || notificaciones.length == 0 &&
+                            <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 100 }}>
+                                <IonicIcon name="notifications" size={100} color="#04D6C8" />
+                                <Text style={{ fontSize: 24, fontWeight: 'bold', marginTop: 20, alignContent: 'center' }}>
+                                    {t("NO_HAY_NOTIFICACIONES") }
+                                </Text>
+                            </View>
+                        }
                     </View>
                 </View>
             </SafeAreaView>

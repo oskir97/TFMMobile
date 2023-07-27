@@ -259,10 +259,13 @@
   "NIVEL_PARTIDO": "Match level",
   "VALORAR": "Rate it",
   "VER_NOTIFICACION": "View notification",
-  "MODIFICAR": "Modificar",
+  "MODIFICAR": "Modify",
   "MODIFICAR_USUARIO": "Modify user",
   "INSCRIPCION_REALIZADA": "Registration completed",
   "INSCRIPCION_COMPLETADA": "Successfully registered for game",
   "DATOS_MODIFICADOS": "Data modified successfully",
-  "DATOS_MODIFICADOS_CORRECTAMENTE": "Changes saved successfully"
+  "DATOS_MODIFICADOS_CORRECTAMENTE": "Changes saved successfully",
+  "NO_HAY_NOTIFICACIONES": "No notifications",
+  "ELIMINAR_IMAGEN": "Delete image",
+  "SELECCIONAR_IMAGEN_PERFIL": "Select profile image"
 }

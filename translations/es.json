@@ -265,5 +265,8 @@
   "INSCRIPCION_REALIZADA": "Inscripción realizada",
   "INSCRIPCION_COMPLETADA": "Se ha compleado correctamente la inscripción al partido, en breves recibirás un mensaje de confirmación",
   "DATOS_MODIFICADOS": "Datos modificados",
-  "DATOS_MODIFICADOS_CORRECTAMENTE": "Se han modificado los datos correctamente"
+  "DATOS_MODIFICADOS_CORRECTAMENTE": "Se han modificado los datos correctamente",
+  "NO_HAY_NOTIFICACIONES": "No hay notificaciones",
+  "ELIMINAR_IMAGEN": "Eliminar imagen",
+  "SELECCIONAR_IMAGEN_PERFIL": "Seleccionar imagen de perfil"
 }

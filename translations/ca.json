@@ -264,5 +264,8 @@
   "INSCRIPCION_REALIZADA": "Inscripció realitzada",
   "INSCRIPCION_COMPLETADA": "S'ha completat correctament la inscripció al partit, en breu rebràs un missatge de confirmació",
   "DATOS_MODIFICADOS": "Les dades s'han modificat correctament",
-  "DATOS_MODIFICADOS_CORRECTAMENTE": "S'han guardat els canvis correctament"
+  "DATOS_MODIFICADOS_CORRECTAMENTE": "S'han guardat els canvis correctament",
+  "NO_HAY_NOTIFICACIONES": "No hi ha notificacions",
+  "ELIMINAR_IMAGEN": "Eliminar imatge",
+  "SELECCIONAR_IMAGEN_PERFIL": "Seleccionar imatge de perfil"
 }

@@ -13,12 +13,13 @@ import Menu from "../../components/Menu/Menu";
 import { useFocusEffect } from "@react-navigation/native";
 import { UsuarioDTO } from "../../shared/models/dtos/UsuarioDTO";
 import { LoginContext } from "../../shared/services/hooks/login/contexts/LoginContext";
+import ImageUploader from "../../components/ImageUploader/ImageUploader";
 
 interface AjusteProps {
     navigation: any;
 }
 
-const AjusteScreen = (props: AjusteProps) => {
+const AjustesScreen: React.FC<AjusteProps> = ({ navigation }) => {
 
     const { control, handleSubmit, formState, handleModificar, setValue, errors, register, reset } = useAjustes();
     const [locationOpen, setLocationOpen] = useState(false);
@@ -28,6 +29,7 @@ const AjusteScreen = (props: AjusteProps) => {
     const { user, setUser } = useContext(LoginContext);
 
     const [location, setLocation] = useState<Ubication>({ codigoPostal: user.codigopostal, localidad: user.localidad, provincia: user.provincia, domicilio: user.domicilio });
+    const [imagen, setImagen] = useState<string | undefined>();
 
     useEffect(() => {
         register('fieldName', { required: false });
@@ -40,12 +42,12 @@ const AjusteScreen = (props: AjusteProps) => {
         setLocationOpen(false);
     }
 
-    function sumarundia(fecha: Date) : Date {
+    function sumarundia(fecha: Date): Date {
         var date = new Date(fecha);
         date.setDate(date.getDate() + 1);
-    
+
         return date;
-      }
+    }
 
     const onSubmit = async (data: ajustesData) => {
         try {
@@ -53,7 +55,7 @@ const AjusteScreen = (props: AjusteProps) => {
             data.codigoPostal = location.codigoPostal;
             data.provincia = location.provincia;
             data.localidad = location.localidad;
-            var user:UsuarioDTO = {nombre:data.nombre, email:data.email, domicilio:data.domicilio, telefono:data.telefono, fechanacimiento:sumarundia(data.fechaNacimiento), apellidos: data.apellidos, password: data.password, codigopostal:data.codigoPostal, localidad: data.localidad, provincia:data.provincia, entidad_oid:-1, numero: data.numero, imagen: null,telefonoalternativo:data.telefonoAlternartivo }
+            var user: UsuarioDTO = { nombre: data.nombre, email: data.email, domicilio: data.domicilio, telefono: data.telefono, fechanacimiento: sumarundia(data.fechaNacimiento), apellidos: data.apellidos, password: data.password, codigopostal: data.codigoPostal, localidad: data.localidad, provincia: data.provincia, entidad_oid: -1, numero: data.numero, imagen: imagen, telefonoalternativo: data.telefonoAlternartivo }
 
             const result = await handleModificar(user);
 
@@ -96,6 +98,13 @@ const AjusteScreen = (props: AjusteProps) => {
         };
     }, [i18n]);
 
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            setImagen(user.imagen);
+        });
+        return unsubscribe;
+    }, [navigation, user]);
+
     useFocusEffect(
         React.useCallback(() => {
             const onBackPress = () => {
@@ -107,18 +116,22 @@ const AjusteScreen = (props: AjusteProps) => {
 
             return () =>
                 BackHandler.removeEventListener('hardwareBackPress', onBackPress);
-        }, [props.navigation])
+        }, [navigation])
     );
 
     const goBack = () => {
-        props.navigation.navigate("Inicio" as never)
+        navigation.navigate("Inicio" as never)
+    };
+
+    const onImageUploaded = (base64Data: string) => {
+        setImagen(base64Data);
     };
 
     return (
         <>
-            <Menu showReturnWizard={true} showLang={true} text={t("RESERVAR")} showusuario={true} userMenu={() => props.navigation.openDrawer()} functionGoBack={goBack} />
+            <Menu showReturnWizard={true} showLang={true} text={t("RESERVAR")} showusuario={true} userMenu={() => navigation.openDrawer()} functionGoBack={goBack} />
             <View style={{ flex: 1, backgroundColor: '#fff' }}>
-                <View style={{ flexDirection: 'row', marginBottom: 10, marginLeft: 20, marginTop:20 }}>
+                <View style={{ flexDirection: 'row', marginBottom: 10, marginLeft: 20, marginTop: 20 }}>
                     <Text style={{ fontSize: 20 }} className="font-semibold mt-1">{t("MODIFICAR_USUARIO")}</Text>
                 </View>
                 <KeyboardAvoidWrapper>
@@ -308,6 +321,8 @@ const AjusteScreen = (props: AjusteProps) => {
                             onSubmit={handleSubmit(onSubmit)}
                         />
 
+                        <ImageUploader onImageSelected={onImageUploaded} img={imagen}></ImageUploader>
+
                         <CustomButton
                             onPress={handleSubmit(onSubmit)}
                             buttonText={t("MODIFICAR")}
@@ -335,4 +350,4 @@ const AjusteScreen = (props: AjusteProps) => {
     );
 };
 
-export default AjusteScreen;
+export default AjustesScreen;

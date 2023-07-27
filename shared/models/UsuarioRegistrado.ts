@@ -20,4 +20,5 @@ export interface UsuarioRegistrado {
     baja: Date | null;
     obtenerRol: Rol;
     obtenerValoracionesAUsuarioPartido: Valoracion[];
+    imagen:string;
   }
