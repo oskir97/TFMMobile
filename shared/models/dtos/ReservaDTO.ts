@@ -23,6 +23,7 @@ export interface ReservaDTO {
     evento_oid?: number;
     nivelpartido?: NivelPartido;
     descripcionpartido?:string;
+    imagen?: string;
 }
 
 export enum TipoReservaEnum {

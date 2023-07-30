@@ -103,7 +103,7 @@ const RegisterScreen = (props: RegisterProps) => {
       <KeyboardAvoidWrapper>
         <View style={{ paddingHorizontal: 16, marginBottom: 30 }}>
           <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: 'center', paddingTop: 30 }}>
-            <ImageBackground source={require('../../assets/images/logo.png')} style={{ height: 150, width: 150 }} imageStyle={{ borderRadius: 10 }}></ImageBackground>
+            <ImageBackground source={require('../../assets/images/logo.png')} style={{ height: 160, width: 190 }} imageStyle={{ borderRadius: 10 }}></ImageBackground>
           </View>
           <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: 'center', paddingTop: 10 }}>
             <Text className="text-md">

@@ -267,5 +267,6 @@
   "DATOS_MODIFICADOS_CORRECTAMENTE": "Changes saved successfully",
   "NO_HAY_NOTIFICACIONES": "No notifications",
   "ELIMINAR_IMAGEN": "Delete image",
-  "SELECCIONAR_IMAGEN_PERFIL": "Select profile image"
+  "SELECCIONAR_IMAGEN_PERFIL": "Select profile image",
+  "SELECCIONAR_IMAGEN_PARTIDO": "Select match image"
 }

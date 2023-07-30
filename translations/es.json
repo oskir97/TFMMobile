@@ -268,5 +268,6 @@
   "DATOS_MODIFICADOS_CORRECTAMENTE": "Se han modificado los datos correctamente",
   "NO_HAY_NOTIFICACIONES": "No hay notificaciones",
   "ELIMINAR_IMAGEN": "Eliminar imagen",
-  "SELECCIONAR_IMAGEN_PERFIL": "Seleccionar imagen de perfil"
+  "SELECCIONAR_IMAGEN_PERFIL": "Seleccionar imagen de perfil",
+  "SELECCIONAR_IMAGEN_PARTIDO": "Seleccionar imagen del partido"
 }

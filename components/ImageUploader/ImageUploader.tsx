@@ -9,9 +9,11 @@ import { useTranslation } from 'react-i18next';
 interface ImageUploaderProps {
   onImageSelected: (base64Image: string) => void;
   img:string;
+  label:string;
+  icono:string;
 }
 
-const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, img }) => {
+const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, img, label, icono }) => {
   const [image, setImage] = useState<string | null>(img);
   const { t } = useTranslation();
 
@@ -70,7 +72,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, img }) =
         </>
       }
       {!image &&
-        <Button onPress={pickImage} mode="contained" style={{ backgroundColor: '#106F69', marginLeft: 10, marginRight: 10, marginTop: 10, marginBottom: 20 }} icon={{ source: "account", direction: 'rtl' }} contentStyle={{ flexDirection: 'row-reverse' }}>{t("SELECCIONAR_IMAGEN_PERFIL") }</Button>
+        <Button onPress={pickImage} mode="contained" style={{ backgroundColor: '#106F69', marginLeft: 10, marginRight: 10, marginTop: 10, marginBottom: 20 }} icon={{ source: icono, direction: 'rtl' }} contentStyle={{ flexDirection: 'row-reverse' }}>{label}</Button>
       }
     </View>
   );

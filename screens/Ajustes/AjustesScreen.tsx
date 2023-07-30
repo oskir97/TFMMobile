@@ -321,7 +321,7 @@ const AjustesScreen: React.FC<AjusteProps> = ({ navigation }) => {
                             onSubmit={handleSubmit(onSubmit)}
                         />
 
-                        <ImageUploader onImageSelected={onImageUploaded} img={imagen}></ImageUploader>
+                        <ImageUploader onImageSelected={onImageUploaded} img={imagen} label={t("SELECCIONAR_IMAGEN_PERFIL")} icono="account"></ImageUploader>
 
                         <CustomButton
                             onPress={handleSubmit(onSubmit)}

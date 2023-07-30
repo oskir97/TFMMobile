@@ -44,7 +44,7 @@ const CustomLanguagePicker: React.FC<MenuProps> = ({ showReturnWizard, text, sho
   const maxWidth = windowWidth * 0.62;
 
   const renderImage = () => {
-    if (user.imagen) {
+    if (user?.imagen) {
       return (
         <Image
           source={{ uri: user.imagen }}

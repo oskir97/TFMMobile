@@ -1,4 +1,4 @@
-import { View, Text, Pressable, ImageBackground, Linking } from 'react-native'
+import { View, Text, Pressable, ImageBackground, Linking, Image } from 'react-native'
 import React, { useContext } from 'react'
 import { I18nContext, useTranslation } from 'react-i18next';
 import { Evento } from '../../../shared/models/Evento';
@@ -46,6 +46,27 @@ const EventoItem: React.FC<EventoItemProps> = ({ item, navigation }) => {
         return '';
     }
 
+    const renderImage = () => {
+        if (item.imagen) {
+          return (
+            <Image
+              source={{ uri: item.imagen }}
+              style={{ height: 190, borderRadius: 6 }}
+            //   resizeMode="cover"
+            />
+          );
+        } else {
+          return (
+            <ImageBackground
+                        imageStyle={{ borderRadius: 6 }}
+                        style={{ height: 190 }}
+                        source={require('../../../assets/images/eventodefault.jpg')}
+                    >
+                    </ImageBackground>
+          );
+        }
+      };
+
     return (
         <View style={{ margin: 10 }}>
             <Pressable
@@ -55,12 +76,9 @@ const EventoItem: React.FC<EventoItemProps> = ({ item, navigation }) => {
 
             >
                 <View>
-                    <ImageBackground
-                        imageStyle={{ borderRadius: 6 }}
-                        style={{ height: 190 }}
-                        source={require('../../../assets/images/eventodefault.jpg')}
-                    >
-                    </ImageBackground>
+                    {
+                        renderImage()
+                    }
                 </View>
 
                 <View style={{ marginLeft: 10, flexShrink: 1, marginTop: 5 }}>

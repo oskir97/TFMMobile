@@ -22,4 +22,5 @@ export interface Evento {
     obtenerInstalacion: Instalacion;
     obtenerInscripciones: Reserva[];
     obtenerPistaEvento: Pista;
+    imagen?:string;
   }

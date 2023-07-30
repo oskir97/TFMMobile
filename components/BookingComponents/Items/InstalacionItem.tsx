@@ -1,4 +1,4 @@
-import { View, FlatList, ScrollView, Text, Pressable, ImageBackground, Linking } from 'react-native'
+import { View, FlatList, ScrollView, Text, Pressable, ImageBackground, Linking, Image } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import { Instalacion } from '../../../shared/models/Instalacion';
@@ -16,16 +16,16 @@ export interface InstalacionItemProps {
 const InstalacionItem: React.FC<InstalacionItemProps> = ({ item, navigation }) => {
 
     const { t } = useTranslation();
-    const {Asignarinstalacionfavoritos, Eliminarinstalacionfavoritos} = useFavoritosInstalaciones();
+    const { Asignarinstalacionfavoritos, Eliminarinstalacionfavoritos } = useFavoritosInstalaciones();
     const [favorita, setFavorita] = useState(item.favorita);
 
     function addFav() {
         var result: boolean = !favorita;
         item.favorita = result
 
-        if(result){
+        if (result) {
             Asignarinstalacionfavoritos(item.idinstalacion);
-        }else{
+        } else {
             Eliminarinstalacionfavoritos(item.idinstalacion);
         }
 
@@ -57,7 +57,7 @@ const InstalacionItem: React.FC<InstalacionItemProps> = ({ item, navigation }) =
     }
 
     function obtainMinorPistaPrice(pistas: Pista[]): Pista | undefined {
-        if(pistas){
+        if (pistas) {
             return pistas.reduce((menorPrecio, pista) => {
                 if (pista.precio < menorPrecio.precio) {
                     return pista;
@@ -69,18 +69,66 @@ const InstalacionItem: React.FC<InstalacionItemProps> = ({ item, navigation }) =
     }
 
     function obtainAvailablePistas(): string {
-        if(item.pistasDisponibles){
+        if (item.pistasDisponibles) {
             var npistas = item.pistasDisponibles.length;
             return item.pistasDisponibles ? (npistas > 1 ? `${npistas.toString()} ${t("PISTAS_DISPONIBLES")}` : `${npistas.toString()} ${t("PISTA_DISPONIBLE")}`) : `0 ${t("PISTAS_DISPONIBLES")}`;
-        }else{
+        } else {
             return `0 ${t("PISTAS_DISPONIBLES")}`;
         }
     }
 
+    const renderImage = () => {
+        if (item.imagen) {
+            return (
+                <ImageBackground
+                    imageStyle={{ borderRadius: 6 }}
+                    style={{ aspectRatio: 5 / 6, height: 190 }}
+                    source={{ uri: item.imagen }}
+                >
+                    <Pressable
+                        onPress={() =>
+                            addFav()
+                        }
+                        style={{ flexDirection: "row" }}
+                    >
+                        <AntDesign
+                            style={{ position: "absolute", top: 10, right: 10 }}
+                            name={favorita ? 'heart' : 'hearto'}
+                            size={24}
+                            color={favorita ? 'red' : 'white'}
+                        />
+                    </Pressable>
+                </ImageBackground>
+            );
+        } else {
+            return (
+                <ImageBackground
+                    imageStyle={{ borderRadius: 6 }}
+                    style={{ aspectRatio: 5 / 6, height: 190 }}
+                    source={require('../../../assets/images/instalaciondefault.jpg')}
+                >
+                    <Pressable
+                        onPress={() =>
+                            addFav()
+                        }
+                        style={{ flexDirection: "row" }}
+                    >
+                        <AntDesign
+                            style={{ position: "absolute", top: 10, right: 10 }}
+                            name={favorita ? 'heart' : 'hearto'}
+                            size={24}
+                            color={favorita ? 'red' : 'white'}
+                        />
+                    </Pressable>
+                </ImageBackground>
+            );
+        }
+    };
+
     useEffect(() => {
 
         setFavorita(item.favorita);
-      }, [item.favorita]);
+    }, [item.favorita]);
 
     return (
         <View style={{ margin: 10 }}>
@@ -91,25 +139,7 @@ const InstalacionItem: React.FC<InstalacionItemProps> = ({ item, navigation }) =
                 style={{ flexDirection: "row" }}
             >
                 <View>
-                    <ImageBackground
-                        imageStyle={{ borderRadius: 6 }}
-                        style={{ aspectRatio: 5 / 6, height: 190 }}
-                        source={require('../../../assets/images/instalaciondefault.jpg')}
-                    >
-                        <Pressable
-                            onPress={() =>
-                                addFav()
-                            }
-                            style={{ flexDirection: "row" }}
-                        >
-                            <AntDesign
-                                style={{ position: "absolute", top: 10, right: 10 }}
-                                name={favorita ? 'heart' : 'hearto'}
-                                size={24}
-                                color={favorita ? 'red' : 'white'}
-                            />
-                        </Pressable>
-                    </ImageBackground>
+                    {renderImage()}
                 </View>
 
                 <View style={{ marginLeft: 10, flexShrink: 1 }}>

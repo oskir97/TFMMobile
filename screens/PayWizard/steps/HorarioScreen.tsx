@@ -75,7 +75,7 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
     var reservaDTO: ReservaDTO;
     if (route.params.partido) {
       var p = route.params.partido;
-      reservaDTO = { nombre: p.nombre, apellidos: p.apellidos, email: p.email, telefono: p.telefono, cancelada: false, pista_oid: pista ? pista.idpista : -1, maxparticipantes: p.maxparticipantes, horario_oid: horario?.idhorario, fecha: fecha, tipo: TipoReservaEnum.Partido, usuario_oid: user?.idusuario, deporte_oid: p.obtenerDeporteReserva.iddeporte, evento_oid: -1, partido_oid: -1, descripcionpartido: p.descripcionpartido, nivelpartido: p.nivelpartido };
+      reservaDTO = { nombre: p.nombre, apellidos: p.apellidos, email: p.email, telefono: p.telefono, cancelada: false, pista_oid: pista ? pista.idpista : -1, maxparticipantes: p.maxparticipantes, horario_oid: horario?.idhorario, fecha: fecha, tipo: TipoReservaEnum.Partido, usuario_oid: user?.idusuario, deporte_oid: p.obtenerDeporteReserva.iddeporte, evento_oid: -1, partido_oid: -1, descripcionpartido: p.descripcionpartido, nivelpartido: p.nivelpartido, imagen: p.imagen };
     } else {
       reservaDTO = { nombre: user?.nombre, apellidos: user?.apellidos, email: user?.email, telefono: user?.telefono, cancelada: false, pista_oid: pista ? pista.idpista : -1, maxparticipantes: 1, horario_oid: horario?.idhorario, fecha: fecha, tipo: tipoReserva, usuario_oid: user?.idusuario, deporte_oid: filter.deporte ? filter.deporte : -1, evento_oid: route.params.evento ? route.params.evento.idevento : -1, partido_oid: -1 };
     }

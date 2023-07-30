@@ -29,4 +29,5 @@ export interface Reserva {
     obtenerPartidoReserva?:Reserva;
     obtenerEventoReserva?:Evento;
     descripcionpartido?:string;
+    imagen?: string;
   }

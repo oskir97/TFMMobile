@@ -26,6 +26,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from 'yup';
 import { useInstalaciones } from "../../../shared/services/hooks/instalaciones/useInstalaciones";
 import { TipoReserva } from "../../../shared/models/TipoReserva";
+import ImageUploader from "../../../components/ImageUploader/ImageUploader";
 
 interface PartidoData {
     descripcion: string;
@@ -52,6 +53,8 @@ const CreatePartidoScreen: React.FC<UbicationScreenProps> = ({ navigation }) => 
     const { obtenerInstalaciones } = useInstalaciones();
     const [instalaciones, setInstalaciones] = useState<Instalacion[] | undefined>([]);
     const [instalacion, setInstalacion] = useState<string | undefined>(undefined);
+
+    const [imagen, setImagen] = useState<string | undefined>();
 
     const { t } = useTranslation();
     const { i18n } = useContext(I18nContext);
@@ -80,7 +83,7 @@ const CreatePartidoScreen: React.FC<UbicationScreenProps> = ({ navigation }) => 
     });
 
     const onSubmit = (data: PartidoData) => {
-        var reserva: Reserva = { descripcionpartido: data.descripcion, nivelpartido: parseInt(data.nivel), nombre: user?.nombre, apellidos: user?.apellidos, email: user?.email, telefono: user?.telefono, cancelada: false, maxparticipantes: parseInt(data.maxparticipantes), tipo: TipoReserva.partido, obtenerDeporteReserva: deporteAsignado };
+        var reserva: Reserva = { descripcionpartido: data.descripcion, nivelpartido: parseInt(data.nivel), nombre: user?.nombre, apellidos: user?.apellidos, email: user?.email, telefono: user?.telefono, cancelada: false, maxparticipantes: parseInt(data.maxparticipantes), tipo: TipoReserva.partido, obtenerDeporteReserva: deporteAsignado, imagen:imagen };
         var intalacion = instalaciones.find(i => i.idinstalacion == parseInt(data.instalacion));
         navigation.navigate("Horario" as never, { partido: reserva, instalacion: intalacion } as never);
     };
@@ -138,6 +141,10 @@ const CreatePartidoScreen: React.FC<UbicationScreenProps> = ({ navigation }) => 
             return nombreTraducido;
         }
     }
+
+    const onImageUploaded = (base64Data: string) => {
+        setImagen(base64Data);
+    };
 
     return (
         <>
@@ -282,6 +289,7 @@ const CreatePartidoScreen: React.FC<UbicationScreenProps> = ({ navigation }) => 
                                 onSubmit={handleSubmit(onSubmit)}
                             />
                         </View>
+                        <ImageUploader onImageSelected={onImageUploaded} img={imagen} label={t("SELECCIONAR_IMAGEN_PARTIDO")} icono="tennis"></ImageUploader>
                     </View>
 
                     <CustomButton

@@ -25,10 +25,10 @@ const CustomDrawer = (props: any) => {
   }
 
   const renderImage = () => {
-    if (user.imagen) {
+    if (user?.imagen) {
       return (
         <Image
-          source={{ uri: user.imagen }}
+          source={{ uri: user?.imagen }}
           style={{ height: 80, width: 80, borderRadius: 40, marginBottom: 10 }}
           resizeMode="cover"
         />
