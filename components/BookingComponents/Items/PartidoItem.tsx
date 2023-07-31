@@ -121,7 +121,7 @@ const PartidoItem: React.FC<PartidoItemProps> = ({ item, navigation }) => {
 
                 <View style={{ marginLeft: 10, flexShrink: 1, marginTop: 5 }}>
                     <View style={{flexDirection:'row'}}>{renderImageUser()}
-                    <Text style={{ fontSize: 18, fontWeight: 'bold', flexWrap: 'wrap', marginTop:5 }} numberOfLines={2}>{`${item?.nombre} ${item?.apellidos}`}</Text></View>
+                    <Text style={{ fontSize: 18, fontWeight: 'bold', flexWrap: 'wrap', marginTop:5 }} numberOfLines={2}>{`${item?.obtenerUsuarioCreador.nombre} ${item?.obtenerUsuarioCreador.apellidos}`}</Text></View>
                     <Text style={{ fontSize: 14, fontWeight: 'bold', flexWrap: 'wrap', color: "gray" }} numberOfLines={2}>{item.obtenerPista.obtenerInstalaciones.nombre}</Text>
                     <View style={{ flexDirection: "row", alignItems: "center", marginTop: 3 }}>
                         <MaterialIcons name="stars" size={24} color="orange" />

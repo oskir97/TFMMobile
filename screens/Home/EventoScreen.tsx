@@ -137,7 +137,7 @@ const EventoScreen: React.FC<EventoScreenProps> = ({ navigation }) => {
         const fin = horario.fin ? new Date(horario.fin).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
 
         const diasSemanaElement = <Text style={{ fontWeight: 'bold', marginBottom: 4 }} numberOfLines={3} ellipsizeMode="tail">{diasSemana}</Text>;
-        const horasElement = <Text style={{ fontWeight: 'bold' }} numberOfLines={1} ellipsizeMode="tail">{t('DE2')} {inicio} {t('A2')} {fin}</Text>;
+        const horasElement = <Text style={{ fontWeight: 'bold', fontSize:12 }} numberOfLines={1} ellipsizeMode="tail">{t('DE2')} {inicio} {t('A2')} {fin}</Text>;
         formattedHorarios.push(
           <View key={horario.idhorario}>
             {diasSemanaElement}
@@ -245,7 +245,7 @@ const EventoScreen: React.FC<EventoScreenProps> = ({ navigation }) => {
                 )}
               </View>
 
-              <View style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}>
+              <View style={{ flexDirection: "row", alignItems: "center", marginTop: 2 }}>
                 <Text style={{ marginLeft: 6, fontSize: 14 }}>{`${t("DEL")} ${formatDate(evento?.inicio)} ${t("AL")} ${formatDate(evento?.fin)}`}</Text>
                 <Text style={{ marginLeft: 10, fontSize: 14, fontWeight: 'bold' }}>{`|`}</Text>
                 <Text style={{ marginLeft: 10, fontSize: 14, fontWeight: 'bold' }}>{`${evento?.plazas - evento?.obtenerInscripciones.length} ${evento?.plazas - evento?.obtenerInscripciones.length > 1?t("PLAZAS") : t("PLAZA")}`}</Text>
@@ -258,7 +258,7 @@ const EventoScreen: React.FC<EventoScreenProps> = ({ navigation }) => {
                   marginTop: 0,
                 }}
               >
-                <Text style={{ marginLeft: 3, fontSize: 15, marginTop: 10, marginBottom:5, fontWeight: '400' }}>{evento?.descripcion}</Text>
+                <Text style={{ marginLeft: 3, fontSize: 14, marginTop: 5, marginBottom:5, fontWeight: '400' }}>{evento?.descripcion}</Text>
               </View>
 
               <View
@@ -285,7 +285,7 @@ const EventoScreen: React.FC<EventoScreenProps> = ({ navigation }) => {
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
-                  marginTop: 10,
+                  marginTop: 5,
                   width: width * 0.6
                 }}
               >

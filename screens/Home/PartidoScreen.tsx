@@ -256,7 +256,7 @@ const PartidoScreen: React.FC<PartidoScreenProps> = ({ navigation }) => {
               >
                 <View style={{ flexDirection: 'row' }}>{renderImageUser()}
                   <Text style={{ width: width * 0.7, fontSize: 19, fontWeight: "bold", marginTop:5 }}>
-                    {`${partido?.nombre} ${partido?.apellidos}`}
+                    {`${partido?.obtenerUsuarioCreador.nombre} ${partido?.obtenerUsuarioCreador.apellidos}`}
                   </Text>
                 </View>
                 {/* <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -299,14 +299,14 @@ const PartidoScreen: React.FC<PartidoScreenProps> = ({ navigation }) => {
                 <Text style={{ marginLeft: 10, fontSize: 14, fontWeight: 'bold' }}>{`${partido?.maxparticipantes - partido?.obtenerInscripciones.length} ${partido?.maxparticipantes - partido?.obtenerInscripciones.length > 1 ? t("PLAZAS") : t("PLAZA")}`}</Text>
               </View>
               <View style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}>
-                <Text style={{ marginLeft: 6, fontSize: 14 }}>{partido?.obtenerPista.obtenerInstalaciones.nombre}</Text>
+                <Text style={{ marginLeft: 6, fontSize: 14, fontWeight:'bold' }}>{partido?.obtenerPista.obtenerInstalaciones.nombre}</Text>
               </View>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Text style={{ marginLeft: 6, fontSize: 14 }}>{partido?.obtenerPista.nombre}</Text>
               </View>
 
               <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Text style={{ marginTop: 10, marginLeft: 6, fontSize: 16, fontWeight: 'bold' }}>{partido?.descripcionpartido}</Text>
+                <Text style={{ marginTop: 10, marginLeft: 6, fontSize: 16 }}>{partido?.descripcionpartido}</Text>
               </View>
 
               <View
