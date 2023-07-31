@@ -269,5 +269,8 @@
   "NO_HAY_NOTIFICACIONES": "No hay notificaciones",
   "ELIMINAR_IMAGEN": "Eliminar imagen",
   "SELECCIONAR_IMAGEN_PERFIL": "Seleccionar imagen de perfil",
-  "SELECCIONAR_IMAGEN_PARTIDO": "Seleccionar imagen del partido"
+  "SELECCIONAR_IMAGEN_PARTIDO": "Seleccionar imagen del partido",
+  "POSIBILIDAD_NUBES": "Posibilidad de nubes",
+  "DESPEJADO": "Hará buen día",
+  "POSIBILIDAD_LLUVIAS": "Posibilidad de lluvias"
 }

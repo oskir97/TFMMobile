@@ -18,7 +18,7 @@ import { RouteProp, useFocusEffect, useRoute } from "@react-navigation/native";
 import { Pista } from "../../../shared/models/Pista";
 import { ReservaDTO, TipoReservaEnum } from "../../../shared/models/dtos/ReservaDTO";
 import { useReservas } from "../../../shared/services/hooks/reservas/useReservas";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import { usePredicciones } from "../../../shared/services/hooks/predicciones/usePredicciones";
 
 interface UbicationScreenProps {
   navigation: any;
@@ -35,17 +35,19 @@ type ParamList = {
 
 const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
   const route = useRoute<RouteProp<ParamList, 'Item'>>();
-  const { filter, user } = useContext(LoginContext);
+  const { filter, user, location } = useContext(LoginContext);
   const [fecha, setFecha] = useState<Date | undefined>(filter && filter.fecha ? sumarundia(filter.fecha) : new Date());
   const [horario, setHorario] = useState<Horario | undefined>();
   const { obtenerpistasinstalacion } = useHorarios();
   const { crearReserva } = useReservas();
+  const { obtenerPrediccion } = usePredicciones();
   const [showPicker, setShowPicker] = useState(false);
   const [instalacion, setInstalacion] = useState<Instalacion | undefined>(route.params.instalacion);
   const [evento, setEvento] = useState<Evento | undefined>(route.params.evento);
   const [partido, setPartido] = useState<Reserva | undefined>(route.params.partido);
   const [pistas, setPistas] = useState<Pista[] | undefined>();
   const [pista, setPista] = useState<Pista | undefined>();
+  const [prediccion, setPrediccion] = useState<any>();
   const newDate = new Date();
 
   const toggleDatepicker = () => {
@@ -62,8 +64,14 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
   const addTime = (value: Horario) => {
     if (value == horario) {
       setHorario(undefined);
+      setPrediccion(undefined);
     } else {
       setHorario(value);
+      if (isDateWithinFiveDays(value)) {
+        getPrediccion(value);
+      } else {
+        setPrediccion(undefined);
+      }
     }
   }
 
@@ -97,13 +105,16 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
     });
   };
 
-  const createDateTime = () => {
+  const createDateTime = (h?: Horario) => {
     if (fecha) {
+      if (!h)
+        h = horario;
+        
       const anio = fecha.getFullYear();
       const mes = fecha.getMonth() + 1;
       const dia = fecha.getDate();
       const formatoFecha = `${anio}-${mes.toString().padStart(2, '0')}-${dia.toString().padStart(2, '0')}`;
-      const hora = formatTime(horario?.inicio) + ":00";
+      const hora = formatTime(h?.inicio) + ":00";
       const fechaTiempo = `${formatoFecha}T${hora}.000Z`;
       return new Date(fechaTiempo);
     }
@@ -150,6 +161,7 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
         }
         setPista(undefined);
         setHorario(undefined);
+        setPrediccion(undefined);
       }
     });
     return unsubscribe;
@@ -200,7 +212,9 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
     }
   };
 
-  function isDateWithinFiveDays(date: Date | undefined) {
+  function isDateWithinFiveDays(value) {
+
+    var date = createDateTime(value);
 
     if (date) {
       // Obtener la fecha actual
@@ -224,6 +238,17 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
     }
   }
 
+  async function getPrediccion(horario: Horario) {
+    const fecha = createDateTime(horario);
+    const latitud = location.coords.latitude;
+    const longitud = location.coords.longitude;
+
+    await obtenerPrediccion(fecha, latitud, longitud).then((prediccion) => {
+      console.log(prediccion);
+      setPrediccion(prediccion);
+    });
+  }
+
   return (
     <>
       <Menu showReturnWizard={true} showLang={true} text={(instalacion && !route.params.partido && instalacion.nombre) || (evento && evento.nombre) || (partido && t("CREAR_PARTIDO"))} showusuario={true} userMenu={() => navigation.openDrawer()} functionGoBack={goBack} />
@@ -244,13 +269,8 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
                 <Text style={styles.textDate}>{horario && horario.inicio && `${formatTime(horario.inicio)} - ${formatTime(horario.fin)}`}</Text>
               </TouchableOpacity>
             </View>
-            {isDateWithinFiveDays(fecha) &&
-              <View style={{ marginBottom: 5, marginLeft:5, flexDirection:'row' }}>
-                <Text style={{color:'#FF0000', fontWeight:'bold'}}>
-                  Es posible que hagan chuvascos
-                </Text>
-                <FontAwesome5 name="cloud-rain" size={21} color="#007DFF" style={{ marginLeft: 5, color:'#0047AB' }} />
-              </View>
+            {prediccion &&
+                  prediccion
             }
             <PaperSelect
               label={t("SELECCIONAR_PISTA")}
@@ -266,6 +286,7 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
               onSelection={(value: any) => {
                 if (value.selectedList.length > 0) {
                   setHorario(undefined);
+                  setPrediccion(undefined);
                   setPista(pistas?.find((pista) => pista.idpista.toString() == value.selectedList[0]._id));
                 }
               }}
@@ -319,6 +340,7 @@ const HorarioScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
               toggleDatepicker();
               setFecha(selectedDate);
               setHorario(undefined);
+              setPrediccion(undefined);
               setPista(undefined);
               obtenerPistas(selectedDate);
 

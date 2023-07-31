@@ -268,5 +268,8 @@
   "NO_HAY_NOTIFICACIONES": "No notifications",
   "ELIMINAR_IMAGEN": "Delete image",
   "SELECCIONAR_IMAGEN_PERFIL": "Select profile image",
-  "SELECCIONAR_IMAGEN_PARTIDO": "Select match image"
+  "SELECCIONAR_IMAGEN_PARTIDO": "Select match image",
+  "POSIBILIDAD_NUBES": "Possibility of clouds",
+  "DESPEJADO": "It will be a sunny day",
+  "POSIBILIDAD_LLUVIAS": "Possibility of rain"
 }
