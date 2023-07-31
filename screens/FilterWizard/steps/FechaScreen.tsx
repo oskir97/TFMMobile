@@ -179,7 +179,10 @@ const FechaScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
     today: 'Avui'
   };
 
+  LocaleConfig.defaultLocale = i18n.language;
+
   useEffect(() => {
+
     const updateDeportesWithTranslation = () => {
       LocaleConfig.defaultLocale = i18n.language;
       setCalendarKey(Date.now());
