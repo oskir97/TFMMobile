@@ -17,6 +17,7 @@ export const useReservas = () => {
 
   const obtenerReservas = async (filtroReserva: FilterReserva): Promise<Reserva[]> => {
     try {
+      console.log(filtroReserva);
       const token = await AsyncStorage.getItem('token');
 
       if (token !== null) {

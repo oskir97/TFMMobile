@@ -19,9 +19,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [filterOpen, setFilterOpen] = useState<boolean>(false);
   const [type, setType] = useState<TypeReservation | undefined>(filter?.type?filter?.type:"Pista");
   const [sort, setSort] = useState<Sort | undefined>(filter?.sort?filter?.sort : "Distancia");
+  const [nivel, setNivel] = useState<string | undefined>(filter?.level?filter?.level : undefined);
   const [filterText, setFilterText] = useState('');
   const [textAssign, setTextAssign] = useState<string | undefined>(filter?.localidad);
-  const [filterReserva, setFilterReserva] = useState<FilterReserva>({filtro:filterText, localidad:filter?.localidad,latitud: location?.coords.latitude.toString(), longitud: location?.coords.longitude.toString(), fecha:filter && filter.fecha? sumarundia(filter.fecha) : new Date(), deporte:filter?.deporte, orden: filter?.sort  });
+  const [filterReserva, setFilterReserva] = useState<FilterReserva>({filtro:filterText, localidad:filter?.localidad,latitud: location?.coords.latitude.toString(), longitud: location?.coords.longitude.toString(), fecha:filter && filter.fecha? sumarundia(filter.fecha) : new Date(), deporte:filter?.deporte, orden: filter?.sort, nivel:filter?.level  });
   const [loadingFilters, setLoadingFilters] = useState<boolean>(false);
   const { t } = useTranslation();
 
@@ -32,7 +33,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       setType(filter.type);
       setSort(filter.sort);
       setFilterOpen(false);
-      setFilterReserva({filtro:filterText, localidad:filter?.localidad,latitud: location?.coords.latitude.toString(), longitud: location?.coords.longitude.toString(), fecha:filter && filter.fecha? sumarundia(filter.fecha) : new Date(), deporte:filter?.deporte, orden: filter?.sort  });
+      setNivel(filter.level);
+      setFilterReserva({filtro:filterText, localidad:filter?.localidad,latitud: location?.coords.latitude.toString(), longitud: location?.coords.longitude.toString(), fecha:filter && filter.fecha? sumarundia(filter.fecha) : new Date(), deporte:filter?.deporte, orden: filter?.sort, nivel:filter?.level  });
     });
   }
 
@@ -48,6 +50,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       await AsyncStorage.setItem('sort', filter.sort.toString());
     if (filter.type)
       await AsyncStorage.setItem('type', filter.type.toString());
+      if (filter.level)
+      await AsyncStorage.setItem('level', filter.level.toString());
   }
 
   useEffect(() => {
@@ -57,11 +61,16 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
       if (!filter || (filter.fecha && filter.fecha.setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0))) {
         navigation.navigate("Ubicación");
-      } else if (!filter.localidad) {
-        AsyncStorage.getItem("localidad").then((value: any) => { filter.localidad = value });
+      } else {
+        if (!filter.localidad) {
+          AsyncStorage.getItem("localidad").then((value: any) => { filter.localidad = value });
+        }
+        if(!filter.level){
+          AsyncStorage.getItem("level").then((value: any) => { filter.level = value });
+        }
       }
       setLoadingFilters(false);
-      setFilterReserva({filtro:filterText, localidad:filter?.localidad,latitud: location?.coords.latitude.toString(), longitud: location?.coords.longitude.toString(), fecha:filter && filter.fecha? sumarundia(filter.fecha) : new Date(), deporte:filter?.deporte, orden: filter?.sort  });
+      setFilterReserva({filtro:filterText, localidad:filter?.localidad,latitud: location?.coords.latitude.toString(), longitud: location?.coords.longitude.toString(), fecha:filter && filter.fecha? sumarundia(filter.fecha) : new Date(), deporte:filter?.deporte, orden: filter?.sort, nivel:filter?.level  });
     });
     return unsubscribe;
   }, [navigation, filter?.localidad, location]);
@@ -69,7 +78,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const handleFilterChange = (text:string) => {
     setLoadingFilters(true);
     setFilterText(text);
-    setFilterReserva({filtro:text, localidad:filter?.localidad,latitud: location?.coords.latitude.toString(), longitud: location?.coords.longitude.toString(), fecha:filter && filter.fecha? sumarundia(filter.fecha) : new Date(), deporte:filter?.deporte, orden: filter?.sort  });
+    setFilterReserva({filtro:text, localidad:filter?.localidad,latitud: location?.coords.latitude.toString(), longitud: location?.coords.longitude.toString(), fecha:filter && filter.fecha? sumarundia(filter.fecha) : new Date(), deporte:filter?.deporte, orden: filter?.sort, nivel:filter?.level  });
   };
 
   const buscarText = t('BUSCAR') as string;

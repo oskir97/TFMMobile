@@ -1,5 +1,3 @@
-import { Deporte } from "./Deporte";
-
 export type Sort = 'Distancia' | 'Valoracion' | 'Precio' | 'Distancia desc' | 'Valoracion desc' | 'Precio desc' | 'Favoritos'; 
 export type TypeReservation = 'Pista' | 'Evento' | 'Partido'; 
 
@@ -9,6 +7,7 @@ export interface Filter {
     fecha?:Date |undefined
     sort?:Sort | undefined
     type?:TypeReservation
+    level?:string
   }
 
   export interface FilterReserva {
@@ -19,4 +18,5 @@ export interface Filter {
     fecha: Date | undefined,
     deporte: number | undefined,
     orden: string | undefined
+    nivel?: string | undefined
   }; 

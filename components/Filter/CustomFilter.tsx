@@ -3,15 +3,9 @@ import { Text, StyleSheet, View, Modal, Button, TouchableOpacity, Pressable, Scr
 import { FilterProps } from "../../tfmmobile";
 import { CalendarDaysIcon, ClockIcon, UserGroupIcon, XCircleIcon } from "react-native-heroicons/solid";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import SportTypes from "../SportTypes/SportTypes";
-import { MaterialIcons } from "@expo/vector-icons";
-import CustomTextInput from "../InputText/CustomTextInput";
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
+import AntDesignIcons from "@expo/vector-icons/AntDesign";
+import MaterialIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useForm } from "react-hook-form";
-import { Deporte } from "../../shared/models/Deporte";
-import CustomDateInput from "../InputDate/CustomDateInput";
-import CustomInputMaps from "../Modals/CustomInputModalMaps";
 import { useTranslation } from "react-i18next";
 import { Filter, Sort, TypeReservation } from "../../shared/models/Filter";
 import { Checkbox } from 'react-native-paper';
@@ -21,6 +15,7 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
 
     const [selectedType, setSelectedType] = useState<TypeReservation | undefined>(filter?.type ? filter?.type : "Pista");
     const [selectedSort, setSort] = useState<Sort | undefined>(filter?.sort ? filter?.sort : "Distancia");
+    const [nivel, setNivel] = useState<string | undefined>(filter?.level ? filter?.level : undefined);
     const [desc, setDesc] = useState(selectedSort ? selectedSort.toLowerCase().includes("desc") : false);
     const { t } = useTranslation();
 
@@ -33,7 +28,7 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
     };
 
     const onSubmit = () => {
-        if(selectedType != "Pista" && selectedSort == "Favoritos"){
+        if (selectedType != "Pista" && selectedSort == "Favoritos") {
             setSort('Distancia');
             filter.sort = 'Distancia'
         }
@@ -42,7 +37,9 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
         else
             filter.sort = false;
 
-        filter.type = selectedType
+        filter.type = selectedType;
+
+        filter.level =  nivel;
 
         onConfirm(filter);
     };
@@ -57,7 +54,7 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
                         <View style={{ flexDirection: 'row' }}>
                             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
                                 <TouchableOpacity
-                                    style={{ marginRight: 10,marginTop: 10,marginBottom: 10, alignItems: 'center', justifyContent: 'center' }}
+                                    style={{ marginRight: 10, marginTop: 10, marginBottom: 10, alignItems: 'center', justifyContent: 'center' }}
                                     onPress={() => setSelectedType("Pista")}
                                 >
                                     <CalendarDaysIcon color={selectedType && selectedType == 'Pista' ? '#04D6C8' : "#333"} size={60} />
@@ -163,6 +160,87 @@ const CustomFilter: React.FC<FilterProps> = ({ visible, onConfirm, onCancel, tit
                             <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                                 <Checkbox.Item label={t('ORDENAR_DESCENDENTE')} status={desc ? 'checked' : 'unchecked'} labelStyle={{ fontSize: 14 }} color="#04D6C8" onPress={handleToggle} />
                             </View>
+                        }
+                        {
+                            selectedType == "Partido" &&
+                            <>
+                                <Text className="font-semibold mt-2 mb-4" style={{ fontSize: 18, marginBottom: 20 }}>{t('SELECCIONAR_NIVEL_DIFICULTAD')}</Text>
+                                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 10 }}>
+                                    <TouchableOpacity
+                                        style={{
+                                            marginHorizontal: 5,
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            borderWidth: 1,
+                                            borderColor: "#D0D0D0",
+                                            padding: 10,
+                                            borderRadius: 20,
+                                            width: 120,
+                                            justifyContent: "center",
+                                            backgroundColor: (nivel == undefined) ? '#04D6C8' : 'white',
+                                        }}
+                                        onPress={() => { setNivel(undefined); }}
+                                    >
+                                        <Text style={{ marginRight: 6, color: nivel == undefined ? 'white' : 'black' }}>{t('CUALQUIERA')}</Text>
+                                        <MaterialIcons name="call-split" style={{ marginRight: 6, color: nivel == undefined ? 'white' : 'black' }} size={20} />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={{
+                                            marginHorizontal: 5,
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            borderWidth: 1,
+                                            borderColor: "#D0D0D0",
+                                            padding: 10,
+                                            borderRadius: 20,
+                                            width: 120,
+                                            justifyContent: "center",
+                                            backgroundColor: (nivel == "1") ? '#04D6C8' : 'white',
+                                        }}
+                                        onPress={() => { setNivel("1"); }}
+                                    >
+                                        <Text style={{ marginRight: 6, color: nivel == "1" ? 'white' : 'black' }}>{t('BASICO')}</Text>
+                                        <AntDesignIcons name="arrowdown" style={{ marginRight: 6, color: nivel == "1" ? 'white' : 'black' }} size={20} />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={{
+                                            marginHorizontal: 5,
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            borderWidth: 1,
+                                            borderColor: "#D0D0D0",
+                                            padding: 10,
+                                            borderRadius: 20,
+                                            width: 140,
+                                            justifyContent: "center",
+                                            backgroundColor: (nivel == "2") ? '#04D6C8' : 'white',
+                                        }}
+                                        onPress={() => { setNivel("2"); }}
+                                    >
+                                        <Text style={{ marginRight: 6, color: nivel == "2" ? 'white' : 'black' }}>{t('MEDIO')}</Text>
+                                        <AntDesignIcons name="arrowright" style={{ marginRight: 6, color: nivel == "1" ? 'white' : 'black' }} size={20} />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={{
+                                            marginHorizontal: 5,
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            borderWidth: 1,
+                                            borderColor: "#D0D0D0",
+                                            padding: 10,
+                                            borderRadius: 20,
+                                            width: 140,
+                                            justifyContent: "center",
+                                            backgroundColor: (nivel == "3") ? '#04D6C8' : 'white',
+                                        }}
+                                        onPress={() => { setNivel("3"); }}
+                                    >
+                                        <Text style={{ marginRight: 6, color: nivel == "3" ? 'white' : 'black' }}>{t('AVANZADO')}</Text>
+                                        <AntDesignIcons name="arrowup" style={{ marginRight: 6, color: nivel == "1" ? 'white' : 'black' }} size={20} />
+                                    </TouchableOpacity>
+
+                                </ScrollView>
+                            </>
                         }
 
                         <CustomButton
