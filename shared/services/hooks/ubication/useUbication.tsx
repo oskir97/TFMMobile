@@ -39,7 +39,7 @@ export const useUbication = () => {
         try {
             if (location != null && location != undefined) {
                 setLocation(location);
-                const apiKey = 'AIzaSyDB2bGI_qo-wtNjBZ690FvrcVeQK4kS7Jg';
+                const apiKey = 'AIzaSyDk2FMHqx4YxsS-LkVt4wtzhHM4iM1_gxU';
                 const lat = location.coords.latitude;
                 const lon = location.coords.longitude;
                 const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=${apiKey}`;

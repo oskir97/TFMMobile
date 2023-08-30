@@ -109,7 +109,7 @@ const UbicacionScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
                     // }
                   }}
                   query={{
-                    key: 'AIzaSyDB2bGI_qo-wtNjBZ690FvrcVeQK4kS7Jg',
+                    key: 'AIzaSyDk2FMHqx4YxsS-LkVt4wtzhHM4iM1_gxU',
                     language: 'es',
                     components: 'country:es', // Limitar búsqueda a España
                   }}

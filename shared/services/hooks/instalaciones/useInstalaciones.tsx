@@ -15,7 +15,7 @@ export const useInstalaciones = () => {
   const calculateTravelDuration = async (instalacion: Instalacion) => {
     if (location) {
       try {
-        const apiKey = 'AIzaSyDB2bGI_qo-wtNjBZ690FvrcVeQK4kS7Jg';
+        const apiKey = 'AIzaSyDk2FMHqx4YxsS-LkVt4wtzhHM4iM1_gxU';
         const apiUrl = `https://maps.googleapis.com/maps/api/directions/json?origin=${location?.coords.latitude},${location?.coords.longitude}&destination=${instalacion.latitud},${instalacion.longitud}&mode=walking&key=${apiKey}`;
         const response = await fetch(apiUrl);
         const result = await response.json();

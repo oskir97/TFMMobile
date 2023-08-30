@@ -104,7 +104,7 @@ const CustomInputModalMaps: React.FC<CustomInputMapsProps> = ({ visible, onConfi
                   setLocation({ provincia: provincia?.long_name, localidad: localidad?.long_name, domicilio: domicilio?.long_name, codigoPostal: codigoPostal?.long_name });
                 }}
                 query={{
-                  key: 'AIzaSyDB2bGI_qo-wtNjBZ690FvrcVeQK4kS7Jg',
+                  key: 'AIzaSyDk2FMHqx4YxsS-LkVt4wtzhHM4iM1_gxU',
                   language: 'es',
                   components: 'country:es', // Limitar búsqueda a España
                 }}

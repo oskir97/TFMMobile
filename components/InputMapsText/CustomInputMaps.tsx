@@ -41,7 +41,7 @@ const CustomInputMaps: React.FC<CustomInputMapsProps> = ({ visible, onConfirm, o
                   setLocalidad(data.description);
                 }}
                 query={{
-                  key: 'AIzaSyDB2bGI_qo-wtNjBZ690FvrcVeQK4kS7Jg',
+                  key: 'AIzaSyDk2FMHqx4YxsS-LkVt4wtzhHM4iM1_gxU',
                   language: 'es',
                   components: 'country:es', // Limitar búsqueda a España
                 }}
