@@ -1,9 +1,6 @@
 {
   "expo": {
-    "schemes": [
-      "CronosSC"
-    ],
-    "scheme": "CronosSC",
+    "scheme": "cronossc",
     "name": "CronosSC",
     "slug": "CronosSC",
     "version": "1.0.0",
