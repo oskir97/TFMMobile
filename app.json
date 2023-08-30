@@ -1,8 +1,11 @@
 {
   "expo": {
-    "scheme": "TFMMobile",
-    "name": "TFMMobile",
-    "slug": "TFMMobile",
+    "schemes": [
+      "CronosSC"
+    ],
+    "scheme": "CronosSC",
+    "name": "CronosSC",
+    "slug": "CronosSC",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -22,13 +25,19 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.oskir97.CronosSC"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-localization"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "02d6f45f-7fc6-4787-ba06-77511bca6c06"
+      }
+    }
   }
 }

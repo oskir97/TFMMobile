@@ -35,17 +35,8 @@ const FechaScreen: React.FC<UbicationScreenProps> = ({ navigation }) => {
   const { i18n } = useContext(I18nContext);
   const [calendarKey, setCalendarKey] = useState(Date.now());
 
-  useEffect(() => {
-    const updateLanguage = () => {
-      LocaleConfig.defaultLocale = i18n.language;
-    };
-
-    i18n.on('languageChanged', updateLanguage);
-
-    return () => {
-      i18n.off('languageChanged', updateLanguage);
-    };
-  }, [i18n]);
+  if(!i18n.language || i18n.language == null)
+    i18n.language = 'es';
 
   async function storageFilter(filter: Filter) {
 

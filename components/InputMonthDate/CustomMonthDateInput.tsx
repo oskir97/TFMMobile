@@ -13,44 +13,9 @@ const CustomMonthDateInput: React.FC<InputMonthDateProps> = ({ label, placeholde
   const [showPicker, setShowPicker] = useState(false);
   const [lang, setLang] = useState(monthpickertrans[i18n.language]);
 
-  const configs={
-    dayNames: [
-      "Dimanche",
-      "Lundi",
-      "Mardi",
-      "Mercredi",
-      "Jeudi",
-      "Vendredi",
-      "Samedi",
-    ],
-    dayNamesShort: ["Di", "Lu", "Ma", "Me", "Je", "Ve", "Sa"],
-    monthNames: [
-      "Janvier",
-      "Fevrier",
-      "Mars",
-      "Avri",
-      "Mai",
-      "Juin",
-      "Juillet",
-      "Août",
-      "Septembre",
-      "Octobre",
-      "Novembre",
-      "Decembre",
-    ],
-  }
-
   const toggleDatepicker = () => {
     setShowPicker(!showPicker);
   };
-
-  function formatYearAndMonthDate(date: string): string {
-    const dateObj = new Date(date);
-    const year = dateObj.getFullYear();
-    const month = dateObj.getMonth() + 1;
-    const formattedMonth = month < 10 ? `0${month}` : `${month}`;
-    return `${formattedMonth}/${year}`;
-  }
 
   function formatYearAndMonthDate2(date: string): string {
     const dateObj = new Date(date);
