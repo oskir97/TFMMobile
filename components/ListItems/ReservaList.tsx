@@ -219,7 +219,7 @@ const ReservaList = ({ reservas, estado, setReload, navigation, type }: { reserv
         }
     }
 
-    const deporteIcon = (item: Deporte | undefined) => (
+    const deporteIcon = (item: Deporte | undefined, reserva:Reserva | undefined) => (
         <View style={{ flexDirection: 'row', marginBottom: 0, marginTop:4 }}>
             {
                 (item && item.icono.endsWith("&ionic") &&
@@ -267,7 +267,7 @@ const ReservaList = ({ reservas, estado, setReload, navigation, type }: { reserv
                     </TouchableOpacity>
                 }
                 {estado == 'Finalizada' && (!reserva.obtenerPartidoReserva || reserva.obtenerPartidoReserva.obtenerUsuarioCreador.idusuario != user.idusuario) && !reserva.obtenerEventoReserva &&
-                    <TouchableOpacity style={styles.button} onPress={() => { setReserva(reserva); setModalvisible(true); }}>
+                    <TouchableOpacity style={styles.button} onPress={() => {console.log(reserva); setReserva(reserva); setModalvisible(true); }}>
                         <FontAwesome name="star" size={20} color="orange" />
                     </TouchableOpacity>
                 }
@@ -325,7 +325,7 @@ const ReservaList = ({ reservas, estado, setReload, navigation, type }: { reserv
 
                     }
                     {(reserva.obtenerDeporteReserva) && (
-                        deporteIcon(reserva.obtenerDeporteReserva)
+                        deporteIcon(reserva.obtenerDeporteReserva, reserva)
                     )}
                 </View>
             </View>

@@ -58,17 +58,37 @@ const BookList: React.FC<BookListProps> = ({ type, filter, navigation, loading }
                         break;
                     case 'Partido':
                         setCargando(true);
-                        obtenerReservas(filter).then((reservas: Reserva[]) => { setPartidos(reservas); obtenerDeporte(filter.deporte).then((d: Deporte |undefined) => {setDeporte( d?.traduccionesDeporte.find((tr) => tr.getIdiomaDeporte.cultura === i18n.language)?.nombre); setCargando(false);});});
+                        obtenerReservas(filter).then((reservas: Reserva[]) => { setPartidos(reservas); obtenerDeporte(filter.deporte).then((d: Deporte | undefined) => { setDeporte(d?.traduccionesDeporte.find((tr) => tr.getIdiomaDeporte.cultura === i18n.language)?.nombre); setCargando(false); }); });
                         break;
                 }
             }
         } else {
-            if (route.params.instalacion) {
-                instalaciones?.forEach((instalacion) => {
-                    if (instalacion.idinstalacion == route.params.instalacion?.idinstalacion) {
-                        instalacion.favorita = route.params.instalacion.favorita;
-                    }
-                })
+            if (type == 'Pista' && route.params.instalacion) {
+                if (!instalaciones || instalaciones.length == 0) {
+                    setCargando(true);
+                    obtenerInstalaciones(filter).then((instalaciones: Instalacion[]) => { setInstalaciones(instalaciones); setCargando(false); });
+                } else {
+                    setCargando(false);
+                    instalaciones?.forEach((instalacion) => {
+                        if (instalacion.idinstalacion == route.params.instalacion?.idinstalacion) {
+                            instalacion.favorita = route.params.instalacion.favorita;
+                        }
+                    })
+                }
+            } else if (type == 'Evento') {
+                if (!eventos || eventos.length == 0) {
+                    setCargando(true);
+                    obtenerEventos(filter).then((eventos: Evento[]) => { setEventos(eventos); setCargando(false); });
+                } else {
+                    setCargando(false);
+                }
+            } else if (type == 'Partido') {
+                if (!partidos || partidos.length == 0) {
+                    setCargando(true);
+                    obtenerReservas(filter).then((reservas: Reserva[]) => { setPartidos(reservas); obtenerDeporte(filter.deporte).then((d: Deporte | undefined) => { setDeporte(d?.traduccionesDeporte.find((tr) => tr.getIdiomaDeporte.cultura === i18n.language)?.nombre); setCargando(false); }); });
+                } else {
+                    setCargando(false);
+                }
             }
         }
     }, [filter]);
@@ -106,7 +126,7 @@ const BookList: React.FC<BookListProps> = ({ type, filter, navigation, loading }
                 ) || (type == 'Partido' &&
                     <>
                         <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                            <Text style={{ fontSize: 20 }} className="text-base font-semibold mt-1">{!cargando?`${t("PARTIDOS_DISPONIBLES")} ${t("DE")} ${deporte}` : t("PARTIDOS_DISPONIBLES")}</Text>
+                            <Text style={{ fontSize: 20 }} className="text-base font-semibold mt-1">{!cargando ? `${t("PARTIDOS_DISPONIBLES")} ${t("DE")} ${deporte}` : t("PARTIDOS_DISPONIBLES")}</Text>
                         </View>
                         {
                             (!cargando && partidos && partidos.length > 0 && partidos?.map((item, index) => (

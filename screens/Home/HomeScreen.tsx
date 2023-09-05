@@ -56,6 +56,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   useEffect(() => {
 
+    // AsyncStorage.setItem('localidad', "");
+    // AsyncStorage.setItem('iddeporte', "");
+    // AsyncStorage.setItem('fecha', "");
+
     const unsubscribe = navigation.addListener('focus', () => {
       setTextAssign(filter?.localidad);
 
